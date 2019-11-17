@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmberKernel.Plugins
+namespace EmberKernel.Plugins.Components
 {
-    public interface IPluginsLoader : IScopeBilder
+    public interface IEntryComponent : IComponent
     {
-        Task RunEntryComponents();
+        Task Start();
     }
 }

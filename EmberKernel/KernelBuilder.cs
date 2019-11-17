@@ -16,13 +16,13 @@ namespace EmberKernel
     {
         public class KernelBuilderContext
         {
-            public IConfiguration Configuration { get; }
+            public IConfigurationRoot Configuration { get; set; }
         }
 
-        internal class LoggingBuilder : ILoggingBuilder
+        internal class ServiceCollectionBuilder : ILoggingBuilder
         {
             public IServiceCollection Services { get; }
-            public LoggingBuilder(IServiceCollection services)
+            public ServiceCollectionBuilder(IServiceCollection services)
             {
                 Services = services;
             }
@@ -30,68 +30,82 @@ namespace EmberKernel
 
         internal ContainerBuilder _containerBuilder;
         internal IConfigurationBuilder _configurationBuilder;
-        internal LoggingBuilder _loggingBuilder;
+        internal ServiceCollectionBuilder _serviceCollectionBuilder;
         internal KernelBuilderContext _context;
         internal bool _hasRegisterContentRoot = false;
+        internal bool _useLogger = false;
+        internal readonly List<Action> buildActions = new List<Action>();
         public KernelBuilder()
         {
             _containerBuilder = new ContainerBuilder();
             _configurationBuilder = new ConfigurationBuilder();
             _context = new KernelBuilderContext();
-            _loggingBuilder = new LoggingBuilder(new ServiceCollection());
-            _containerBuilder.Populate(_loggingBuilder.Services);
+            _serviceCollectionBuilder = new ServiceCollectionBuilder(new ServiceCollection());
         }
 
         public KernelBuilder UsePlugins<TPluginsLoader>() where TPluginsLoader : IPluginsLoader
         {
-            _containerBuilder.RegisterType<PluginsLayer<TPluginsLoader>>().As<IPluginsLayer>();
+            buildActions.Add(() => _containerBuilder.RegisterType<PluginsLayer<TPluginsLoader>>().As<IPluginsLayer>());
             return this;
         }
 
         public KernelBuilder UseKernalService<TKernelService>() where TKernelService : KernelService
         {
-            _containerBuilder.RegisterType<TKernelService>();
+            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>());
             return this;
         }
 
         public KernelBuilder UseConfiguration(Action<IConfigurationBuilder> configureDelegate)
         {
             configureDelegate(_configurationBuilder);
-            _containerBuilder.RegisterInstance(_configurationBuilder.Build());
+            _context.Configuration = _configurationBuilder.Build();
+            buildActions.Add(() =>
+            {
+                _containerBuilder.RegisterInstance(_context.Configuration).As<IConfiguration>();
+            });
             return this;
         }
 
         public KernelBuilder UseConfigurationModel<TOptions>() where TOptions : class
         {
-            _loggingBuilder.Services.Configure<TOptions>(_context.Configuration);
+            _serviceCollectionBuilder.Services.Configure<TOptions>(_context.Configuration);
             return this;
         }
 
         public KernelBuilder UseLogger(Action<KernelBuilderContext, ILoggingBuilder> configureDelegate)
         {
-            configureDelegate(_context, _loggingBuilder);
+            _useLogger = true;
+            configureDelegate(_context, _serviceCollectionBuilder);
             return this;
         }
 
         public KernelBuilder Configure(Action<KernelBuilderContext, ContainerBuilder> configureDelegate)
         {
-            configureDelegate(_context, _containerBuilder);
+            buildActions.Add(() => configureDelegate(_context, _containerBuilder));
             return this;
         }
 
         public KernelBuilder UseContentDirectory(string root)
         {
             _hasRegisterContentRoot = true;
-            _containerBuilder.RegisterInstance(new ContentRoot(root)).As<IContentRoot>();
+            buildActions.Add(() => _containerBuilder.RegisterInstance(new ContentRoot(root)).As<IContentRoot>());
             return this;
         }
 
         public Kernel Build()
         {
+            if (_useLogger)
+            {
+                _serviceCollectionBuilder.Services.AddLogging();
+            }
+
+            _containerBuilder.Populate(_serviceCollectionBuilder.Services);
+            // Autofac compability
             if (!_hasRegisterContentRoot)
             {
                 _containerBuilder.RegisterInstance(new ContentRoot(Directory.GetCurrentDirectory())).As<IContentRoot>();
             }
+            buildActions.ForEach((builder) => builder());
             return new Kernel(_containerBuilder);
         }
     }

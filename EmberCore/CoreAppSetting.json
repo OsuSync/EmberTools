@@ -2,5 +2,5 @@
   "CheckUpdate": true,
   "CheckComponentUpdate": true,
   "Locale": "System",
-  "PluginsFolder": ".\\Plugins"
+  "PluginsFolder": "plugins"
 }

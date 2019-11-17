@@ -6,12 +6,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace EmberCore
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             new KernelBuilder()
                 .UseConfiguration((config) =>
@@ -26,7 +27,7 @@ namespace EmberCore
                 {
                     logger
                     .AddConfiguration(context.Configuration.GetSection("Logging"))
-                    .AddConsole((_) => _.Format = ConsoleLoggerFormat.Systemd)
+                    .AddConsole()
                     .AddDebug();
                 })
                 .UseKernalService<CorePluginResolver>()

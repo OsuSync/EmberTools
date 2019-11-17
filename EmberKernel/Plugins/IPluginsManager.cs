@@ -3,13 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Plugins
 {
     public interface IPluginsManager : IPluginsLoader
     {
         IEnumerable<Type> Resolve(Assembly assembly);
-        void Load(IPlugin plugin);
-        void Unload(IPlugin plugin);
+        Task Load(IPlugin plugin);
+        Task Unload(IPlugin plugin);
     }
 }

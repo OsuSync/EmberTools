@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Autofac;
 
 namespace EmberKernel.Plugins
@@ -12,16 +13,16 @@ namespace EmberKernel.Plugins
             builder.RegisterType<T>();
         }
 
-        public void Run(ILifetimeScope scope)
+        public async Task Run(ILifetimeScope scope)
         {
             var pluginLoader = scope.Resolve<T>();
-            using (var pluginsScope = scope.BeginLifetimeScope(builder =>
+            using var pluginsScope = scope.BeginLifetimeScope(builder =>
             {
                 pluginLoader.BuildScope(builder);
-            }))
-            {
-                pluginLoader.Run(scope);
-            }
+            });
+
+            await pluginLoader.Run(pluginsScope);
+            await pluginLoader.RunEntryComponents();
         }
     }
 }

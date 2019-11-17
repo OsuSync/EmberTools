@@ -2,13 +2,16 @@
 using EmberKernel.Plugins;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EmberKernel
 {
-    public class Kernel
+    public class Kernel : IDisposable
     {
         private ContainerBuilder Builder { get; }
         private IContainer Container { get; }
+        private ILifetimeScope topScope = null;
+        private ILifetimeScope executionScope = null;
 
         public Kernel(ContainerBuilder builder)
         {
@@ -18,38 +21,33 @@ namespace EmberKernel
 
         public void Run()
         {
-            using (var scope = Container.BeginLifetimeScope(builder =>
+            RunAsync().Wait();
+        }
+
+        public async Task RunAsync()
+        {
+            topScope = Container.BeginLifetimeScope(builder =>
             {
                 // Build base infrastructures here
-            }))
+            });
+
+            var pluginLayer = topScope.Resolve<IPluginsLayer>();
+            // Build execution scope
+            executionScope = topScope.BeginLifetimeScope(builder =>
             {
-                List<IScopeBilder> executionLayerBuilders = new List<IScopeBilder>();
-
-                if (scope.IsRegistered<IPluginsLoader>())
+                if (topScope.IsRegistered<IPluginsLayer>())
                 {
-                    executionLayerBuilders.Add(scope.Resolve<IPluginsLoader>());
+                    pluginLayer.BuildScope(builder);
                 }
+            });
 
-                if (scope.IsRegistered<IPluginsLayer>())
-                {
-                    executionLayerBuilders.Add(scope.Resolve<IPluginsLayer>());
-                }
+            await pluginLayer.Run(executionScope);
+        }
 
-                // Build execution scope
-                using (var executionScope = scope.BeginLifetimeScope(builder =>
-                {
-                    foreach (var subBuilder in executionLayerBuilders)
-                    {
-                        subBuilder.BuildScope(builder);
-                    }
-                }))
-                {
-                    foreach (var subBuilder in executionLayerBuilders)
-                    {
-                        subBuilder.Run(executionScope);
-                    }
-                }
-            }
+        public void Dispose()
+        {
+            executionScope.Dispose();
+            topScope.Dispose();
         }
     }
 }

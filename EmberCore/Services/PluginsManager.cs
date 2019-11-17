@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Autofac;
 using EmberCore.KernelServices.PluginResolver;
 using EmberKernel.Plugins;
@@ -18,8 +20,9 @@ namespace EmberCore.Services
         private ILifetimeScope PluginLayerScope;
         private readonly LinkedList<Type> LoadedTypes = new LinkedList<Type>();
         private readonly Dictionary<IPlugin, ILifetimeScope> PluginScopes = new Dictionary<IPlugin, ILifetimeScope>();
-        private ILogger Logger { get; }
-        public PluginsManager(CorePluginResolver resolver, ILogger logger)
+        private readonly List<IEntryComponent> EntryComponents = new List<IEntryComponent>();
+        private ILogger<PluginsManager> Logger { get; }
+        public PluginsManager(CorePluginResolver resolver, ILogger<PluginsManager> logger)
         {
             Resolver = resolver;
             Logger = logger;
@@ -35,8 +38,8 @@ namespace EmberCore.Services
                 {
                     foreach (var type in Resolve(assembly))
                     {
-                        var attribute = type.GetCustomAttribute<EmberPluginAttribute>();
-                        builder.RegisterType(type).Named(attribute.ToString(), type);
+                        var pluginDesciptor = type.GetCustomAttribute<EmberPluginAttribute>().ToString();
+                        builder.RegisterType(type).Named(pluginDesciptor, type);
 
                         LoadedTypes.AddLast(type);
                     }
@@ -44,17 +47,34 @@ namespace EmberCore.Services
             }
         }
 
-        public void Run(ILifetimeScope scope)
+        public async Task Run(ILifetimeScope scope)
         {
             PluginLayerScope = scope;
-            Logger.LogInformation("Start loading plugins scopes...");
             foreach (var type in LoadedTypes)
             {
                 var pluginDesciptor = type.GetCustomAttribute<EmberPluginAttribute>().ToString();
                 Logger.LogInformation($"Preparing plugin {pluginDesciptor}...");
-                var plugin = scope.ResolveNamed(pluginDesciptor, type) as IPlugin;
-                Load(plugin);
+                try
+                {
+                    if (scope.TryResolveNamed(pluginDesciptor, type, out var instnace) && instnace is IPlugin plugin)
+                    {
+                        await Load(plugin);
+                        if (plugin is IEntryComponent entry) EntryComponents.Add(entry);
+                        Logger.LogInformation($"Loaded plugin {pluginDesciptor}...");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Logger.LogError(e, $"Error while load {pluginDesciptor}");
+                }
             }
+        }
+
+        public async Task RunEntryComponents()
+        {
+            Logger.LogInformation($"Start execute entries...");
+            await Task.WhenAll(EntryComponents.Select(entry => entry.Start()).ToArray());
+            Logger.LogInformation($"Done execute entries...");
         }
 
         public IEnumerable<Type> Resolve(Assembly assembly)
@@ -76,22 +96,23 @@ namespace EmberCore.Services
             yield break;
         }
 
-        public void Load(IPlugin plugin)
+        public async Task Load(IPlugin plugin)
         {
             var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
             Logger.LogInformation($"Loading plugin {pluginDesciptor}...");
             var pluginScope = PluginLayerScope.BeginLifetimeScope((builder) => plugin.BuildComponents(new ComponentBuilder(builder)));
             PluginScopes.Add(plugin, pluginScope);
-            plugin.Initialize(pluginScope);
+            await plugin.Initialize(pluginScope);
             Logger.LogInformation($"Loaded pluging {pluginDesciptor}!");
         }
 
-        public void Unload(IPlugin plugin)
+        public async Task Unload(IPlugin plugin)
         {
             var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
             Logger.LogInformation($"Unloading plugin {pluginDesciptor}...");
             if (PluginScopes.TryGetValue(plugin, out var scope))
             {
+                await plugin.Uninitialize();
                 scope.Dispose();
                 Logger.LogInformation($"Unloaded pluging {pluginDesciptor}!");
             }
@@ -101,5 +122,6 @@ namespace EmberCore.Services
         {
             PluginLayerScope?.Dispose();
         }
+
     }
 }

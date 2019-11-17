@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EmberKernel
 {
     public interface IScopeBilder
     {
         void BuildScope(ContainerBuilder builder);
-        void Run(ILifetimeScope scope);
+        Task Run(ILifetimeScope scope);
     }
 }

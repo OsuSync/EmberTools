@@ -14,9 +14,9 @@ namespace EmberCore.KernelServices.PluginResolver
     public class CorePluginResolver : KernelService
     {
         private IOptionsSnapshot<CoreAppSetting> CoreAppSetting { get; }
-        private ILogger Logger { get; }
+        private ILogger<CorePluginResolver> Logger { get; }
         private IContentRoot ContentRoot { get; }
-        public CorePluginResolver(IOptionsSnapshot<CoreAppSetting> coreAppSetting, ILogger logger, IContentRoot contentRoot)
+        public CorePluginResolver(IOptionsSnapshot<CoreAppSetting> coreAppSetting, ILogger<CorePluginResolver> logger, IContentRoot contentRoot)
         {
             CoreAppSetting = coreAppSetting;
             Logger = logger;
