@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using EmberKernel.Loader;
 using EmberKernel.Plugins;
 using System;
 using System.Collections.Generic;
@@ -8,8 +7,8 @@ namespace EmberKernel
 {
     public class Kernel
     {
-        ContainerBuilder Builder { get; }
-        IContainer Container { get; }
+        private ContainerBuilder Builder { get; }
+        private IContainer Container { get; }
 
         public Kernel(ContainerBuilder builder)
         {
@@ -25,19 +24,15 @@ namespace EmberKernel
             }))
             {
                 List<IScopeBilder> executionLayerBuilders = new List<IScopeBilder>();
-                if (scope.IsRegistered<ILoader>())
+
+                if (scope.IsRegistered<IPluginsLoader>())
                 {
-                    executionLayerBuilders.Add(scope.Resolve<ILoader>());
+                    executionLayerBuilders.Add(scope.Resolve<IPluginsLoader>());
                 }
 
-                if (scope.IsRegistered<IPluginLoader>())
+                if (scope.IsRegistered<IPluginsLayer>())
                 {
-                    executionLayerBuilders.Add(scope.Resolve<IPluginLoader>());
-                }
-
-                if (scope.IsRegistered<IPluginManager>())
-                {
-                    executionLayerBuilders.Add(scope.Resolve<IPluginManager>());
+                    executionLayerBuilders.Add(scope.Resolve<IPluginsLayer>());
                 }
 
                 // Build execution scope

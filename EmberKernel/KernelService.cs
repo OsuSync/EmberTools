@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmberKernel.Plugins
+namespace EmberKernel
 {
-    public interface IPluginsLoader : IScopeBilder
+    public abstract class KernelService
     {
     }
 }

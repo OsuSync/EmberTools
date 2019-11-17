@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmberKernel.Plugins
+namespace EmberKernel.Plugins.Components
 {
-    public interface IPluginsLoader : IScopeBilder
+    public interface IComponent : IDisposable
     {
     }
 }

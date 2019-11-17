@@ -5,12 +5,8 @@ using Autofac;
 
 namespace EmberKernel.Plugins
 {
-    public class PluginLayer<T> : IPluginManager where T : IPluginLoader
+    public class PluginsLayer<T> : IPluginsLayer where T : IPluginsLoader
     {
-        public PluginLayer()
-        {
-        }
-
         public void BuildScope(ContainerBuilder builder)
         {
             builder.RegisterType<T>();
@@ -24,7 +20,7 @@ namespace EmberKernel.Plugins
                 pluginLoader.BuildScope(builder);
             }))
             {
-
+                pluginLoader.Run(scope);
             }
         }
     }

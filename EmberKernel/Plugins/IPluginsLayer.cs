@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace EmberKernel.Loader
+namespace EmberKernel.Plugins
 {
-    public interface ILoader : IScopeBilder
+    public interface IPluginsLayer : IScopeBilder
     {
     }
 }
