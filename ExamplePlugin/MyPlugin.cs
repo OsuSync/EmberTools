@@ -2,7 +2,6 @@
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
-using ExamplePlugin.Components;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +13,7 @@ namespace ExamplePlugin
     {
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.ConfigureComponent<CommandHandlerComponent>();
+            
         }
 
         public override async Task Initialize(ILifetimeScope scope)
