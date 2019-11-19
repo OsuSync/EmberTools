@@ -32,10 +32,6 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="KernelServices\CommandHandler\" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="mkdir $(SolutionDir)build&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)\plugins&#xD;&#xA;copy $(TargetDir)* $(SolutionDir)build\$(ConfigurationName)" ContinueOnError="true" IgnoreExitCode="true" />
   </Target>
