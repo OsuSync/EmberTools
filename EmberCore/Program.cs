@@ -1,4 +1,5 @@
-﻿using EmberCore.KernelServices.PluginResolver;
+﻿using EmberCore.KernelServices.Command;
+using EmberCore.KernelServices.PluginResolver;
 using EmberCore.Services;
 using EmberKernel;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +32,7 @@ namespace EmberCore
                     .AddDebug();
                 })
                 .UseKernalService<CorePluginResolver>()
+                .UseKernalService<CommandService, ICommandServices>()
                 .UsePlugins<PluginsManager>()
                 .Build()
                 .Run();

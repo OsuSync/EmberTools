@@ -23,8 +23,10 @@ namespace EmberCore.KernelServices.Command.Sources
         private readonly CommandArgument EmptyCommand = new CommandArgument() { Argument = string.Empty, Command = string.Empty };
         public async Task<CommandArgument> Read(CancellationToken cancellationToken)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async() =>
             {
+                await Task.Yield();
+                Console.Write("\n>");
                 var result = Console.ReadLine().Split(' ', 2);
                 if (result.Length == 0) return EmptyCommand;
                 else

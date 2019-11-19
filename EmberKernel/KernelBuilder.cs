@@ -45,13 +45,20 @@ namespace EmberKernel
 
         public KernelBuilder UsePlugins<TPluginsLoader>() where TPluginsLoader : IPluginsLoader
         {
-            buildActions.Add(() => _containerBuilder.RegisterType<PluginsLayer<TPluginsLoader>>().As<IPluginsLayer>());
+            buildActions.Add(() => _containerBuilder.RegisterType<PluginsLayer<TPluginsLoader>>().As<IPluginsLayer>().SingleInstance());
             return this;
         }
 
         public KernelBuilder UseKernalService<TKernelService>() where TKernelService : KernelService
         {
-            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>());
+            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().SingleInstance());
+            return this;
+        }
+
+
+        public KernelBuilder UseKernalService<TKernelService, TIKernelService>() where TKernelService : KernelService, TIKernelService
+        {
+            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().As<TIKernelService>().SingleInstance());
             return this;
         }
 

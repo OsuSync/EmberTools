@@ -6,7 +6,7 @@ using System.Text;
 
 namespace EmberCore.KernelServices.Command.Components
 {
-    public interface ICommandComponent : IComponent
+    public interface ICommandContainer
     {
         virtual void GeneralCommandHandler(string cmd, string[] args) { }
     }
