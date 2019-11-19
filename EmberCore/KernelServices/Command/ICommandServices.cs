@@ -8,11 +8,7 @@ namespace EmberCore.KernelServices.Command
 {
     public interface ICommandServices
     {
-        void Reigster<TCommand, TParser>(TCommand commandHandler, TParser commandParser)
-            where TCommand : ICommandComponent<TParser>
-            where TParser : IParser;
-        void Unregister<TCommand, TParser>(TCommand commandHandler)
-            where TCommand : ICommandComponent<TParser>
-            where TParser : IParser;
+        void Reigster(ICommandComponent commandHandler);
+        void Unregister(ICommandComponent commandHandler);
     }
 }

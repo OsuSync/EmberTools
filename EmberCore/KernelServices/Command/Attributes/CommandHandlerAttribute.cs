@@ -9,5 +9,6 @@ namespace EmberCore.KernelServices.Command.Attributes
     public class CommandHandlerAttribute: Attribute
     {
         public string Command { get; set; }
+        public Type Parser { get; set; } = typeof(DefaultParser);
     }
 }

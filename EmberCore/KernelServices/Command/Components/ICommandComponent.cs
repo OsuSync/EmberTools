@@ -6,7 +6,7 @@ using System.Text;
 
 namespace EmberCore.KernelServices.Command.Components
 {
-    public interface ICommandComponent<TParser> : IComponent where TParser : IParser
+    public interface ICommandComponent : IComponent
     {
         virtual void GeneralCommandHandler(string cmd, string[] args) { }
     }
