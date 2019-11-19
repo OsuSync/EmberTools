@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EmberCore\EmberCore.csproj" />
     <ProjectReference Include="..\EmberKernel\EmberKernel.csproj">
       <Private>false</Private>
     </ProjectReference>
