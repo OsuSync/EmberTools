@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberKernel", "EmberKernel\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberCore", "EmberCore\EmberCore.csproj", "{3A09A439-74EA-443F-884E-12E4ADE44967}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExamplePlugin", "ExamplePlugin\ExamplePlugin.csproj", "{D2E5F444-51AA-4CE8-A193-5648C1AC6974}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplePlugin", "ExamplePlugin\ExamplePlugin.csproj", "{D2E5F444-51AA-4CE8-A193-5648C1AC6974}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
