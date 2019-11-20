@@ -28,11 +28,11 @@ namespace EmberCore
                 {
                     logger
                     .AddConfiguration(context.Configuration.GetSection("Logging"))
-                    .AddConsole()
+                    .AddConsole(options => options.Format = ConsoleLoggerFormat.Systemd)
                     .AddDebug();
                 })
                 .UseKernalService<CorePluginResolver>()
-                .UseKernalService<CommandService, ICommandServices>()
+                .UseKernalService<CommandService, ICommandService>()
                 .UsePlugins<PluginsManager>()
                 .Build()
                 .Run();

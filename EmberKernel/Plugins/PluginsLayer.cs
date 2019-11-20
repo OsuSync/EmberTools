@@ -10,7 +10,11 @@ namespace EmberKernel.Plugins
     {
         public void BuildScope(ContainerBuilder builder)
         {
-            builder.RegisterType<T>();
+            var pluginManBuilder = builder.RegisterType<T>().AsSelf().As<IPluginsLoader>().SingleInstance();
+            if (typeof(IPluginsManager).IsAssignableFrom(typeof(T)))
+            {
+                pluginManBuilder.As<IPluginsManager>().SingleInstance();
+            }
         }
 
         public async Task Run(ILifetimeScope scope)

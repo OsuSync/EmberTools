@@ -9,6 +9,7 @@ using EmberCore.KernelServices.PluginResolver;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
+using EmberKernel.Plugins.Models;
 using Microsoft.Extensions.Logging;
 
 namespace EmberCore.Services
@@ -56,11 +57,12 @@ namespace EmberCore.Services
                 Logger.LogInformation($"Preparing plugin {pluginDesciptor}...");
                 try
                 {
+                    Logger.LogInformation($"Resolving plugin {pluginDesciptor}...");
                     if (scope.TryResolveNamed(pluginDesciptor, type, out var instnace) && instnace is IPlugin plugin)
                     {
                         await Load(plugin);
                         if (plugin is IEntryComponent entry) EntryComponents.Add(entry);
-                        Logger.LogInformation($"Loaded plugin {pluginDesciptor}...");
+                        Logger.LogInformation($"Loaded plugin {pluginDesciptor}");
                     }
                 }
                 catch (Exception e)
@@ -99,11 +101,9 @@ namespace EmberCore.Services
         public async Task Load(IPlugin plugin)
         {
             var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
-            Logger.LogInformation($"Loading plugin {pluginDesciptor}...");
             var pluginScope = PluginLayerScope.BeginLifetimeScope((builder) => plugin.BuildComponents(new ComponentBuilder(builder)));
             PluginScopes.Add(plugin, pluginScope);
             await plugin.Initialize(pluginScope);
-            Logger.LogInformation($"Loaded pluging {pluginDesciptor}!");
         }
 
         public async Task Unload(IPlugin plugin)
@@ -123,5 +123,12 @@ namespace EmberCore.Services
             PluginLayerScope?.Dispose();
         }
 
+        public IEnumerable<PluginDescriptor> LoadedPlugins()
+        {
+            foreach (var plugin in PluginScopes.Keys)
+            {
+                yield return PluginDescriptor.FromAttribute(plugin.GetType().GetCustomAttribute<EmberPluginAttribute>());
+            }
+        }
     }
 }

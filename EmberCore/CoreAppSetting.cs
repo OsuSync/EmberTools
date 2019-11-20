@@ -11,6 +11,7 @@ namespace EmberCore
         public string Locale { get; set; }
         public string PluginsFolder { get; set; }
         public int CommandSourceOperationTimeLimit { get; set; }
+        public Logging Logging { get; set; }
     }
 
     public class Logging

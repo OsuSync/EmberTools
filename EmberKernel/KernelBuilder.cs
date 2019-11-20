@@ -51,7 +51,7 @@ namespace EmberKernel
 
         public KernelBuilder UseKernalService<TKernelService>() where TKernelService : KernelService
         {
-            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().SingleInstance());
+            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().As<TKernelService>().SingleInstance());
             return this;
         }
 

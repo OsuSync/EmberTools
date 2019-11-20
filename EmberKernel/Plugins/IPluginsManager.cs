@@ -1,4 +1,5 @@
 ﻿using EmberKernel.Plugins;
+using EmberKernel.Plugins.Models;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -12,5 +13,7 @@ namespace EmberKernel.Plugins
         IEnumerable<Type> Resolve(Assembly assembly);
         Task Load(IPlugin plugin);
         Task Unload(IPlugin plugin);
+
+        IEnumerable<PluginDescriptor> LoadedPlugins();
     }
 }
