@@ -18,7 +18,7 @@ using Microsoft.Extensions.Options;
 
 namespace EmberCore.KernelServices.Command
 {
-    public class CommandService : KernelService, ICommandServices
+    public class CommandService : KernelService, ICommandService
     {
         private ILogger<CommandService> Logger { get; }
         private IOptionsSnapshot<CoreAppSetting> CoreAppSetting { get; }
