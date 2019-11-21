@@ -20,15 +20,13 @@ namespace ExamplePlugin
     [EmberPlugin(Author = "ZeroAsh", Name = "ExamplePlugin", Version = "1.0")]
     public class MyPlugin : Plugin
     {
-        private ICommandService CommandService { get; }
-        public MyPlugin(ICommandService commandService)
+        public MyPlugin()
         {
-            CommandService = commandService;
         }
 
         public override Task Initialize(ILifetimeScope scope)
         {
-            CommandService.ReigsterCommandContainer(scope.Resolve<MyCommandComponent>());
+            scope.UseCommandContainer<MyCommandComponent>();
             scope.Subscription<Models.EventSubscription.ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
             return Task.CompletedTask;
         }
