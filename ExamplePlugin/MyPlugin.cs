@@ -1,7 +1,7 @@
 ﻿using Autofac;
-using EmberCore.KernelServices.Command;
-using EmberCore.KernelServices.Command.Attributes;
-using EmberCore.KernelServices.Command.Components;
+using EmberKernel.Services.Command;
+using EmberKernel.Services.Command.Attributes;
+using EmberKernel.Services.Command.Components;
 using EmberKernel;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;

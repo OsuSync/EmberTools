@@ -1,5 +1,5 @@
-﻿using EmberCore.KernelServices.Command.Attributes;
-using EmberCore.KernelServices.Command.Components;
+﻿using EmberKernel.Services.Command.Attributes;
+using EmberKernel.Services.Command.Components;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus;

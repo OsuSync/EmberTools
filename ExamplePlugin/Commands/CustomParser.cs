@@ -1,5 +1,5 @@
-﻿using EmberCore.KernelServices.Command.Models;
-using EmberCore.KernelServices.Command.Parsers;
+﻿using EmberKernel.Services.Command.Models;
+using EmberKernel.Services.Command.Parsers;
 using System.Collections.Generic;
 
 namespace ExamplePlugin.Commands

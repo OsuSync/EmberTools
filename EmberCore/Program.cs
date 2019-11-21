@@ -1,4 +1,4 @@
-﻿using EmberCore.KernelServices.Command;
+﻿using EmberKernel.Services.Command;
 using EmberCore.KernelServices.PluginResolver;
 using EmberCore.Services;
 using EmberKernel;

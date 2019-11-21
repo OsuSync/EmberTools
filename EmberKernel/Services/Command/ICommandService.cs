@@ -1,12 +1,12 @@
-﻿using EmberCore.KernelServices.Command.Builder;
-using EmberCore.KernelServices.Command.Components;
-using EmberCore.KernelServices.Command.Parsers;
+﻿using EmberKernel.Services.Command.Builder;
+using EmberKernel.Services.Command.Components;
+using EmberKernel.Services.Command.Parsers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EmberCore.KernelServices.Command
+namespace EmberKernel.Services.Command
 {
     public interface ICommandService : IDisposable
     {
