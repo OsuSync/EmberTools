@@ -32,9 +32,9 @@ namespace EmberCore
                     .AddDebug();
                 })
                 .UseKernalService<CorePluginResolver>()
-                .UseKernalService<CommandService, ICommandService>()
-                .UseEventBus()
                 .UsePlugins<PluginsManager>()
+                .UseCommandService()
+                .UseEventBus()
                 .Build()
                 .Run();
         }
