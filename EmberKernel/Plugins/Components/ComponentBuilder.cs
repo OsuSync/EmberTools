@@ -7,7 +7,7 @@ namespace EmberKernel.Plugins.Components
 {
     public class ComponentBuilder : IComponentBuilder
     {
-        private ContainerBuilder Container { get; }
+        internal ContainerBuilder Container { get; }
         public ComponentBuilder(ContainerBuilder container)
         {
             Container = container;
