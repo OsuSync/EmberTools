@@ -18,4 +18,8 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\EventBus\" />
+  </ItemGroup>
+
 </Project>
