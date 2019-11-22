@@ -38,13 +38,6 @@ namespace ExamplePlugin.Components
             }
         }
 
-        [CommandHandler(Command = "event", Parser = typeof(CustomParser))]
-        public void MyEventPublisher(int inputNumber)
-        {
-            EventBus.Publish(new ExamplePluginPublishEvent() { InputNumber = inputNumber });
-            Logger.LogInformation($"Event published! Value = {inputNumber}");
-        }
-
         public void Dispose()
         {
         }

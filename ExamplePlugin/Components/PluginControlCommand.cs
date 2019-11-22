@@ -4,6 +4,10 @@ using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Command;
 using EmberKernel.Services.Command.Attributes;
 using EmberKernel.Services.Command.Components;
+using EmberKernel.Services.EventBus;
+using ExamplePlugin.Commands;
+using ExamplePlugin.Models.EventPublisher;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,10 +17,14 @@ namespace ExamplePlugin.Components
     class PluginControlCommand : IComponent, ICommandContainer
     {
         private readonly IPluginsManager _pluginMan;
+        private readonly IEventBus _eventBus;
+        private readonly ILogger<PluginControlCommand> _logger;
 
-        public PluginControlCommand(IPluginsManager pluginMan)
+        public PluginControlCommand(IPluginsManager pluginMan, IEventBus eventBus, ILogger<PluginControlCommand> logger)
         {
             _pluginMan = pluginMan;
+            _eventBus = eventBus;
+            _logger = logger;
         }
 
         [CommandHandler(Command = "enable")]
@@ -29,6 +37,13 @@ namespace ExamplePlugin.Components
         public void DisablePlugin(string plugin)
         {
             _pluginMan.Unload(FindPlugin(plugin));
+        }
+
+        [CommandHandler(Command = "event", Parser = typeof(CustomParser))]
+        public void MyEventPublisher(int inputNumber)
+        {
+            _eventBus.Publish(new ExamplePluginPublishEvent() { InputNumber = inputNumber });
+            _logger.LogInformation($"Event published! Value = {inputNumber}");
         }
 
         public IPlugin FindPlugin(string plugin)
