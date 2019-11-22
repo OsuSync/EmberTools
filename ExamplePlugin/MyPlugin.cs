@@ -14,6 +14,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using ExamplePlugin.Models.EventSubscription;
+using ExamplePlugin.Models;
 
 namespace ExamplePlugin
 {
@@ -37,6 +38,7 @@ namespace ExamplePlugin
 
         public override void BuildComponents(IComponentBuilder builder)
         {
+            builder.UseConfigurationModel<MyPluginConfiguration>();
             builder.ConfigureCommandContainer<MyCommandComponent>();
             builder.ConfigureEventHandler<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
         }

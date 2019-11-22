@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using EmberKernel.Services.Command;
+using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Configuration;
 
 namespace ExamplePlugin.Components
 {
@@ -18,13 +20,13 @@ namespace ExamplePlugin.Components
     {
         private ILogger<MyCommandComponent> Logger { get; }
         private IPluginsManager PluginsManager { get; }
-        private IEventBus EventBus { get; }
+        private IOptionsSnapshot<MyPluginConfiguration> Config { get; }
 
-        public MyCommandComponent(ILogger<MyCommandComponent> logger, IPluginsManager pluginsManager, IEventBus eventBus)
+        public MyCommandComponent(ILogger<MyCommandComponent> logger, IPluginsManager pluginsManager, IOptionsSnapshot<MyPluginConfiguration> config)
         {
             Logger = logger;
             PluginsManager = pluginsManager;
-            EventBus = eventBus;
+            Config = config;
         }
 
         [CommandHandler(Command = "my", Parser = typeof(CustomParser))]
@@ -36,6 +38,7 @@ namespace ExamplePlugin.Components
             {
                 Logger.LogInformation($"{descriptor.Name} by {descriptor.Author} ver {descriptor.Version}");
             }
+            Logger.LogInformation($"Config Value Config.Value.MyIntValue = {Config.Value.MyIntValue}");
         }
 
         public void Dispose()
