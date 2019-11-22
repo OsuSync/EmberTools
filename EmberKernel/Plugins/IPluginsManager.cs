@@ -14,6 +14,8 @@ namespace EmberKernel.Plugins
         Task Load(IPlugin plugin);
         Task Unload(IPlugin plugin);
 
+        IPlugin GetPluginByDescriptor(PluginDescriptor descriptor);
+
         IEnumerable<PluginDescriptor> LoadedPlugins();
     }
 }

@@ -25,5 +25,13 @@ namespace EmberKernel
             if (!(scope.ResolveOptional<IEventBus>() is IEventBus eventBus)) return;
             eventBus.Subscribe<TEvent, THandler>(scope);
         }
+
+        public static void Unsubscription<TEvent, THandler>(this ILifetimeScope scope)
+            where THandler : IEventHandler<TEvent>
+            where TEvent : Event
+        {
+            if (!(scope.ResolveOptional<IEventBus>() is IEventBus eventBus)) return;
+            eventBus.Unsubscribe<TEvent, THandler>();
+        }
     }
 }

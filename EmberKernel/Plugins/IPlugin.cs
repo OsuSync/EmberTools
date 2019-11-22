@@ -11,6 +11,6 @@ namespace EmberKernel.Plugins
     {
         void BuildComponents(IComponentBuilder builder);
         Task Initialize(ILifetimeScope scope);
-        Task Uninitialize();
+        Task Uninitialize(ILifetimeScope scope);
     }
 }

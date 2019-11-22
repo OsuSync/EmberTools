@@ -14,5 +14,11 @@ namespace EmberKernel
             ICommandService commandService = scope.Resolve<ICommandService>();
             commandService.ReigsterCommandContainer(scope.Resolve<T>());
         }
+
+        public static void RemoveCommandContainer<T>(this ILifetimeScope scope) where T : ICommandContainer
+        {
+            ICommandService commandService = scope.Resolve<ICommandService>();
+            commandService.RemoveHandler(scope.Resolve<T>());
+        }
     }
 }
