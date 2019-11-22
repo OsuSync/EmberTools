@@ -23,10 +23,11 @@ namespace EmberCore.Services
         private readonly Dictionary<IPlugin, ILifetimeScope> PluginScopes = new Dictionary<IPlugin, ILifetimeScope>();
         private readonly List<IEntryComponent> EntryComponents = new List<IEntryComponent>();
         private ILogger<PluginsManager> Logger { get; }
-        public PluginsManager(CorePluginResolver resolver, ILogger<PluginsManager> logger)
+        public PluginsManager(ILifetimeScope scope, CorePluginResolver resolver, ILogger<PluginsManager> logger)
         {
             Resolver = resolver;
             Logger = logger;
+            PluginLayerScope = scope;
         }
 
         public void BuildScope(ContainerBuilder builder)
@@ -50,7 +51,6 @@ namespace EmberCore.Services
 
         public async Task Run(ILifetimeScope scope)
         {
-            PluginLayerScope = scope;
             foreach (var type in LoadedTypes)
             {
                 var pluginDesciptor = type.GetCustomAttribute<EmberPluginAttribute>().ToString();
@@ -100,10 +100,24 @@ namespace EmberCore.Services
 
         public async Task Load(IPlugin plugin)
         {
-            var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
-            var pluginScope = PluginLayerScope.BeginLifetimeScope((builder) => plugin.BuildComponents(new ComponentBuilder(builder)));
-            PluginScopes.Add(plugin, pluginScope);
-            await plugin.Initialize(pluginScope);
+            try
+            {
+                var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
+                var pluginScope = PluginLayerScope.BeginLifetimeScope((builder) => plugin.BuildComponents(new ComponentBuilder(builder)));
+                if (!PluginScopes.ContainsKey(plugin))
+                {
+                    PluginScopes.Add(plugin, pluginScope);
+                }
+                else
+                {
+                    PluginScopes[plugin] = pluginScope;
+                }
+                await plugin.Initialize(pluginScope);
+            }
+            catch (Exception e)
+            {
+                e.ToString();
+            }
         }
 
         public async Task Unload(IPlugin plugin)
@@ -112,8 +126,9 @@ namespace EmberCore.Services
             Logger.LogInformation($"Unloading plugin {pluginDesciptor}...");
             if (PluginScopes.TryGetValue(plugin, out var scope))
             {
-                await plugin.Uninitialize();
+                await plugin.Uninitialize(scope);
                 scope.Dispose();
+                PluginScopes[plugin] = null;
                 Logger.LogInformation($"Unloaded pluging {pluginDesciptor}!");
             }
         }
@@ -129,6 +144,19 @@ namespace EmberCore.Services
             {
                 yield return PluginDescriptor.FromAttribute(plugin.GetType().GetCustomAttribute<EmberPluginAttribute>());
             }
+        }
+
+        public IPlugin GetPluginByDescriptor(PluginDescriptor descriptor)
+        {
+            foreach (var plugin in PluginScopes.Keys)
+            {
+                var pluginDescriptor = PluginDescriptor.FromAttribute(plugin.GetType().GetCustomAttribute<EmberPluginAttribute>());
+                if (pluginDescriptor.ToString() == descriptor.ToString())
+                {
+                    return plugin;
+                }
+            }
+            return null;
         }
     }
 }
