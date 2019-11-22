@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using EmberKernel.Services.Command;
 
 namespace ExamplePlugin.Components
 {
@@ -18,6 +19,7 @@ namespace ExamplePlugin.Components
         private ILogger<MyCommandComponent> Logger { get; }
         private IPluginsManager PluginsManager { get; }
         private IEventBus EventBus { get; }
+
         public MyCommandComponent(ILogger<MyCommandComponent> logger, IPluginsManager pluginsManager, IEventBus eventBus)
         {
             Logger = logger;

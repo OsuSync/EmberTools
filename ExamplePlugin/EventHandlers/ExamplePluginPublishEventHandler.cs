@@ -1,4 +1,7 @@
-﻿using EmberKernel.Services.EventBus.Handlers;
+﻿using Autofac;
+using EmberKernel.Plugins.Components;
+using EmberKernel.Services.EventBus;
+using EmberKernel.Services.EventBus.Handlers;
 using ExamplePlugin.Models.EventSubscription;
 using Microsoft.Extensions.Logging;
 using System;
@@ -15,6 +18,7 @@ namespace ExamplePlugin.EventHandlers
         {
             _logger = logger;
         }
+
         public Task Handle(ExamplePluginPublishEvent @event)
         {
             _logger.LogInformation($" !!! Event handled !! -> value = {@event.InputNumber}");
