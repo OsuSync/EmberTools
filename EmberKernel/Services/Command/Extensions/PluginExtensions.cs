@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Command;
 using EmberKernel.Services.Command.Components;
 using System;
@@ -19,6 +20,12 @@ namespace EmberKernel
         {
             ICommandService commandService = scope.Resolve<ICommandService>();
             commandService.RemoveHandler(scope.Resolve<T>());
+        }
+
+        public static void ConfigureCommandContainer<T>(this IComponentBuilder _builder) where T : IComponent
+        {
+            var builder = _builder as ComponentBuilder;
+            builder.Container.RegisterType<T>().SingleInstance();
         }
     }
 }
