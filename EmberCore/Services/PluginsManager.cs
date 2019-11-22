@@ -18,7 +18,7 @@ namespace EmberCore.Services
     {
 
         private CorePluginResolver Resolver { get; }
-        private ILifetimeScope PluginLayerScope;
+        private readonly ILifetimeScope PluginLayerScope;
         private readonly LinkedList<Type> LoadedTypes = new LinkedList<Type>();
         private readonly Dictionary<IPlugin, ILifetimeScope> PluginScopes = new Dictionary<IPlugin, ILifetimeScope>();
         private readonly List<IEntryComponent> EntryComponents = new List<IEntryComponent>();
@@ -103,7 +103,7 @@ namespace EmberCore.Services
             try
             {
                 var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
-                var pluginScope = PluginLayerScope.BeginLifetimeScope((builder) => plugin.BuildComponents(new ComponentBuilder(builder)));
+                var pluginScope = PluginLayerScope.BeginLifetimeScope((builder) => plugin.BuildComponents(new ComponentBuilder(builder, PluginLayerScope)));
                 if (!PluginScopes.ContainsKey(plugin))
                 {
                     PluginScopes.Add(plugin, pluginScope);

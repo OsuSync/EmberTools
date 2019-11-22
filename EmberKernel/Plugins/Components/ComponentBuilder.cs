@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,9 +9,11 @@ namespace EmberKernel.Plugins.Components
     public class ComponentBuilder : IComponentBuilder
     {
         internal ContainerBuilder Container { get; }
-        public ComponentBuilder(ContainerBuilder container)
+        internal ILifetimeScope ParentScope { get; }
+        public ComponentBuilder(ContainerBuilder container, ILifetimeScope parentScope)
         {
             Container = container;
+            ParentScope = parentScope;
         }
 
         public void ConfigureComponent<TComponent>() where TComponent : IComponent
