@@ -3,5 +3,6 @@
   "CheckComponentUpdate": true,
   "Locale": "System",
   "PluginsFolder": "plugins",
-  "CommandSourceOperationTimeLimit":  5
+  "PluginsCacheFolder": "cache",
+  "CommandSourceOperationTimeLimit": 5
 }

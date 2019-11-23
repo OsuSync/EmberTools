@@ -10,6 +10,7 @@ namespace EmberCore
         public bool CheckComponentUpdate { get; set; }
         public string Locale { get; set; }
         public string PluginsFolder { get; set; }
+        public string PluginsCacheFolder { get; set; }
         public int CommandSourceOperationTimeLimit { get; set; }
         public Logging Logging { get; set; }
     }

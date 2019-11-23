@@ -32,7 +32,7 @@ namespace EmberCore.Services
 
         public void BuildScope(ContainerBuilder builder)
         {
-            var loaders = Resolver.EnumerableLoaders();
+            var loaders = Resolver.EnumerateLoaders();
             foreach (var loader in loaders)
             {
                 var assemblies = loader.LoadAssemblies();

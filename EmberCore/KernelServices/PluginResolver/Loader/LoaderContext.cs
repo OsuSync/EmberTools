@@ -13,6 +13,8 @@ namespace EmberCore.KernelServices.PluginResolver.Loader
         private string FolderPath { get; }
         private ILogger Logger { get; }
 
+        public string CurrentPath => FolderPath;
+
         public LoaderContext(string folder, ILogger logger)
         {
             FolderPath = folder;

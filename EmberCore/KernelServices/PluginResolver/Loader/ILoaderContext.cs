@@ -7,6 +7,7 @@ namespace EmberCore.KernelServices.PluginResolver.Loader
 {
     public interface ILoaderContext
     {
+        string CurrentPath { get; }
         IEnumerable<Assembly> LoadAssemblies();
     }
 }
