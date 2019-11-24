@@ -5,11 +5,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EmberWeb.Data
+namespace EmberWeb.Model
 {
     public class EmberUser : IdentityUser
     {
-        [Required]
-        public string RegisterTime { get; set; }
     }
 }

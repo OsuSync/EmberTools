@@ -12,9 +12,14 @@ using System.Linq;
 using EmberWeb.Data;
 using Microsoft.AspNetCore.Identity;
 using System;
-using EmberWeb.Models;
+using EmberWeb.Model;
 using EmberWeb.Services;
 using IdentityServer4.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.CookiePolicy;
+using Microsoft.AspNetCore.Identity.UI;
+using Microsoft.AspNetCore.Authentication;
 
 namespace EmberWeb
 {
@@ -51,26 +56,26 @@ namespace EmberWeb
                 });
             });
 
-            services.AddIdentity<EmberUser, IdentityRole>()
-                .AddEntityFrameworkStores<EmberIdentityContext>()
-                .AddDefaultTokenProviders();
 
-            services.AddIdentityServer()
-                .AddConfigurationStore(options =>
-                {
-                    options.ConfigureDbContext = b => b.UseMySql(connectionString,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-                })
-                .AddOperationalStore(options =>
-                {
-                    options.ConfigureDbContext = b => b.UseMySql(connectionString,
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-                });
             services
-                .AddTransient<IAccountService<EmberUser>, EFAccountService>()
-                .AddTransient<IProfileService, ProfileService>();
+            .AddDefaultIdentity<EmberUser>()
+            .AddEntityFrameworkStores<EmberIdentityContext>();
+            services.AddIdentityServer()
+            .AddConfigurationStore(options =>
+            {
+                options.ConfigureDbContext = b => b.UseMySql(connectionString,
+                    sql => sql.MigrationsAssembly(migrationsAssembly));
+            })
+            .AddApiAuthorization<EmberUser, EmberIdentityContext>();
+
+            services.AddAuthentication()
+            .AddIdentityServerJwt();
 
             services.AddControllersWithViews();
+            services.AddRazorPages();
+
+
+            services.AddTransient<IPluginContextService, PluginContextService>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -87,6 +92,7 @@ namespace EmberWeb
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -101,17 +107,20 @@ namespace EmberWeb
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseIdentityServer();
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapRazorPages();
             });
-
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
-
                 if (env.IsDevelopment())
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
@@ -122,7 +131,6 @@ namespace EmberWeb
         private void InitializeDatabase(IApplicationBuilder app)
         {
             using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
-            serviceScope.ServiceProvider.GetRequiredService<PersistedGrantDbContext>().Database.Migrate();
             serviceScope.ServiceProvider.GetRequiredService<ConfigurationDbContext>().Database.Migrate();
             serviceScope.ServiceProvider.GetRequiredService<EmberIdentityContext>().Database.Migrate();
             serviceScope.ServiceProvider.GetRequiredService<EmberWebContext>().Database.Migrate();

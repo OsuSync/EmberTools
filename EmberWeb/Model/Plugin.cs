@@ -6,14 +6,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EmberWeb.Data
+namespace EmberWeb.Model
 {
     public class Plugin
     {
         [Key]
         public int Id { get; set; }
         [Required]
-        public EmberUser UserId { get; set; }
+        public EmberUser CreateUser { get; set; }
         [Required]
         public string Name { get; set; }
         public string Author { get; set; }
@@ -29,5 +29,6 @@ namespace EmberWeb.Data
         public string DownloadUrl { get; set; }
         [InverseProperty("Plugin")]
         public List<PluginVersion> PluginVersions { get; set; }
+
     }
 }
