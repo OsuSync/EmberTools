@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using EmberWeb.Utils;
 
 namespace EmberWeb
 {
@@ -69,13 +71,34 @@ namespace EmberWeb
             .AddApiAuthorization<EmberUser, EmberIdentityContext>();
 
             services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+                IConfigurationSection googleAuthNSection =
+                Configuration.GetSection("Authentication:Google");
+
+                options.ClientId = googleAuthNSection["ClientId"]; 
+                options.ClientSecret = googleAuthNSection["ClientSecret"];
+            })
+            .AddMicrosoftAccount(microsoftOptions =>
+            {
+                microsoftOptions.ClientId = Configuration["Authentication:Microsoft:ClientId"];
+                microsoftOptions.ClientSecret = Configuration["Authentication:Microsoft:ClientSecret"];
+            })
+            .AddGitHub(options =>
+            {
+                options.ClientId = Configuration["Authentication:Github:ClientId"];
+                options.ClientSecret = Configuration["Authentication:Github:ClientSecret"];
+            })
             .AddIdentityServerJwt();
 
+            services.AddMvc();
             services.AddControllersWithViews();
             services.AddRazorPages();
 
 
             services.AddTransient<IPluginContextService, PluginContextService>();
+            services.AddTransient<IEmailSender, SendGridEmailSender>();
+            services.Configure<AuthMessageSenderOptions>(Configuration);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -116,6 +139,7 @@ namespace EmberWeb
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
             app.UseSpa(spa =>

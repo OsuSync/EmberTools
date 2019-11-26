@@ -33,6 +33,7 @@ export class Logout extends Component {
                 this.processLogoutCallback();
                 break;
             case LogoutActions.LoggedOut:
+                window.location.href = "/";
                 this.setState({ isReady: true, message: "You successfully logged out!" });
                 break;
             default:
