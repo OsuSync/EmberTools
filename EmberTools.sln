@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberCore", "EmberCore\Embe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExamplePlugin", "ExamplePlugin\ExamplePlugin.csproj", "{D2E5F444-51AA-4CE8-A193-5648C1AC6974}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberWeb", "EmberWeb\EmberWeb.csproj", "{A86A51A8-4381-45F2-A80C-70C04321A053}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberWeb", "EmberWeb\EmberWeb.csproj", "{A86A51A8-4381-45F2-A80C-70C04321A053}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberAuthorTools", "EmberAuthorTools\EmberAuthorTools.csproj", "{FDB3DA3D-E808-4B82-8B9A-AAB1A18F599F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{A86A51A8-4381-45F2-A80C-70C04321A053}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A86A51A8-4381-45F2-A80C-70C04321A053}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A86A51A8-4381-45F2-A80C-70C04321A053}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDB3DA3D-E808-4B82-8B9A-AAB1A18F599F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDB3DA3D-E808-4B82-8B9A-AAB1A18F599F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDB3DA3D-E808-4B82-8B9A-AAB1A18F599F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDB3DA3D-E808-4B82-8B9A-AAB1A18F599F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
