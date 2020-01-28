@@ -23,14 +23,5 @@ namespace EmberMemoryReader.Components.Collector.Readers
         public abstract bool TryReadDouble(IntPtr address, out double value);
         public abstract bool TryReadString(IntPtr address, out string value);
         public abstract bool TryReadList<T>(IntPtr address, out List<T> value) where T : struct;
-        protected byte[] StringToByte(string s)
-        {
-            byte[] buffer = new byte[s.Length];
-            for (int i = 0; i < s.Length; i++)
-            {
-                buffer[i] = (byte)s[i];
-            }
-            return buffer;
-        }
     }
 }

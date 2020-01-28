@@ -23,10 +23,6 @@
     <PackageReference Include="Autofac" Version="4.9.4" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\Collector\Data\" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="move $(OutDir)\$(TargetFileName) $(OutDir)\$(TargetName).plugin&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)&#xD;&#xA;copy $(OutDir)\*  $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)" ContinueOnError="true" IgnoreExitCode="true" />
   </Target>
