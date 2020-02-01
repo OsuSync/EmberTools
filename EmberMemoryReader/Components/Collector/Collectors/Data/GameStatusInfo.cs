@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmberKernel.Services.EventBus;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -31,7 +32,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
         Tourney,
         Charts
     };
-    public struct GameStatusInfo
+    public class GameStatusInfo : Event<GameStatusInfo>
     {
         public OsuInternalStatus Status { get; set; }
     }

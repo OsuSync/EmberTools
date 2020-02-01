@@ -40,8 +40,8 @@ namespace EmberMemoryReader.Components.Collector
                 builder
                 .ReadMemoryWith<WindowsReader>()
                 .Collects(builder => builder
-                    .Data<Beatmap, BeatmapInfo>()
-                    .Data<GameStatus, GameStatusInfo>()
+                    .Collect<Beatmap, BeatmapInfo>()
+                    .Collect<GameStatus, GameStatusInfo>()
                 );
             });
             var manager = this.CurrentScope.Resolve<ICollectorManager>();
