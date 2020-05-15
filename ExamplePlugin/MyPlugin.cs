@@ -26,6 +26,7 @@ namespace ExamplePlugin
         {
             scope.UseCommandContainer<MyCommandComponent>();
             scope.Subscription<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
+            scope.Subscription<EmptyInfo, MemoryReaderEmptyEventHandler>();
             return Task.CompletedTask;
         }
 
@@ -33,6 +34,7 @@ namespace ExamplePlugin
         {
             scope.RemoveCommandContainer<MyCommandComponent>();
             scope.Unsubscription<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
+            scope.Unsubscription<EmptyInfo, MemoryReaderEmptyEventHandler>();
             return Task.CompletedTask;
         }
 
@@ -41,6 +43,7 @@ namespace ExamplePlugin
             builder.UseConfigurationModel<MyPluginConfiguration>();
             builder.ConfigureCommandContainer<MyCommandComponent>();
             builder.ConfigureEventHandler<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
+            builder.ConfigureStaticEventHandler<EmptyInfo, MemoryReaderEmptyEventHandler>();
         }
 
     }
