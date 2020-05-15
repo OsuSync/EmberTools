@@ -10,10 +10,10 @@ namespace EmberMemoryReader.Components.Collector
         public int ReadInterval { get; set; }
         public int RetryLimit { get; set; }
         public bool TryInitialize();
+        public bool TryRead(out Event result);
     }
     public interface ICollector<T> : ICollector
         where T : Event
     {
-        public bool TryRead(out T result);
     }
 }

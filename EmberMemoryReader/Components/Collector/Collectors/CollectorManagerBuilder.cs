@@ -20,9 +20,8 @@ namespace EmberMemoryReader.Components.Collector.Collectors
                 .Named<HashSet<Type>>(RegisteredTypesType);
         }
 
-        public CollectorManagerBuilder Collect<TCollector, TData>()
-            where TCollector : ICollector<TData>
-            where TData : Event
+        public CollectorManagerBuilder Collect<TCollector>()
+            where TCollector : ICollector
         {
             this.Builder.RegisterType<TCollector>().As<TCollector>();
             RegisteredCollector.Add(typeof(TCollector));

@@ -1,11 +1,12 @@
-﻿using EmberMemoryReader.Components.Collector.Readers;
+﻿using EmberKernel.Services.EventBus;
+using EmberMemoryReader.Components.Collector.Readers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace EmberMemoryReader.Components.Collector.Collectors.Data
 {
-    public class GameStatus : ICollector<GameStatusInfo>
+    public class GameStatus : ICollector
     {
         private static readonly string GameModePattern = "\x80\xb8\x0\x0\x0\x0\x0\x75\x19\xa1\x0\x0\x0\x0\x83\xf8\x0b\x74\x0b";
         private static readonly string GameModePatternMask = "xx????xxxx????xxxxx";
@@ -38,7 +39,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
             }
         }
 
-        public bool TryRead(out GameStatusInfo result)
+        public bool TryRead(out Event result)
         {
             if (!Reader.TryReadInt(GameModeAddress, out var value))
             {

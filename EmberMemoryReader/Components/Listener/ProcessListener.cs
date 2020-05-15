@@ -31,21 +31,29 @@ namespace EmberMemoryReader.Components.Listener
         }
         public async Task<bool> SearchProcessAsync(CancellationToken token = default)
         {
-            while (!token.IsCancellationRequested && !selfToken.IsCancellationRequested)
+            try
             {
-                await Task.Delay(SearchDelay);
-                var processes = Process.GetProcessesByName(Pred.FilterProcessName);
-                foreach (var process in processes)
+                while (!token.IsCancellationRequested && !selfToken.IsCancellationRequested)
                 {
-                    var result = Pred.MatchProcess(process);
-                    if (result != null)
+                    await Task.Delay(SearchDelay);
+                    var processes = Process.GetProcessesByName(Pred.FilterProcessName);
+                    foreach (var process in processes)
                     {
-                        _EventBus.Publish(result);
-                        return true;
+
+                        var result = Pred.MatchProcess(process);
+                        if (result != null)
+                        {
+                            _EventBus.Publish(result);
+                            return true;
+                        }
                     }
                 }
-            }
-            return false;
+                return false;
+            } catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return false;
+            } 
         }
         public void Dispose()
         {

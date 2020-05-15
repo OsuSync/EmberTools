@@ -1,4 +1,5 @@
-﻿using OsuUtils.Configuration;
+﻿using Microsoft.Extensions.Logging;
+using OsuUtils.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,8 +30,9 @@ namespace EmberMemoryReader.Components.Listener
         /// <returns></returns>
         public OsuProcessMatchedEvent MatchProcess(Process process)
         {
+            Console.WriteLine("Start find osu! process");
             var osuFolder = Path.GetDirectoryName(process.MainModule.FileName);
-            var configPath = Path.Combine(osuFolder, $"osu!.${WindowsPathStrip(Environment.UserName)}.cfg");
+            var configPath = Path.Combine(osuFolder, $"osu!.{WindowsPathStrip(Environment.UserName)}.cfg");
             if (!File.Exists(configPath)) return null;
 
             var config = new OsuProfileConfiguration(configPath);

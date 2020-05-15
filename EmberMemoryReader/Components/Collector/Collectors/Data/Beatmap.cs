@@ -1,11 +1,12 @@
-﻿using EmberMemoryReader.Components.Collector.Readers;
+﻿using EmberKernel.Services.EventBus;
+using EmberMemoryReader.Components.Collector.Readers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace EmberMemoryReader.Components.Collector.Collectors.Data
 {
-    public class Beatmap : ICollector<BeatmapInfo>
+    public class Beatmap : ICollector
     {
         //0x83,0x3d,0x0,0x0,0x0,0x0,0x01,0x74,0x0a,0x8b,0x35,0x0,0x0,0x0,0x0,0x85,0xf6,0x75,0x04
         private static readonly string BeatmapPattern = "\x56\x8B\xF1\x8B\xFA\x8B\x0D\x00\x00\x00\x00\x85\xC9";
@@ -66,7 +67,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
             }
         }
 
-        public bool TryRead(out BeatmapInfo result)
+        public bool TryRead(out Event result)
         {
             result = default;
             if (!Reader.TryReadIntPtr(BeatmapAddress, out var CurrentBeatmapAddress))

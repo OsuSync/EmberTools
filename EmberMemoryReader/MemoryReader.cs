@@ -23,13 +23,14 @@ namespace EmberMemoryReader
             builder.ConfigureComponent<ProcessListener<OsuProcessPredicator, OsuProcessMatchedEvent>>();
         }
 
-        public override async Task Initialize(ILifetimeScope scope)
+        public override Task Initialize(ILifetimeScope scope)
         {
             // handle the event
             scope.Subscription<OsuProcessMatchedEvent, MemoryDataCollector>();
             // search osu! process
             var listener = scope.Resolve<ProcessListener<OsuProcessPredicator, OsuProcessMatchedEvent>>();
-            await listener.SearchProcessAsync(listenTokenSource.Token);
+            Task.Run(() => listener.SearchProcessAsync(listenTokenSource.Token));
+            return Task.CompletedTask;
         }
 
         public override Task Uninitialize(ILifetimeScope scope)

@@ -39,7 +39,7 @@ namespace OsuUtils.Configuration
 
         public bool Fullscreen => raw["Fullscreen"] == "1";
 
-        public string UserName => raw["UserName"];
+        public string UserName => raw["Username"];
 
         public SecureString Password => raw.Password;
 

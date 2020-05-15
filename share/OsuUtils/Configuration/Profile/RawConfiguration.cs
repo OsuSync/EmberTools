@@ -19,12 +19,12 @@ namespace OsuUtils.Configuration.Profile
             while (!reader.EndOfStream)
             {
                 string line = reader.ReadLine();
-                if (line.Length == 0 && line[0] == '#') continue;
+                if (line.Length == 0 || line[0] == '#') continue;
 
                 var equalIndex = line.IndexOf('=');
-                var valueLength = line.Length - equalIndex + 1;
-                var key = line.Substring(0, equalIndex - 1);
-                var value = line.Substring(equalIndex, valueLength);
+                var valueLength = line.Length - equalIndex - 1;
+                var key = line.Substring(0, equalIndex - 1).Trim();
+                var value = line.Substring(equalIndex + 1, valueLength).Trim();
                 if (key.ToLower() == "password")
                 {
                     if (!ReadPassword) { continue; }

@@ -16,8 +16,8 @@ namespace EmberMemoryReader.Components.Collector
 {
     public class MemoryDataCollector : IComponent, IEventHandler<OsuProcessMatchedEvent>
     {
-        private IContainer MemoryDataScope { get; }
         private ILifetimeScope CurrentScope { get; set; }
+        private ILifetimeScope ManagerScope { get; set; }
         public MemoryDataCollector(ILifetimeScope scope)
         {
             this.CurrentScope = scope;
@@ -34,17 +34,18 @@ namespace EmberMemoryReader.Components.Collector
             var process = Process.GetProcessById(@event.ProcessId);
             if (process == null) return;
 
-            this.CurrentScope = CurrentScope.BeginLifetimeScope((builder) =>
+            this.ManagerScope = CurrentScope.BeginLifetimeScope((builder) =>
             {
-                builder.RegisterInstance(@event);
                 builder
                 .ReadMemoryWith<WindowsReader>()
-                .Collects(builder => builder
-                    .Collect<Beatmap, BeatmapInfo>()
-                    .Collect<GameStatus, GameStatusInfo>()
+                .UseOsuProcessEvent(@event)
+                .UseCollectorManager(manager => manager
+                    //.Collect<Beatmap>()
+                    //.Collect<GameStatus>()
+                    .Collect<Empty>()
                 );
             });
-            var manager = this.CurrentScope.Resolve<ICollectorManager>();
+            var manager = ManagerScope.Resolve<ICollectorManager>();
             await manager.StartCollectors(tokenSource.Token);
         }
 
