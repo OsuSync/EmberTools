@@ -20,6 +20,7 @@ namespace EmberMemoryReader
         public override void BuildComponents(IComponentBuilder builder)
         {
             builder.ConfigureComponent<MemoryDataCollector>();
+            builder.UseConfigurationModel<PorcessListenerConfiguration>();
             builder.ConfigureComponent<ProcessListener<OsuProcessPredicator, OsuProcessMatchedEvent>>();
         }
 

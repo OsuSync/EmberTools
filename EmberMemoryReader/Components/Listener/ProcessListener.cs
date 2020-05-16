@@ -1,5 +1,6 @@
 ﻿using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,12 +24,14 @@ namespace EmberMemoryReader.Components.Listener
         private readonly IEventBus _EventBus;
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
         private readonly CancellationToken selfToken = default;
-        public ProcessListener(IEventBus eventBus)
+        public ProcessListener(IEventBus eventBus, IOptions<PorcessListenerConfiguration> options)
         {
             _EventBus = eventBus;
             Pred = new TPredicator();
             selfToken = tokenSource.Token;
+            SearchDelay = options.Value.SearchDelay;
         }
+
         public async Task<bool> SearchProcessAsync(CancellationToken token = default)
         {
             try
@@ -39,7 +42,6 @@ namespace EmberMemoryReader.Components.Listener
                     var processes = Process.GetProcessesByName(Pred.FilterProcessName);
                     foreach (var process in processes)
                     {
-
                         var result = Pred.MatchProcess(process);
                         if (result != null)
                         {
