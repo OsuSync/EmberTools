@@ -1,4 +1,5 @@
-﻿using EmberKernel.Plugins.Components;
+﻿using Autofac;
+using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus;
 using Microsoft.Extensions.Options;
 using System;
@@ -19,43 +20,38 @@ namespace EmberMemoryReader.Components.Listener
         where TPredicator : IProcessPredicator<TEvent>, new()
     {
         internal int SearchDelay { get; set; }
-        internal TPredicator Pred { get; set; }
 
+        private ILifetimeScope CurrentScope { get; }
         private readonly IEventBus _EventBus;
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
         private readonly CancellationToken selfToken = default;
-        public ProcessListener(IEventBus eventBus, IOptions<PorcessListenerConfiguration> options)
+        public ProcessListener(ILifetimeScope scope, IEventBus eventBus, IOptions<PorcessListenerConfiguration> options)
         {
+            CurrentScope = scope;
             _EventBus = eventBus;
-            Pred = new TPredicator();
             selfToken = tokenSource.Token;
             SearchDelay = options.Value.SearchDelay;
         }
 
         public async Task<bool> SearchProcessAsync(CancellationToken token = default)
         {
-            try
+            using var searchScope = CurrentScope.BeginLifetimeScope((builder) => builder.RegisterType<TPredicator>());
+            var pred = searchScope.Resolve<TPredicator>();
+            while (!token.IsCancellationRequested && !selfToken.IsCancellationRequested)
             {
-                while (!token.IsCancellationRequested && !selfToken.IsCancellationRequested)
+                await Task.Delay(SearchDelay);
+                var processes = Process.GetProcessesByName(pred.FilterProcessName);
+                foreach (var process in processes)
                 {
-                    await Task.Delay(SearchDelay);
-                    var processes = Process.GetProcessesByName(Pred.FilterProcessName);
-                    foreach (var process in processes)
+                    var result = pred.MatchProcess(process);
+                    if (result != null)
                     {
-                        var result = Pred.MatchProcess(process);
-                        if (result != null)
-                        {
-                            _EventBus.Publish(result);
-                            return true;
-                        }
+                        _EventBus.Publish(result);
+                        return true;
                     }
                 }
-                return false;
-            } catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            } 
+            }
+            return false;
         }
         public void Dispose()
         {
