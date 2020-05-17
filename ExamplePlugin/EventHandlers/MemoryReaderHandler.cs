@@ -10,7 +10,6 @@ namespace ExamplePlugin.EventHandlers
 {
     public class MemoryReaderHandler :
         IEventHandler<GameStatusInfo>,
-        IEventHandler<EmptyInfo>,
         IEventHandler<BeatmapInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
@@ -29,12 +28,6 @@ namespace ExamplePlugin.EventHandlers
             {
                 _logger.LogInformation("Not game status found");
             }
-            return Task.CompletedTask;
-        }
-
-        public Task Handle(EmptyInfo @event)
-        {
-            _logger.LogInformation("Empty event recived");
             return Task.CompletedTask;
         }
 
