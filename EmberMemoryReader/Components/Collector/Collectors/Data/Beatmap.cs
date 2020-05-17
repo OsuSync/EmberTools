@@ -9,9 +9,9 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
     public class Beatmap : ICollector
     {
         //0x83,0x3d,0x0,0x0,0x0,0x0,0x01,0x74,0x0a,0x8b,0x35,0x0,0x0,0x0,0x0,0x85,0xf6,0x75,0x04
-        private static readonly string BeatmapPattern = "\x56\x8B\xF1\x8B\xFA\x8B\x0D\x00\x00\x00\x00\x85\xC9";
+        private static readonly string BeatmapPattern = "\xDB\x5D\xE8\x8B\x45\xE8\xA3\x0\x0\x0\x0\x8B\x35\x0\x0\x0\x0\x85\xF6";
 
-        private static readonly string BeatmapPatternMask = "xxxxxxx????xx";
+        private static readonly string BeatmapPatternMask = "xxxxxxx????xx????xx";
 
         private static readonly int LatestBeatmapOffset = 0xc4;
         private static readonly int LatestBeatmapSetOffset= 0xc8;
@@ -46,14 +46,14 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
 
         public int ReadInterval { get; set; } = 500;
 
-        public int RetryLimit { get; set; } = 10;
+        public int RetryLimit { get; set; } = int.MaxValue;
 
         public bool TryInitialize()
         {
             try
             {
                 Reader.Reload();
-                if (!Reader.TryFindPattern(BeatmapPattern.ToBytes(), BeatmapPatternMask, 7, out BeatmapIdAddress))
+                if (!Reader.TryFindPattern(BeatmapPattern.ToBytes(), BeatmapPatternMask, 13, out BeatmapIdAddress))
                     return false;
                 if (!Reader.TryReadIntPtr(BeatmapIdAddress, out BeatmapAddress))
                     return false;
@@ -77,10 +77,10 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
                 return true;
             if (!Reader.TryReadInt(CurrentBeatmapAddress + BeatmapSetAddressOffset, out var setId))
                 return true;
-            if (!Reader.TryReadString(CurrentBeatmapAddress + BeatmapFileNameAddressOffset, out var beatmapFile))
-                return true;
-            if (!Reader.TryReadString(CurrentBeatmapAddress + BeatmapFolderAddressOffset, out var beatmapFolder))
-                return true;
+            Reader.TryReadString(CurrentBeatmapAddress + BeatmapFileNameAddressOffset, out var beatmapFile);
+            //return true;
+            Reader.TryReadString(CurrentBeatmapAddress + BeatmapFolderAddressOffset, out var beatmapFolder);
+                // return true;
             
             result = new BeatmapInfo()
             {

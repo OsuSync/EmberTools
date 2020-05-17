@@ -12,7 +12,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
         private static readonly string GameModePatternMask = "xx????xxxx????xxxxx";
 
         public int ReadInterval { get; set; } = 500;
-        public int RetryLimit { get; set; } = 10;
+        public int RetryLimit { get; set; } = int.MaxValue;
         private IntPtr GameModeAddressPtr;
         private IntPtr GameModeAddress;
         private DirectMemoryReader Reader { get; set; }
