@@ -123,7 +123,7 @@ namespace EmberMemoryReader.Components.Collector.Readers.Windows
 
             return TryRead(strBasePtr + (sizeof(int) * 2), (uint)bufferSize, (bytes, retSize) =>
             {
-                if (length != retSize) return (string.Empty, false);
+                if (bufferSize != retSize) return (string.Empty, false);
                 return (Encoding.Unicode.GetString(bytes, 0, bufferSize), true);
             }, out value);
 
