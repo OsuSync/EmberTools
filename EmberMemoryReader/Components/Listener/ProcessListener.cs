@@ -17,7 +17,7 @@ namespace EmberMemoryReader.Components.Listener
     /// </summary>
     public class ProcessListener<TPredicator, TEvent> : IComponent
         where TEvent : Event<TEvent>
-        where TPredicator : IProcessPredicator<TEvent>, new()
+        where TPredicator : IProcessPredicator<TEvent>
     {
         internal int SearchDelay { get; set; }
 
