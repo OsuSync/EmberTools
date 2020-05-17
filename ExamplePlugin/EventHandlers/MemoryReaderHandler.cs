@@ -8,7 +8,10 @@ using System.Threading.Tasks;
 
 namespace ExamplePlugin.EventHandlers
 {
-    public class MemoryReaderHandler : IEventHandler<GameStatusInfo>, IEventHandler<EmptyInfo>
+    public class MemoryReaderHandler :
+        IEventHandler<GameStatusInfo>,
+        IEventHandler<EmptyInfo>,
+        IEventHandler<BeatmapInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
         public MemoryReaderHandler(ILogger<MemoryReaderHandler> logger)
@@ -32,6 +35,19 @@ namespace ExamplePlugin.EventHandlers
         public Task Handle(EmptyInfo @event)
         {
             _logger.LogInformation("Empty event recived");
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(BeatmapInfo @event)
+        {
+            if (@event.HasValue)
+            {
+                _logger.LogInformation($"[Event] Current beatmap: SetId={@event.SetId}, BeatmapId={@event.BeatmapId}, File={@event.BeatmapFile}");
+            }
+            else
+            {
+                _logger.LogInformation("Not beatmap found");
+            }
             return Task.CompletedTask;
         }
     }

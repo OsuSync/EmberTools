@@ -28,6 +28,7 @@ namespace ExamplePlugin
             scope.Subscription<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
             scope.Subscription<EmptyInfo, MemoryReaderHandler>();
             scope.Subscription<GameStatusInfo, MemoryReaderHandler>();
+            scope.Subscription<BeatmapInfo, MemoryReaderHandler>();
             return Task.CompletedTask;
         }
 
@@ -37,6 +38,7 @@ namespace ExamplePlugin
             scope.Unsubscription<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
             scope.Unsubscription<EmptyInfo, MemoryReaderHandler>();
             scope.Unsubscription<GameStatusInfo, MemoryReaderHandler>();
+            scope.Unsubscription<BeatmapInfo, MemoryReaderHandler>();
             return Task.CompletedTask;
         }
 
