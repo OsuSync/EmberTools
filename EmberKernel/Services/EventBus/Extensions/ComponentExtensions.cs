@@ -26,6 +26,14 @@ namespace EmberKernel
             compBuilder.Container.RegisterType<THandler>().SingleInstance();
         }
 
+        public static void ConfigureStaticEventHandler<THandler>(this IComponentBuilder builder)
+            where THandler : IEventHandler
+        {
+            if (!(builder is ComponentBuilder compBuilder)) return;
+
+            compBuilder.Container.RegisterType<THandler>().SingleInstance();
+        }
+
         public static void Subscription<TEvent, THandler>(this ILifetimeScope scope)
             where THandler : IEventHandler<TEvent>
             where TEvent : Event

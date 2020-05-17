@@ -19,23 +19,29 @@ namespace EmberMemoryReader
         private readonly CancellationTokenSource listenTokenSource = new CancellationTokenSource();
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.ConfigureComponent<MemoryDataCollector>();
+            builder.ConfigureComponent<MemoryDataCollector>().SingleInstance();
             builder.UseConfigurationModel<PorcessListenerConfiguration>();
-            builder.ConfigureComponent<ProcessListener<OsuProcessPredicator, OsuProcessMatchedEvent>>();
+            builder.UseProcessListener(listen => listen
+                .UseLifetimeTracker<OsuProcessTracker, OsuProcessTerminatedEvent>()
+                .UsePredictor<OsuProcessPredicator, OsuProcessMatchedEvent>()
+                );
         }
 
         public override Task Initialize(ILifetimeScope scope)
         {
             // handle the event
             scope.Subscription<OsuProcessMatchedEvent, MemoryDataCollector>();
+            scope.Subscription<OsuProcessTerminatedEvent, MemoryDataCollector>();
             // search osu! process
-            var listener = scope.Resolve<ProcessListener<OsuProcessPredicator, OsuProcessMatchedEvent>>();
+            var listener = scope.Resolve<IProcessListener>();
             Task.Run(() => listener.SearchProcessAsync(listenTokenSource.Token));
             return Task.CompletedTask;
         }
 
         public override Task Uninitialize(ILifetimeScope scope)
         {
+            scope.Unsubscription<OsuProcessMatchedEvent, MemoryDataCollector>();
+            scope.Unsubscription<OsuProcessTerminatedEvent, MemoryDataCollector>();
             listenTokenSource.Cancel();
             return Task.CompletedTask;
         }

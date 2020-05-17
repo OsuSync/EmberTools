@@ -14,7 +14,9 @@ using System.Threading.Tasks;
 
 namespace EmberMemoryReader.Components.Collector
 {
-    public class MemoryDataCollector : IComponent, IEventHandler<OsuProcessMatchedEvent>
+    public class MemoryDataCollector : IComponent,
+        IEventHandler<OsuProcessMatchedEvent>,
+        IEventHandler<OsuProcessTerminatedEvent>
     {
         private ILifetimeScope CurrentScope { get; set; }
         private ILifetimeScope ManagerScope { get; set; }
@@ -23,10 +25,17 @@ namespace EmberMemoryReader.Components.Collector
             this.CurrentScope = scope;
         }
 
-        CancellationTokenSource tokenSource = new CancellationTokenSource();
+        CancellationTokenSource tokenSource;
         Task IEventHandler<OsuProcessMatchedEvent>.Handle(OsuProcessMatchedEvent @event)
         {
+            tokenSource = new CancellationTokenSource();
             return StartCollectorAsync(@event);
+        }
+
+        Task IEventHandler<OsuProcessTerminatedEvent>.Handle(OsuProcessTerminatedEvent @event)
+        {
+            using (tokenSource) tokenSource.Cancel();
+            return Task.CompletedTask;
         }
 
         public async Task StartCollectorAsync(OsuProcessMatchedEvent @event)
@@ -40,8 +49,8 @@ namespace EmberMemoryReader.Components.Collector
                 .ReadMemoryWith<WindowsReader>()
                 .UseOsuProcessEvent(@event)
                 .UseCollectorManager(manager => manager
-                    //.Collect<Beatmap>()
-                    //.Collect<GameStatus>()
+                    .Collect<Beatmap>()
+                    .Collect<GameStatus>()
                     .Collect<Empty>()
                 );
             });

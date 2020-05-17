@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using EmberKernel.Services.EventBus;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,9 +14,12 @@ namespace EmberMemoryReader.Components.Collector.Collectors
         public ILifetimeScope CurrentScope { get; set; }
         public ILifetimeScope CollectorReadScope { get; set; }
         private HashSet<Type> RegisteredCollector { get; }
+        private ILogger<CollectorManager> Logger { get; }
+        private LinkedList<Type> InitializedCollector { get; } = new LinkedList<Type>();
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
-        public CollectorManager(ILifetimeScope scope)
+        public CollectorManager(ILifetimeScope scope, ILogger<CollectorManager> logger)
         {
+            Logger = logger;
             CurrentScope = scope;
             RegisteredCollector = scope.ResolveNamed<HashSet<Type>>(CollectorManagerBuilder.RegisteredTypesType);
         }
@@ -37,12 +41,17 @@ namespace EmberMemoryReader.Components.Collector.Collectors
                             var containerType = genericContianerType.MakeGenericType(type);
                             var containerIType = genericContianerIType.MakeGenericType(type);
                             builder.RegisterType(containerType).As(containerIType);
+                            InitializedCollector.AddLast(type);
+                        }
+                        else
+                        {
+                            Logger.LogError($"Initialize collector [{type.Name}] failed, will not start collect in current session");
                         }
                     }
                 }
             });
 
-            foreach (var type in RegisteredCollector)
+            foreach (var type in InitializedCollector)
             {
                 var containerIType = genericContianerIType.MakeGenericType(type);
                 var container = CollectorReadScope.Resolve(containerIType) as ICollectorContainer;

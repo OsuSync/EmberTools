@@ -43,10 +43,11 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
         {
             if (!Reader.TryReadInt(GameModeAddress, out var value))
             {
-                result = default;
-                return false;
+                result = new GameStatusInfo() { HasValue = false };
+                return true;
             }
-            result = new GameStatusInfo() { Status = (OsuInternalStatus)value };
+            var Status = (OsuInternalStatus)value;
+            result = new GameStatusInfo() { HasValue = true, Status = Status, StringStatus = Status.ToString() };
             return true;
         }
     }

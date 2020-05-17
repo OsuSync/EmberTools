@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using Autofac.Builder;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -16,24 +17,33 @@ namespace EmberKernel.Plugins.Components
             ParentScope = parentScope;
         }
 
-        public void ConfigureComponent<TComponent>() where TComponent : IComponent
+        public IRegistrationBuilder<object, ConcreteReflectionActivatorData, SingleRegistrationStyle> ConfigureComponent(Type type)
         {
-            Container.RegisterType<TComponent>();
+            if (!type.IsAssignableTo<IComponent>())
+            {
+                throw new NotImplementedException($"Type {nameof(type)} not implemented type {nameof(IComponent)}");
+            }
+            return Container.RegisterType(type);
         }
 
-        public void ConfigureComponent<TComponent>(TComponent instance) where TComponent : class, IComponent
+        public IRegistrationBuilder<TComponent, ConcreteReflectionActivatorData, SingleRegistrationStyle> ConfigureComponent<TComponent>() where TComponent : IComponent
         {
-            Container.RegisterInstance(instance);
+            return Container.RegisterType<TComponent>();
         }
 
-        public void ConfigureComponent<TComponent>(Func<TComponent> factory) where TComponent : IComponent
+        public IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle> ConfigureComponent<TComponent>(TComponent instance) where TComponent : class, IComponent
         {
-            Container.Register((_) => factory());
+            return Container.RegisterInstance(instance);
         }
 
-        internal void ConfigureComponent<TComponent>(Func<IComponentContext, TComponent> factory) where TComponent : IComponent
+        public IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle> ConfigureComponent<TComponent>(Func<TComponent> factory) where TComponent : IComponent
         {
-            Container.Register(factory);
+            return Container.Register((_) => factory());
+        }
+
+        internal IRegistrationBuilder<TComponent, SimpleActivatorData, SingleRegistrationStyle> ConfigureComponent<TComponent>(Func<IComponentContext, TComponent> factory) where TComponent : IComponent
+        {
+            return Container.Register(factory);
         }
     }
 }

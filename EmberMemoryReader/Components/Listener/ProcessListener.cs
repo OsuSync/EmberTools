@@ -15,9 +15,11 @@ namespace EmberMemoryReader.Components.Listener
     /// Search executable name intervally
     /// <para>Send a <see cref="ProcessSearchResult"/> message when any process match the search condition </para>
     /// </summary>
-    public class ProcessListener<TPredicator, TEvent> : IComponent
-        where TEvent : Event<TEvent>
-        where TPredicator : IProcessPredicator<TEvent>
+    public class ProcessListener<TPredicator, TPredEvent, TLifeTrakcer, TLifeEvent> : IProcessListener
+        where TPredEvent : Event<TPredEvent>
+        where TPredicator : IProcessPredicator<TPredEvent>
+        where TLifeEvent : Event<TLifeEvent>
+        where TLifeTrakcer : IProcessLifetimeTracker<TLifeEvent>
     {
         internal int SearchDelay { get; set; }
 
@@ -33,7 +35,7 @@ namespace EmberMemoryReader.Components.Listener
             SearchDelay = options.Value.SearchDelay;
         }
 
-        public async Task<bool> SearchProcessAsync(CancellationToken token = default)
+        public async Task SearchProcessAsync(CancellationToken token = default)
         {
             using var searchScope = CurrentScope.BeginLifetimeScope((builder) => builder.RegisterType<TPredicator>());
             var pred = searchScope.Resolve<TPredicator>();
@@ -47,12 +49,28 @@ namespace EmberMemoryReader.Components.Listener
                     if (result != null)
                     {
                         _EventBus.Publish(result);
-                        return true;
+                        await EnsureProcessLifetime(process, token);
                     }
                 }
             }
-            return false;
         }
+
+        public async Task EnsureProcessLifetime(Process process, CancellationToken token = default)
+        {
+            using var lifetimeScope = CurrentScope.BeginLifetimeScope((builder) => builder.RegisterType<TLifeTrakcer>());
+            var tracker = lifetimeScope.Resolve<TLifeTrakcer>();
+            while (!token.IsCancellationRequested && !selfToken.IsCancellationRequested)
+            {
+                await Task.Delay(SearchDelay);
+                var result = tracker.Report(process);
+                if (result.Terminated)
+                {
+                    _EventBus.Publish(result.Report);
+                    return;
+                }
+            }
+        }
+
         public void Dispose()
         {
             tokenSource.Cancel();

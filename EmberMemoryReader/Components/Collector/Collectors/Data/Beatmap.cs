@@ -67,19 +67,20 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
             }
         }
 
+        private static readonly BeatmapInfo EmptyResult = new BeatmapInfo() { HasValue = false };
         public bool TryRead(out Event result)
         {
-            result = default;
+            result = EmptyResult;
             if (!Reader.TryReadIntPtr(BeatmapAddress, out var CurrentBeatmapAddress))
-                return false;
+                return true;
             if (!Reader.TryReadInt(CurrentBeatmapAddress + BeatmapAddressOffset, out var beatmapId))
-                return false;
+                return true;
             if (!Reader.TryReadInt(CurrentBeatmapAddress + BeatmapSetAddressOffset, out var setId))
-                return false;
+                return true;
             if (!Reader.TryReadString(CurrentBeatmapAddress + BeatmapFileNameAddressOffset, out var beatmapFile))
-                return false;
+                return true;
             if (!Reader.TryReadString(CurrentBeatmapAddress + BeatmapFolderAddressOffset, out var beatmapFolder))
-                return false;
+                return true;
             
             result = new BeatmapInfo()
             {
@@ -87,6 +88,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
                 BeatmapFolder = beatmapFolder,
                 BeatmapId = beatmapId,
                 SetId = setId,
+                HasValue = true,
             };
             return true;
         }

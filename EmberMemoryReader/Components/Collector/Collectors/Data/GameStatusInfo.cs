@@ -34,6 +34,8 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
     };
     public class GameStatusInfo : Event<GameStatusInfo>
     {
+        public bool HasValue { get; set; }
         public OsuInternalStatus Status { get; set; }
+        public string StringStatus { get; set; }
     }
 }

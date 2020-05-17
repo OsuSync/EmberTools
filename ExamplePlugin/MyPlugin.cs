@@ -26,7 +26,8 @@ namespace ExamplePlugin
         {
             scope.UseCommandContainer<MyCommandComponent>();
             scope.Subscription<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
-            scope.Subscription<EmptyInfo, MemoryReaderEmptyEventHandler>();
+            scope.Subscription<EmptyInfo, MemoryReaderHandler>();
+            scope.Subscription<GameStatusInfo, MemoryReaderHandler>();
             return Task.CompletedTask;
         }
 
@@ -34,7 +35,8 @@ namespace ExamplePlugin
         {
             scope.RemoveCommandContainer<MyCommandComponent>();
             scope.Unsubscription<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
-            scope.Unsubscription<EmptyInfo, MemoryReaderEmptyEventHandler>();
+            scope.Unsubscription<EmptyInfo, MemoryReaderHandler>();
+            scope.Unsubscription<GameStatusInfo, MemoryReaderHandler>();
             return Task.CompletedTask;
         }
 
@@ -42,8 +44,8 @@ namespace ExamplePlugin
         {
             builder.UseConfigurationModel<MyPluginConfiguration>();
             builder.ConfigureCommandContainer<MyCommandComponent>();
+            builder.ConfigureStaticEventHandler<MemoryReaderHandler>();
             builder.ConfigureEventHandler<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
-            builder.ConfigureStaticEventHandler<EmptyInfo, MemoryReaderEmptyEventHandler>();
         }
 
     }
