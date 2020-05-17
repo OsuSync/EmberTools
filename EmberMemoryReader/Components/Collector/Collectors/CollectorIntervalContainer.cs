@@ -25,13 +25,20 @@ namespace EmberMemoryReader.Components.Collector.Collectors
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                if (!Collector.TryRead(out Event @event)
-                    && ++_retryCount > Collector.RetryLimit)
+                if (Collector.TryInitialize())
                 {
-                    Logger.LogInformation($"Memory reader {Collector.GetType().Name} exceeded max retry limit");
-                    break;
+                    if (!Collector.TryRead(out Event @event)
+                        && ++_retryCount > Collector.RetryLimit)
+                    {
+                        Logger.LogInformation($"Memory reader {Collector.GetType().Name} exceeded max retry limit");
+                        break;
+                    }
+                    EventBus.Publish(@event);
                 }
-                EventBus.Publish(@event);
+                else
+                {
+                    Logger.LogDebug($"Memory reader {Collector.GetType().Name} not initialized");
+                }
                 await Task.Delay(Collector.ReadInterval); 
             }
         }

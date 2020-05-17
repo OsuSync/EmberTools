@@ -15,7 +15,6 @@ namespace EmberMemoryReader.Components.Collector.Collectors
         public ILifetimeScope CollectorReadScope { get; set; }
         private HashSet<Type> RegisteredCollector { get; }
         private ILogger<CollectorManager> Logger { get; }
-        private LinkedList<Type> InitializedCollector { get; } = new LinkedList<Type>();
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
         public CollectorManager(ILifetimeScope scope, ILogger<CollectorManager> logger)
         {
@@ -36,22 +35,14 @@ namespace EmberMemoryReader.Components.Collector.Collectors
                     var instance = CurrentScope.Resolve(type);
                     if (instance is ICollector collector)
                     {
-                        if (collector.TryInitialize())
-                        {
-                            var containerType = genericContianerType.MakeGenericType(type);
-                            var containerIType = genericContianerIType.MakeGenericType(type);
-                            builder.RegisterType(containerType).As(containerIType);
-                            InitializedCollector.AddLast(type);
-                        }
-                        else
-                        {
-                            Logger.LogError($"Initialize collector [{type.Name}] failed, will not start collect in current session");
-                        }
+                        var containerType = genericContianerType.MakeGenericType(type);
+                        var containerIType = genericContianerIType.MakeGenericType(type);
+                        builder.RegisterType(containerType).As(containerIType);
                     }
                 }
             });
 
-            foreach (var type in InitializedCollector)
+            foreach (var type in RegisteredCollector)
             {
                 var containerIType = genericContianerIType.MakeGenericType(type);
                 var container = CollectorReadScope.Resolve(containerIType) as ICollectorContainer;
