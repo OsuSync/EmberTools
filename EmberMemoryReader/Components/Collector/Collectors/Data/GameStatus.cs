@@ -6,7 +6,7 @@ using System.Text;
 
 namespace EmberMemoryReader.Components.Collector.Collectors.Data
 {
-    public class GameStatus : ICollector
+    public class GameStatus : IComparableCollector<GameStatusInfo>
     {
         private static readonly string GameModePattern = "\x80\xb8\x0\x0\x0\x0\x0\x75\x19\xa1\x0\x0\x0\x0\x83\xf8\x0b\x74\x0b";
         private static readonly string GameModePatternMask = "xx????xxxx????xxxxx";

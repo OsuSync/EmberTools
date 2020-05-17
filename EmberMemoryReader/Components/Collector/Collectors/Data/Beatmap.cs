@@ -2,11 +2,12 @@
 using EmberMemoryReader.Components.Collector.Readers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
 namespace EmberMemoryReader.Components.Collector.Collectors.Data
 {
-    public class Beatmap : ICollector
+    public class Beatmap : IComparableCollector<BeatmapInfo>
     {
         //0x83,0x3d,0x0,0x0,0x0,0x0,0x01,0x74,0x0a,0x8b,0x35,0x0,0x0,0x0,0x0,0x85,0xf6,0x75,0x04
         private static readonly string BeatmapPattern = "\xDB\x5D\xE8\x8B\x45\xE8\xA3\x0\x0\x0\x0\x8B\x35\x0\x0\x0\x0\x85\xF6";
@@ -80,8 +81,8 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
             Reader.TryReadString(CurrentBeatmapAddress + BeatmapFileNameAddressOffset, out var beatmapFile);
             //return true;
             Reader.TryReadString(CurrentBeatmapAddress + BeatmapFolderAddressOffset, out var beatmapFolder);
-                // return true;
-            
+            // return true;
+
             result = new BeatmapInfo()
             {
                 BeatmapFile = beatmapFile,
