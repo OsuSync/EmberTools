@@ -51,6 +51,7 @@ namespace EmberMemoryReader.Components.Collector
                 .UseCollectorManager(manager => manager
                     .Collect<Beatmap>()
                     .Collect<GameStatus>()
+                    .Collect<Playing>()
                 );
             });
             var manager = ManagerScope.Resolve<ICollectorManager>();
