@@ -10,7 +10,8 @@ namespace ExamplePlugin.EventHandlers
 {
     public class MemoryReaderHandler :
         IEventHandler<GameStatusInfo>,
-        IEventHandler<BeatmapInfo>
+        IEventHandler<BeatmapInfo>,
+        IEventHandler<PlayingInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
         public MemoryReaderHandler(ILogger<MemoryReaderHandler> logger)
@@ -39,7 +40,20 @@ namespace ExamplePlugin.EventHandlers
             }
             else
             {
-                _logger.LogInformation("Not beatmap found");
+                _logger.LogInformation("No beatmap found");
+            }
+            return Task.CompletedTask;
+        }
+
+        public Task Handle(PlayingInfo @event)
+        {
+            if (@event.HasValue)
+            {
+                _logger.LogInformation($"[Event] Current playing status: time={@event.PlayingTime}, Acc={@event.GameStatistic.Accuracy}, 300={@event.GameStatistic.Combo}");
+            }
+            else
+            {
+                _logger.LogInformation("No beatmap found");
             }
             return Task.CompletedTask;
         }
