@@ -185,8 +185,15 @@ namespace EmberKernel.Services.Command
                 return;
             }
             var handlerInfo = commandHandlers[argument.Command];
-            var parser = parsers[handlerInfo.HandlerParserType];
-            handlerInfo.CommandHandler.Invoke(handlerInfo.CommandHandlerComponent, parser.ParseCommandArgument(argument).ToArray());
+            if (handlerInfo.CommandHandler.GetParameters().Length == 0)
+            {
+                handlerInfo.CommandHandler.Invoke(handlerInfo.CommandHandlerComponent, null);
+            }
+            else
+            {
+                var parser = parsers[handlerInfo.HandlerParserType];
+                handlerInfo.CommandHandler.Invoke(handlerInfo.CommandHandlerComponent, parser.ParseCommandArgument(argument).ToArray());
+            }
         }
     }
 }
