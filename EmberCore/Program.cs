@@ -23,6 +23,7 @@ namespace EmberCore
                     .AddEnvironmentVariables()
                     .AddJsonFile("CoreAppSetting.json", optional: false, reloadOnChange: true);
                 })
+                .UseOptionModerator(Path.Combine(Directory.GetCurrentDirectory(), "CoreAppSetting.json"))
                 .UseConfigurationModel<CoreAppSetting>()
                 .UseLogger((context, logger) =>
                 {
