@@ -82,7 +82,7 @@ namespace EmberMemoryReader.Components.Collector.Readers.Windows
 
         public override bool TryReadDouble(IntPtr address, out double value)
         {
-            return TryRead(address, sizeof(int), (bytes, _) => (BitConverter.ToDouble(bytes, 0), true), out value);
+            return TryRead(address, sizeof(double), (bytes, _) => (BitConverter.ToDouble(bytes, 0), true), out value);
         }
 
         public override bool TryReadList<T>(IntPtr address, out List<T> value)
