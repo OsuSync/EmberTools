@@ -13,6 +13,7 @@ using System.Text;
 using EmberKernel.Services.Command;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
+using EmberKernel.Services.Configuration;
 
 namespace ExamplePlugin.Components
 {
@@ -20,9 +21,9 @@ namespace ExamplePlugin.Components
     {
         private ILogger<MyCommandComponent> Logger { get; }
         private IPluginsManager PluginsManager { get; }
-        private IOptionsSnapshot<MyPluginConfiguration> Config { get; }
+        private IOptionsModerator<MyPlugin, MyPluginConfiguration> Config { get; }
 
-        public MyCommandComponent(ILogger<MyCommandComponent> logger, IPluginsManager pluginsManager, IOptionsSnapshot<MyPluginConfiguration> config)
+        public MyCommandComponent(ILogger<MyCommandComponent> logger, IPluginsManager pluginsManager, IOptionsModerator<MyPlugin, MyPluginConfiguration> config)
         {
             Logger = logger;
             PluginsManager = pluginsManager;
@@ -38,7 +39,13 @@ namespace ExamplePlugin.Components
             {
                 Logger.LogInformation($"{descriptor.Name} by {descriptor.Author} ver {descriptor.Version}");
             }
-            Logger.LogInformation($"Config Value Config.Value.MyIntValue = {Config.Value.MyIntValue}");
+            Logger.LogInformation($"Config Value Config.Value.MyIntValue = {Config.Create().MyIntValue}");
+        }
+
+        [CommandHandler(Command = "last")]
+        public void LatestBeatmapFile()
+        {
+            Logger.LogInformation($"Latest beatmap file= {Config.Create().LatestBeatmapFile}");
         }
 
         public void Dispose()

@@ -44,7 +44,7 @@ namespace ExamplePlugin
 
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.UseConfigurationModel<MyPluginConfiguration>();
+            builder.UseConfigurationModel<MyPlugin, MyPluginConfiguration>();
             builder.ConfigureCommandContainer<MyCommandComponent>();
             builder.ConfigureStaticEventHandler<MemoryReaderHandler>();
             builder.ConfigureEventHandler<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();

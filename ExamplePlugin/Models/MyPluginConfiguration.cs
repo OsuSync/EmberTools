@@ -4,5 +4,6 @@
     {
         public int MyIntValue { get; set; }
         public string MyStringValue { get; set; }
+        public string LatestBeatmapFile { get; set; }
     }
 }
