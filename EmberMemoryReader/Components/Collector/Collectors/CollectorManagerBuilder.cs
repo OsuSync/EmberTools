@@ -27,12 +27,5 @@ namespace EmberMemoryReader.Components.Collector.Collectors
             RegisteredCollector.Add(typeof(TCollector));
             return this;
         }
-
-        public CollectorManagerBuilder Configure<TOption>(IConfiguration config)
-            where TOption : class, new()
-        {
-            Builder.Configure<TOption>(config);
-            return this;
-        }
     }
 }
