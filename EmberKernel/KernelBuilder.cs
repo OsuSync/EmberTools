@@ -9,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using Autofac.Extensions.DependencyInjection;
 using System.IO;
+using EmberKernel.Services.Configuration;
+using System.Linq;
 
 namespace EmberKernel
 {
@@ -69,6 +71,15 @@ namespace EmberKernel
             buildActions.Add(() =>
             {
                 _containerBuilder.RegisterInstance(_context.Configuration).As<IConfiguration>();
+            });
+            return this;
+        }
+
+        public KernelBuilder UseOptionModerator(string persistFilePath)
+        {
+            buildActions.Add(() =>
+            {
+                _containerBuilder.RegisterInstance(new OptionsModeratorSetting() { PersistFilePath = persistFilePath }).SingleInstance();
             });
             return this;
         }
