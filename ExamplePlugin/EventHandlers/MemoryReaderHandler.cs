@@ -1,4 +1,6 @@
-﻿using EmberKernel.Services.EventBus.Handlers;
+﻿using EmberKernel.Services.Configuration;
+using EmberKernel.Services.EventBus.Handlers;
+using ExamplePlugin.Models;
 using ExamplePlugin.Models.EventSubscription;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,9 +16,11 @@ namespace ExamplePlugin.EventHandlers
         IEventHandler<PlayingInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
-        public MemoryReaderHandler(ILogger<MemoryReaderHandler> logger)
+        private readonly IOptionsModerator<MyPlugin, MyPluginConfiguration> _optionsModerator;
+        public MemoryReaderHandler(ILogger<MemoryReaderHandler> logger, IOptionsModerator<MyPlugin, MyPluginConfiguration> optionsModerator)
         {
             _logger = logger;
+            _optionsModerator = optionsModerator;
         }
 
         public Task Handle(GameStatusInfo @event)
@@ -32,17 +36,19 @@ namespace ExamplePlugin.EventHandlers
             return Task.CompletedTask;
         }
 
-        public Task Handle(BeatmapInfo @event)
+        public async Task Handle(BeatmapInfo @event)
         {
             if (@event.HasValue)
             {
                 _logger.LogInformation($"[Event] Current beatmap: SetId={@event.SetId}, BeatmapId={@event.BeatmapId}, File={@event.BeatmapFile}");
+                var current = _optionsModerator.Create();
+                current.LatestBeatmapFile = @event.BeatmapFile;
+                await _optionsModerator.SaveAsync(current);
             }
             else
             {
                 _logger.LogInformation("No beatmap found");
             }
-            return Task.CompletedTask;
         }
 
         public Task Handle(PlayingInfo @event)

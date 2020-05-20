@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using EmberKernel.Plugins;
+using EmberKernel.Services.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -18,20 +20,24 @@ namespace Autofac
         {
             services.RegisterType<OptionsManager<TOptions>>().As<IOptions<TOptions>>().SingleInstance();
             services.RegisterType<OptionsManager<TOptions>>().As<IOptionsSnapshot<TOptions>>().InstancePerLifetimeScope();
-            services.RegisterType<OptionsMonitor<TOptions>>().As<IOptionsMonitor<TOptions>>().InstancePerRequest();
-            services.RegisterType<OptionsFactory<TOptions>>().As<IOptionsFactory<TOptions>>().SingleInstance();
+            services.RegisterType<OptionsMonitor<TOptions>>().As<IOptionsMonitor<TOptions>>().SingleInstance();
+            services.RegisterType<OptionsFactory<TOptions>>().As<IOptionsFactory<TOptions>>().InstancePerDependency();
             services.RegisterType<OptionsCache<TOptions>>().As<IOptionsMonitorCache<TOptions>>().SingleInstance();
             return services;
         }
 
-        public static ContainerBuilder Configure<TOptions>(this ContainerBuilder builder, IConfiguration config) where TOptions : class, new()
+        public static ContainerBuilder Configure<TPlugin, TOptions>(this ContainerBuilder builder, IConfiguration config)
+            where TOptions : class, new()
+            where TPlugin : Plugin
         {
+            var @namespace = $"{typeof(TPlugin).Namespace}.{typeof(TPlugin).Name}.{typeof(TOptions).Name}";
             builder.AddOptions<TOptions>();
+            builder.RegisterType<OptionsModerator<TPlugin, TOptions>>().As<IOptionsModerator<TPlugin, TOptions>>().SingleInstance();
             builder
-                .RegisterInstance(new ConfigurationChangeTokenSource<TOptions>(Options.DefaultName, config))
+                .RegisterInstance(new ConfigurationChangeTokenSource<TOptions>(@namespace, config))
                 .SingleInstance().As<IOptionsChangeTokenSource<TOptions>>();
             builder
-                .RegisterInstance(new NamedConfigureFromConfigurationOptions<TOptions>(Options.DefaultName, config))
+                .RegisterInstance(new NamedConfigureFromConfigurationOptions<TOptions>(@namespace, config))
                 .SingleInstance()
                 .As<IConfigureNamedOptions<TOptions>>()
                 .As<IConfigureOptions<TOptions>>()
