@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Autofac;
 using EmberKernel.Services.EventBus.Handlers;
@@ -23,26 +24,31 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
         public bool IsEmpty => _handlers.Count == 0;
         public void Clear() => _handlers.Clear();
 
-        private void AddSubscription(Type handlerType, string eventName, bool isDynamic, ILifetimeScope scope)
+        private string _getFullEventName(string @namespace, string eventName)
         {
-            if (!HasSubscriptionForEvent(eventName))
+            return $"{@namespace}:{eventName}";
+        }
+
+        private void AddSubscription(Type handlerType, string fullEventName, bool isDynamic, ILifetimeScope scope)
+        {
+            if (!HasSubscriptionForEvent(fullEventName))
             {
-                _handlers.Add(eventName, new List<SubscriptionInfo>());
+                _handlers.Add(fullEventName, new List<SubscriptionInfo>());
             }
 
-            if (_handlers[eventName].Any(s => s.HandlerType == handlerType))
+            if (_handlers[fullEventName].Any(s => s.HandlerType == handlerType))
             {
                 throw new ArgumentException(
-                    $"Handler Type {handlerType.Name} already registered for '{eventName}'", nameof(handlerType));
+                    $"Handler Type {handlerType.Name} already registered for '{fullEventName}'", nameof(handlerType));
             }
 
             if (isDynamic)
             {
-                _handlers[eventName].Add(SubscriptionInfo.Dynamic(handlerType, scope));
+                _handlers[fullEventName].Add(SubscriptionInfo.Dynamic(handlerType, scope));
             }
             else
             {
-                _handlers[eventName].Add(SubscriptionInfo.Typed(handlerType, scope));
+                _handlers[fullEventName].Add(SubscriptionInfo.Typed(handlerType, scope));
             }
         }
         public void AddSubscription<TEvent, THandler>(ILifetimeScope scope)
@@ -58,36 +64,39 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
             }
         }
 
-        public string GetEventKey<T>() => typeof(T).Name;
-        public Type GetEventTypeByName(string eventName) => _eventTypes.SingleOrDefault(t => t.Name == eventName);
+        public string GetEventKey(Type t) => t.GetFullEventName();
+        public string GetEventKey<T>() => GetEventKey(typeof(T));
+        public Type GetEventTypeByName(string fullEventName) => _eventTypes.SingleOrDefault(t => t.GetFullEventName() == fullEventName);
 
         public IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : Event
         {
             return GetHandlersForEvent(GetEventKey<T>());
         }
         public IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName) => _handlers[eventName];
+        public IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName, string @namespace) => _handlers[_getFullEventName(@namespace, eventName)];
 
         public bool HasSubscriptionForEvent<T>() where T : Event
         {
             return HasSubscriptionForEvent(GetEventKey<T>());
         }
         public bool HasSubscriptionForEvent(string eventName) => _handlers.ContainsKey(eventName);
+        public bool HasSubscriptionForEvent(string eventName, string @namespace) => _handlers.ContainsKey(_getFullEventName(@namespace, eventName));
 
 
-        private SubscriptionInfo FindSubscriptionToRemove(string eventName, Type handlerType)
+        private SubscriptionInfo FindSubscriptionToRemove(string fullEventName, Type handlerType)
         {
-            if (!HasSubscriptionForEvent(eventName))
+            if (!HasSubscriptionForEvent(fullEventName))
             {
                 return null;
             }
-            return _handlers[eventName].SingleOrDefault(s => s.HandlerType == handlerType);
+            return _handlers[fullEventName].SingleOrDefault(s => s.HandlerType == handlerType);
         }
         private SubscriptionInfo FindSubscriptionToRemove<TEvent, THandler>()
              where TEvent : Event
              where THandler : IEventHandler<TEvent>
         {
-            var eventName = GetEventKey<TEvent>();
-            return FindSubscriptionToRemove(eventName, typeof(THandler));
+            var fullEventName = GetEventKey<TEvent>();
+            return FindSubscriptionToRemove(fullEventName, typeof(THandler));
         }
 
         private void RaiseOnEventRemoved(string eventName)
@@ -110,7 +119,6 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
                     }
                     RaiseOnEventRemoved(eventName);
                 }
-
             }
         }
         public void RemoveSubscription<TEvent, THandler>()
