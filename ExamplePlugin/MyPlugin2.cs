@@ -6,6 +6,7 @@ using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Command.Attributes;
 using EmberKernel.Services.Command.Components;
 using ExamplePlugin.Components;
+using ExamplePlugin.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,6 +20,7 @@ namespace ExamplePlugin
         public override void BuildComponents(IComponentBuilder builder)
         {
             builder.ConfigureCommandContainer<PluginControlCommand>();
+            builder.UseConfigurationModel<MyPluginConfiguration>("MyPlugin");
         }
 
         public override Task Initialize(ILifetimeScope scope)

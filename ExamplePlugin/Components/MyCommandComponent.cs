@@ -21,9 +21,9 @@ namespace ExamplePlugin.Components
     {
         private ILogger<MyCommandComponent> Logger { get; }
         private IPluginsManager PluginsManager { get; }
-        private IOptionsModerator<MyPlugin, MyPluginConfiguration> Config { get; }
+        private IPluginOptions<MyPlugin, MyPluginConfiguration> Config { get; }
 
-        public MyCommandComponent(ILogger<MyCommandComponent> logger, IPluginsManager pluginsManager, IOptionsModerator<MyPlugin, MyPluginConfiguration> config)
+        public MyCommandComponent(ILogger<MyCommandComponent> logger, IPluginsManager pluginsManager, IPluginOptions<MyPlugin, MyPluginConfiguration> config)
         {
             Logger = logger;
             PluginsManager = pluginsManager;

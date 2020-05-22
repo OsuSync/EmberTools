@@ -16,11 +16,11 @@ namespace ExamplePlugin.EventHandlers
         IEventHandler<PlayingInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
-        private readonly IOptionsModerator<MyPlugin, MyPluginConfiguration> _optionsModerator;
-        public MemoryReaderHandler(ILogger<MemoryReaderHandler> logger, IOptionsModerator<MyPlugin, MyPluginConfiguration> optionsModerator)
+        private readonly IPluginOptions<MyPlugin, MyPluginConfiguration> _pluginOptions;
+        public MemoryReaderHandler(ILogger<MemoryReaderHandler> logger, IPluginOptions<MyPlugin, MyPluginConfiguration> pluginOptions)
         {
             _logger = logger;
-            _optionsModerator = optionsModerator;
+            _pluginOptions = pluginOptions;
         }
 
         public Task Handle(GameStatusInfo @event)
@@ -41,9 +41,9 @@ namespace ExamplePlugin.EventHandlers
             if (@event.HasValue)
             {
                 _logger.LogInformation($"[Event] Current beatmap: SetId={@event.SetId}, BeatmapId={@event.BeatmapId}, File={@event.BeatmapFile}");
-                var current = _optionsModerator.Create();
+                var current = _pluginOptions.Create();
                 current.LatestBeatmapFile = @event.BeatmapFile;
-                await _optionsModerator.SaveAsync(current);
+                await _pluginOptions.SaveAsync(current);
             }
             else
             {
