@@ -1,48 +1,36 @@
-﻿using EmberKernel.Plugins;
-using EmberKernel.Services.Configuration;
+﻿using Autofac;
+using Autofac.Builder;
+using EmberKernel.Plugins.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Autofac
+namespace EmberKernel.Services.Configuration
 {
-    /// <summary>
-    /// Autofac port for M$ Options Extension
-    /// see
-    /// https://github.com/aspnet/Extensions/blob/master/src/Options/Options/src/OptionsServiceCollectionExtensions.cs
-    /// https://github.com/aspnet/Extensions/blob/master/src/Options/ConfigurationExtensions/src/OptionsConfigurationServiceCollectionExtensions.cs
-    /// </summary>
-    public static class AutofacOptionsExtensions
+    public static class PluginOptionsExtensions
     {
-        private static ContainerBuilder AddOptions<TOptions>(this ContainerBuilder services) where TOptions : class, new()
+        private static IComponentBuilder AddOptions<TOptions>(this IComponentBuilder builder) where TOptions : class, new()
         {
+            var services = builder.Container;
             services.RegisterType<OptionsManager<TOptions>>().As<IOptions<TOptions>>().SingleInstance();
             services.RegisterType<OptionsManager<TOptions>>().As<IOptionsSnapshot<TOptions>>().InstancePerLifetimeScope();
             services.RegisterType<OptionsMonitor<TOptions>>().As<IOptionsMonitor<TOptions>>().SingleInstance();
             services.RegisterType<OptionsFactory<TOptions>>().As<IOptionsFactory<TOptions>>().InstancePerDependency();
             services.RegisterType<OptionsCache<TOptions>>().As<IOptionsMonitorCache<TOptions>>().SingleInstance();
-            return services;
+            return builder;
         }
 
-        [Obsolete(message: "Use UsePluginOptionsModel instead", error: true)]
-        public static ContainerBuilder Configure<TPlugin, TOptions>(this ContainerBuilder builder, IConfiguration config, string @namespace)
-            where TOptions : class, new()
-            where TPlugin : Plugin
-        {
-            throw new NotSupportedException();
-        }
-
-        public static ContainerBuilder Configure<TOptions>(this ContainerBuilder builder, IConfiguration config, string @namespace)
+        public static IComponentBuilder Configure<TOptions>(this IComponentBuilder builder, IConfiguration config, string @namespace)
             where TOptions : class, new()
         {
-
             builder.AddOptions<TOptions>();
-            builder
+            var services = builder.Container;
+            services
                 .RegisterInstance(new ConfigurationChangeTokenSource<TOptions>(@namespace, config))
                 .SingleInstance().As<IOptionsChangeTokenSource<TOptions>>();
-            builder
+            services
                 .RegisterInstance(new NamedConfigureFromConfigurationOptions<TOptions>(@namespace, config))
                 .SingleInstance()
                 .As<IConfigureNamedOptions<TOptions>>()
@@ -50,7 +38,6 @@ namespace Autofac
                 .As<IConfigureNamedOptions<TOptions>>();
             return builder;
         }
-
 
     }
 }

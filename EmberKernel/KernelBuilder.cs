@@ -75,11 +75,11 @@ namespace EmberKernel
             return this;
         }
 
-        public KernelBuilder UseOptionModerator(string persistFilePath)
+        public KernelBuilder UsePluginOptions(string persistFilePath)
         {
             buildActions.Add(() =>
             {
-                _containerBuilder.RegisterInstance(new OptionsModeratorSetting() { PersistFilePath = persistFilePath }).SingleInstance();
+                _containerBuilder.RegisterInstance(new PluginOptionsSetting() { PersistFilePath = persistFilePath }).SingleInstance();
             });
             return this;
         }

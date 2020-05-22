@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Configuration
 {
-    public interface IOptionsModerator<TPlugin, TOptions>
+    public interface IPluginOptions<TPlugin, TOptions>
         where TPlugin : Plugin
         where TOptions : class, new()
     {

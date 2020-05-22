@@ -11,6 +11,8 @@ namespace EmberKernel.Plugins.Components
     {
         internal ContainerBuilder Container { get; }
         internal ILifetimeScope ParentScope { get; }
+        ContainerBuilder IComponentBuilder.Container => Container;
+
         public ComponentBuilder(ContainerBuilder container, ILifetimeScope parentScope)
         {
             Container = container;
