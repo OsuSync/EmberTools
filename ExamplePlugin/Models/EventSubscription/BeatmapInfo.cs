@@ -5,6 +5,7 @@ using System.Text;
 
 namespace ExamplePlugin.Models.EventSubscription
 {
+    [EventNamespace("MemoryReader")]
     public class BeatmapInfo : Event<BeatmapInfo>
     {
         public bool HasValue { get; set; }

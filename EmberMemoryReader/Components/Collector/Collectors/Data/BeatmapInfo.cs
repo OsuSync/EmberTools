@@ -6,6 +6,7 @@ using System.Text;
 
 namespace EmberMemoryReader.Components.Collector.Collectors.Data
 {
+    [EventNamespace("MemoryReader")]
     public class BeatmapInfo : Event<BeatmapInfo>, IComparable<BeatmapInfo>, IEquatable<BeatmapInfo>
     {
         public bool HasValue { get; set; }

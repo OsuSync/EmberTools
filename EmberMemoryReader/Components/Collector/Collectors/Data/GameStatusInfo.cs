@@ -33,6 +33,8 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
         Tourney,
         Charts
     };
+
+    [EventNamespace("MemoryReader")]
     public class GameStatusInfo : Event<GameStatusInfo>, IComparable<GameStatusInfo>, IEquatable<GameStatusInfo>
     {
         public bool HasValue { get; set; }

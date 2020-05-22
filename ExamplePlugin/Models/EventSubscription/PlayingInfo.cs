@@ -44,6 +44,7 @@ namespace ExamplePlugin.Models.EventSubscription
         public int Katu { get; set; }
     }
 
+    [EventNamespace("MemoryReader")]
     public class PlayingInfo : Event<PlayingInfo>
     {
         public bool HasValue { get; set; }
