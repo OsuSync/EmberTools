@@ -4,8 +4,9 @@ using System.Text;
 
 namespace EmberKernel.Services.Configuration
 {
-    public class OptionsModeratorSetting
+    public interface IReadOnlyPluginOptions<TOptions>
+        where TOptions : class, new()
     {
-        public string PersistFilePath { get; set; }
+        public TOptions Create();
     }
 }

@@ -11,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Configuration
 {
-    public class OptionsModerator<TPlugin, TOptions> : IOptionsModerator<TPlugin, TOptions>
+    public class PluginOptions<TPlugin, TOptions> : IPluginOptions<TPlugin, TOptions>
         where TPlugin : Plugin
         where TOptions : class, new()
     {
         private IOptionsFactory<TOptions> Factory { get; }
-        private readonly OptionsModeratorSetting Setting;
-        public OptionsModerator(ILifetimeScope scope, IOptionsFactory<TOptions> options)
+        private readonly PluginOptionsSetting Setting;
+        public PluginOptions(ILifetimeScope scope, IOptionsFactory<TOptions> options)
         {
             if (!scope.TryResolve(out Setting))
             {
@@ -26,11 +26,11 @@ namespace EmberKernel.Services.Configuration
             this.Factory = options;
         }
 
-        private string Namespace => $"{typeof(TPlugin).Namespace}.{typeof(TPlugin).Name}.{typeof(TOptions).Name}";
+        private string Namespace => $"{typeof(TPlugin).Name}.{typeof(TOptions).Name}";
 
         public TOptions Create()
         {
-            return Factory.Create($"{typeof(TPlugin).Namespace}.{typeof(TPlugin).Name}.{typeof(TOptions).Name}");
+            return Factory.Create($"{typeof(TPlugin).Name}.{typeof(TOptions).Name}");
         }
 
         public async Task SaveAsync(TOptions options, CancellationToken cancellationToken = default)
