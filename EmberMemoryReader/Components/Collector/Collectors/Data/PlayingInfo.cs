@@ -45,6 +45,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
         public int Katu { get; set; }
     }
 
+    [EventNamespace("MemoryReader")]
     public class PlayingInfo : Event<PlayingInfo>, IComparable<PlayingInfo>, IEquatable<PlayingInfo>
     {
         public bool HasValue { get; set; }

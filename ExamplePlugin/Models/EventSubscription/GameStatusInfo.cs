@@ -5,6 +5,7 @@ using System.Text;
 
 namespace ExamplePlugin.Models.EventSubscription
 {
+    [EventNamespace("MemoryReader")]
     public class GameStatusInfo : Event<GameStatusInfo>
     {
         public bool HasValue { get; set; }

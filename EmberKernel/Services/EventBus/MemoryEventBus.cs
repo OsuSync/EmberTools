@@ -20,7 +20,7 @@ namespace EmberKernel.Services.EventBus
 
         public void Publish(Event @event)
         {
-            var eventName = @event.GetType().Name;
+            var eventName = @event.GetType().GetFullEventName();
             var jsonMessage = JsonSerializer.Serialize(@event, @event.GetType());
             Task.Run(() => ProcessEvent(eventName, jsonMessage));
         }
