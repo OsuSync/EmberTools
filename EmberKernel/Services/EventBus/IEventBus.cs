@@ -3,12 +3,15 @@ using EmberKernel.Services.EventBus.Handlers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Services.EventBus
 {
     public interface IEventBus
     {
         void Publish(Event @event);
+        Task Publish(Event @event, CancellationToken cancellationToken = default);
 
         void Subscribe<TEvent, THandler>(ILifetimeScope currentScope)
             where TEvent : Event

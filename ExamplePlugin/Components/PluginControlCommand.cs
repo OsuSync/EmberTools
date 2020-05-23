@@ -51,6 +51,13 @@ namespace ExamplePlugin.Components
             _logger.LogInformation($"Event published! Value = {inputNumber}");
         }
 
+        [CommandHandler(Command = "async-event", Parser = typeof(CustomParser))]
+        public void MyAsyncEventPublisher(int inputNumber)
+        {
+            _eventBus.Publish(new ExamplePluginPublishEvent() { InputNumber = inputNumber }, default).Wait();
+            _logger.LogInformation($"Event published! Value = {inputNumber}");
+        }
+
         [CommandHandler(Command = "conf")]
         public void ReadPluginConfiguration()
         {
