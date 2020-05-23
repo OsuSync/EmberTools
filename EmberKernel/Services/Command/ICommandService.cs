@@ -10,8 +10,8 @@ namespace EmberKernel.Services.Command
 {
     public interface ICommandService : IDisposable
     {
-        void ReigsterCommandContainer(ICommandContainer commandHandler);
-        void RemoveHandler(ICommandContainer commandHandler);
+        void RegisterCommandContainer(ICommandContainer commandHandler, bool enableCommandHelp = true);
+        void UnregisterCommandContainer(ICommandContainer commandHandler);
 
         Task ConfigureCommandSource(Action<ICommandSourceBuilder> builder);
     }
