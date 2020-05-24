@@ -14,9 +14,11 @@ using EmberKernel.Services.Command;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Configuration;
 using EmberKernel.Services.Configuration;
+using EmberKernel.Services.Command.Models;
 
 namespace ExamplePlugin.Components
 {
+    [CommandContainerNamespace("my")]
     public class MyCommandComponent : IComponent, ICommandContainer
     {
         private ILogger<MyCommandComponent> Logger { get; }
@@ -30,7 +32,8 @@ namespace ExamplePlugin.Components
             Config = config;
         }
 
-        [CommandHandler(Command = "my", Parser = typeof(CustomParser))]
+        [CommandHandler(Command = "my")]
+        [CommandParser(typeof(CustomParser))]
         public void MyCommand(int args)
         {
             Logger.LogInformation($"My command invoked, args + 1 = {args + 1}");
@@ -43,6 +46,7 @@ namespace ExamplePlugin.Components
         }
 
         [CommandHandler(Command = "last")]
+        [CommandAlias("l")]
         public void LatestBeatmapFile()
         {
             Logger.LogInformation($"Latest beatmap file= {Config.Create().LatestBeatmapFile}");
@@ -50,6 +54,12 @@ namespace ExamplePlugin.Components
 
         public void Dispose()
         {
+        }
+
+        public bool TryAssignCommand(CommandArgument argument, out CommandArgument newArgument)
+        {
+            newArgument = argument.MoveToHelpCommand();
+            return true;
         }
     }
 }

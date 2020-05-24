@@ -1,4 +1,5 @@
 ﻿using EmberKernel.Plugins.Components;
+using EmberKernel.Services.Command.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +8,6 @@ namespace EmberKernel.Services.Command.Components
 {
     public interface ICommandContainer
     {
-        virtual void GeneralCommandHandler(string cmd, string[] args) { }
+        bool TryAssignCommand(CommandArgument argument, out CommandArgument newArgument);
     }
 }

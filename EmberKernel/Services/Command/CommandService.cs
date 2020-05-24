@@ -16,6 +16,8 @@ using EmberKernel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Windows.Input;
+using EmberKernel.Services.Command.HelpGenerator;
 
 namespace EmberKernel.Services.Command
 {
@@ -25,13 +27,26 @@ namespace EmberKernel.Services.Command
         private int CommandSourceOperationTimeLimit { get; }
         private ILifetimeScope ParentScope { get; }
         private ILifetimeScope CurrentCommandScope { get; set; }
+        private Dictionary<string, ILifetimeScope> CommandNamespaces { get; }
+        private Dictionary<string, List<string>> CommandNamespaceAlias { get; }
+        private Dictionary<string, ILifetimeScope> CommandContainerAlias { get; }
+        private Dictionary<string, (string, string)> GlobalCommandAlias { get; }
+        private Dictionary<ICommandContainer, ILifetimeScope> CommandScope { get; }
         private CancellationTokenSource BackgroundCancellationSource { get; set; }
         private Task CurrentRunningCommandLooping { get; set; }
         public CommandService(IConfiguration coreAppSetting, ILogger<CommandService> logger, ILifetimeScope scope)
         {
             Logger = logger;
-            CommandSourceOperationTimeLimit = int.Parse(coreAppSetting["CommandSourceOperationTimeLimit"] ?? "5");
             ParentScope = scope;
+            CommandScope = new Dictionary<ICommandContainer, ILifetimeScope>();
+            CommandNamespaces = new Dictionary<string, ILifetimeScope>();
+            CommandNamespaceAlias = new Dictionary<string, List<string>>();
+            CommandContainerAlias = new Dictionary<string, ILifetimeScope>();
+            GlobalCommandAlias = new Dictionary<string, (string, string)>();
+
+
+            CommandSourceOperationTimeLimit = int.Parse(coreAppSetting["CommandSourceOperationTimeLimit"] ?? "5");
+
             ConfigureCommandSource(builder => builder.ConfigureSource<ConsoleSource>()).Wait();
             Keeper = new Thread(() =>
             {
@@ -40,97 +55,105 @@ namespace EmberKernel.Services.Command
             Keeper.Start();
         }
 
-        private class CommandHandlerInfo
-        {
-            public ICommandContainer CommandHandlerComponent { get; set; }
-            public MethodInfo CommandHandler { get; set; }
-            public Type HandlerParserType { get; set; }
-        }
-        private readonly Dictionary<ICommandContainer, LinkedList<string>> componentCommands = new Dictionary<ICommandContainer, LinkedList<string>>();
-        private readonly Dictionary<string, CommandHandlerInfo> commandHandlers = new Dictionary<string, CommandHandlerInfo>();
-        private readonly Dictionary<Type, IParser> parsers = new Dictionary<Type, IParser>()
-        {
-            { typeof(DefaultParser), new DefaultParser() },
-        };
         private bool notDisposed = true;
         private readonly Thread Keeper;
 
-        private IEnumerable<(MethodInfo, CommandHandlerAttribute)> ResolveHandlers(ICommandContainer component)
+        private void GlobalCommandAliasRegister(string alias, string containerName, CommandHandlerAttribute handlerAttribute)
         {
-            var type = component.GetType();
-            foreach (var method in type.GetMethods())
+            if (GlobalCommandAlias.ContainsKey(alias))
             {
-                if (method.GetCustomAttribute<CommandHandlerAttribute>() is CommandHandlerAttribute attr)
+                Logger.LogWarning($"Skip conflicted global command: [{alias}] in [{containerName}]. Command alias was already been taken.");
+                return;
+            }
+            GlobalCommandAlias.Add(alias, (containerName, handlerAttribute.Command));
+        }
+
+        private string _getCommandContainerNamespace(Type type)
+        {
+            var namespaceAttr = type.GetCustomAttribute<CommandContainerNamespaceAttribute>();
+            if (namespaceAttr != null)
+                return namespaceAttr.Namespace;
+            else 
+                return type.Name;
+        }
+
+        public void RegisterCommandContainer(ICommandContainer commandComponent, bool enableCommandHelp = true)
+        {
+            // get command component namespace
+            var type = commandComponent.GetType();
+            var @namespace = _getCommandContainerNamespace(type);
+
+            // create lifecycle
+            var containerScope = CurrentCommandScope.BeginLifetimeScope((builder) =>
+            {
+                builder.RegisterInstance(commandComponent).As<ICommandContainer>().SingleInstance();
+                builder.RegisterType<CommandContainerManager>().As<ICommandContainerManager>().SingleInstance();
+                if (enableCommandHelp)
                 {
-                    yield return (method, attr);
+                    builder.RegisterType<CommandHelp>().As<ICommandHelp>().SingleInstance();
+                }
+            });
+            CommandNamespaces.Add(@namespace, containerScope);
+
+
+            // do initialize and register alias
+            var manager = containerScope.Resolve<ICommandContainerManager>();
+            manager.InitializeHandlers((string alias, CommandHandlerAttribute attr) => GlobalCommandAliasRegister(alias, @namespace, attr));
+
+            var aliasAttrs = type.GetCustomAttributes<CommandContainerAliasAttribute>();
+            if (aliasAttrs != null)
+            {
+                foreach (var aliasAttr in aliasAttrs)
+                {
+                    if (CommandNamespaces.ContainsKey(aliasAttr.Alias))
+                    {
+                        Logger.LogWarning($" Skip conflicted alias: [{aliasAttr.Alias}] in [{@namespace}]. Conflict with global namespace.");
+                        continue;
+                    }
+                    if (CommandContainerAlias.ContainsKey(aliasAttr.Alias))
+                    {
+                        Logger.LogWarning($"Skip conflicted alias: [{aliasAttr.Alias}] in [{@namespace}]. Alias was already been taken.");
+                        continue;
+                    }
+                    if (!CommandNamespaceAlias.ContainsKey(@namespace))
+                    {
+                        CommandNamespaceAlias.Add(@namespace, new List<string>());
+                    }
+                    CommandNamespaceAlias[@namespace].Add(aliasAttr.Alias);
+                    CommandContainerAlias.Add(aliasAttr.Alias, containerScope);
                 }
             }
         }
 
-        public void ReigsterCommandContainer(ICommandContainer commandComponent)
+        public void UnregisterCommandContainer(ICommandContainer commandComponent)
         {
-            foreach(var (method, attr) in ResolveHandlers(commandComponent))
+            var type = commandComponent.GetType();
+            var @namespace = _getCommandContainerNamespace(type);
+            // remove registered alias
+            CommandNamespaces.Remove(@namespace, out var scope);
+            if (CommandNamespaceAlias.TryGetValue(@namespace, out var aliasList))
             {
-                // Get a safe command name to take command duplicate situation
-                var safeCommandName = attr.Command;
-                var cmdIndex = 0;
-                while (commandHandlers.ContainsKey(safeCommandName))
+                foreach (var alias in aliasList)
                 {
-                    safeCommandName = $"{safeCommandName}{++cmdIndex}";
+                    CommandContainerAlias.Remove(alias);
                 }
-                if (cmdIndex > 0)
-                {
-                    Logger.LogWarning($"Command {safeCommandName} was duplicated! Rename to '{safeCommandName}'");
-                }
-                // Add command handlers to dictionary
-                var commandHandlerInfo = new CommandHandlerInfo
-                {
-                    CommandHandlerComponent = commandComponent,
-                    CommandHandler = method,
-                };
-
-                // Add parser instance to dictionary
-                // Check parser assignable
-                if (!typeof(IParser).IsAssignableFrom(attr.Parser))
-                {
-                    Logger.LogWarning($"Command handler parser type not implement IParse interface!");
-                }
-                // Add 'commandHandler' as Parser
-                if (attr.Parser == commandComponent.GetType())
-                {
-                    parsers.Add(attr.Parser, commandComponent as IParser);
-                }
-                // Create new parser instance in Arrtibute
-                else if (attr.Parser != typeof(DefaultParser) && !parsers.ContainsKey(attr.Parser))
-                {
-                    parsers.Add(attr.Parser, Activator.CreateInstance(attr.Parser) as IParser);
-                }
-                // Associate command and parser
-                commandHandlerInfo.HandlerParserType = attr.Parser;
-                if (!componentCommands.ContainsKey(commandComponent)) componentCommands.Add(commandComponent, new LinkedList<string>());
-                componentCommands[commandComponent].AddLast(safeCommandName);
-                commandHandlers.Add(safeCommandName, commandHandlerInfo);
             }
-        }
-        public void RemoveHandler(ICommandContainer commandComponent)
-        {
-            if (!componentCommands.ContainsKey(commandComponent)) return;
 
-            foreach (var command in componentCommands[commandComponent])
+            // release scope
+            if (scope != null)
             {
-                commandHandlers.Remove(command);
+                scope.Dispose();
             }
-            componentCommands.Remove(commandComponent);
         }
 
         public void Dispose()
         {
             notDisposed = false;
             Keeper.Abort();
+            CommandNamespaces.Clear();
+            CommandContainerAlias.Clear();
+            CommandScope.Clear();
             StopCurrentCommandLooping().Wait();
-            commandHandlers.Clear();
-            componentCommands.Clear();
-            parsers.Clear();
             if (CurrentCommandScope != null)
             {
                 CurrentCommandScope.Dispose();
@@ -177,23 +200,49 @@ namespace EmberKernel.Services.Command
             await commandSource.Stop(stopCancellationSource.Token);
         }
 
+        private ILifetimeScope _getScopeByNamespace(string @namespace)
+        {
+            ILifetimeScope commandScope = null;
+            if (!CommandNamespaces.TryGetValue(@namespace, out commandScope))
+                if (!CommandContainerAlias.TryGetValue(@namespace, out commandScope)) return null;
+
+            return commandScope;
+        }
+
         private void DispatchCommand(CommandArgument argument)
         {
-            if (!commandHandlers.ContainsKey(argument.Command))
+            ILifetimeScope commandScope = _getScopeByNamespace(argument.Namespace);
+            if (commandScope == null)
             {
-                Logger.LogError($"Can't dispatch unknown command {argument.Command}.");
+                if (GlobalCommandAlias.TryGetValue(argument.Namespace, out var command))
+                {
+                    var (@namespace, cmd) = command;
+                    commandScope = CommandNamespaces[@namespace];
+                    if (argument.Argument == null)
+                    {
+                        argument.Argument = argument.Command;
+                    }
+                    else
+                    {
+                        argument.Argument = string.Join(' ', argument.Command, argument.Argument);
+                    }
+                    argument.Command = cmd;
+                    argument.Namespace = @namespace;
+                }
+            }
+
+            if (commandScope == null)
+            {
+                Logger.LogError($"Can't dispatch unknown command {argument.Namespace}{argument?.Command}.");
                 return;
             }
-            var handlerInfo = commandHandlers[argument.Command];
-            if (handlerInfo.CommandHandler.GetParameters().Length == 0)
+
+            if (!commandScope.TryResolve<ICommandContainerManager>(out var manager))
             {
-                handlerInfo.CommandHandler.Invoke(handlerInfo.CommandHandlerComponent, null);
+                Logger.LogError($"Command [{argument.Namespace}] lifescope was corrupted, can't resolve command container manager");
             }
-            else
-            {
-                var parser = parsers[handlerInfo.HandlerParserType];
-                handlerInfo.CommandHandler.Invoke(handlerInfo.CommandHandlerComponent, parser.ParseCommandArgument(argument).ToArray());
-            }
+
+            manager.Invoke(argument);
         }
     }
 }

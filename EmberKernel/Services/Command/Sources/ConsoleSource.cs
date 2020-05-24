@@ -20,19 +20,20 @@ namespace EmberKernel.Services.Command.Sources
             await Task.Yield();
         }
 
-        private readonly CommandArgument EmptyCommand = new CommandArgument() { Argument = string.Empty, Command = string.Empty };
+        private readonly CommandArgument EmptyCommand = new CommandArgument() { Namespace = string.Empty, Argument = string.Empty, Command = string.Empty };
         public async Task<CommandArgument> Read(CancellationToken cancellationToken)
         {
             return await Task.Run(async() =>
             {
                 await Task.Yield();
                 Console.Write("\n>");
-                var result = Console.ReadLine().Split(' ', 2);
+                var result = Console.ReadLine().Split(' ', 3);
                 if (result.Length == 0) return EmptyCommand;
                 else
                 {
-                    var command = new CommandArgument() { Command = result[0] };
-                    if (result.Length == 2) command.Argument = result[1];
+                    var command = new CommandArgument() { Namespace = result[0] };
+                    if (result.Length > 1) command.Command = result[1];
+                    if (result.Length == 3) command.Argument = result[2];
                     return command;
                 }
             }, cancellationToken);

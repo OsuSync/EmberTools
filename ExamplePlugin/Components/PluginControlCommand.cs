@@ -5,6 +5,7 @@ using EmberKernel.Services.Command;
 using EmberKernel.Services.Command.Attributes;
 using EmberKernel.Services.Command.Components;
 using EmberKernel.Services.Configuration;
+using EmberKernel.Services.Command.Models;
 using EmberKernel.Services.EventBus;
 using ExamplePlugin.Commands;
 using ExamplePlugin.Models;
@@ -17,6 +18,9 @@ using System.Text;
 
 namespace ExamplePlugin.Components
 {
+    [CommandContainerNamespace("plugin")]
+    [CommandContainerAlias("p")]
+    [CommandContainerAlias(".")]
     class PluginControlCommand : IComponent, ICommandContainer
     {
         private readonly IPluginsManager _pluginMan;
@@ -44,7 +48,8 @@ namespace ExamplePlugin.Components
             _pluginMan.Unload(FindPlugin(plugin));
         }
 
-        [CommandHandler(Command = "event", Parser = typeof(CustomParser))]
+        [CommandHandler(Command = "event")]
+        [CommandParser(typeof(CustomParser))]
         public void MyEventPublisher(int inputNumber)
         {
             _eventBus.Publish(new ExamplePluginPublishEvent() { InputNumber = inputNumber });
@@ -78,6 +83,12 @@ namespace ExamplePlugin.Components
 
         public void Dispose()
         {
+        }
+
+        public bool TryAssignCommand(CommandArgument argument, out CommandArgument newArgument)
+        {
+            newArgument = argument;
+            return false;
         }
     }
 }
