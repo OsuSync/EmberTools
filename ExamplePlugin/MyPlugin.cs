@@ -15,6 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ExamplePlugin.Models.EventSubscription;
 using ExamplePlugin.Models;
+using EmberKernel.Services.UI.Mvvm.Model.Configuration.Extension;
 
 namespace ExamplePlugin
 {
@@ -29,6 +30,7 @@ namespace ExamplePlugin
             scope.Subscription<GameStatusInfo, MemoryReaderHandler>();
             scope.Subscription<BeatmapInfo, MemoryReaderHandler>();
             scope.Subscription<PlayingInfo, MemoryReaderHandler>();
+            scope.RegisterUIModel<MyPlugin, MyPluginConfiguration>();
             return Task.CompletedTask;
         }
 
@@ -39,12 +41,14 @@ namespace ExamplePlugin
             scope.Unsubscription<GameStatusInfo, MemoryReaderHandler>();
             scope.Unsubscription<BeatmapInfo, MemoryReaderHandler>();
             scope.Unsubscription<PlayingInfo, MemoryReaderHandler>();
+            scope.UnregisterUIModel<MyPlugin, MyPluginConfiguration>();
             return Task.CompletedTask;
         }
 
         public override void BuildComponents(IComponentBuilder builder)
         {
             builder.UsePluginOptionsModel<MyPlugin, MyPluginConfiguration>();
+            builder.ConfigureUIModel<MyPlugin, MyPluginConfiguration>();
             builder.ConfigureCommandContainer<MyCommandComponent>();
             builder.ConfigureStaticEventHandler<MemoryReaderHandler>();
             builder.ConfigureEventHandler<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
