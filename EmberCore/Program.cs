@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging.Console;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using EmberKernel.Services.UI.Extension;
 
 namespace EmberCore
 {
@@ -32,10 +33,12 @@ namespace EmberCore
                     .AddConsole(options => options.Format = ConsoleLoggerFormat.Systemd)
                     .AddDebug();
                 })
+                .UseEventBus()
+                .UseCommandService()
                 .UseKernalService<CorePluginResolver>()
                 .UsePlugins<PluginsManager>()
-                .UseCommandService()
-                .UseEventBus()
+                .UseMvvmInterface((mvvm) => mvvm
+                    .UseConfigurationModel())
                 .Build()
                 .Run();
         }
