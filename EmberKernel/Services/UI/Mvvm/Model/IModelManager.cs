@@ -13,17 +13,11 @@ namespace EmberKernel.Services.UI.Mvvm.Model
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
-        DependencyObject<T> Register<T>(DependencyObject<T> instance) where T : class;
+        void Register<T>(T instance) where T : INotifyPropertyChanged;
         /// <summary>
         /// Unregister a Model in manager
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        void Unregister<T>() where T : class;
-        /// <summary>
-        /// Get <typeparamref name="T"/> instance in <see cref="IModelManager"/>
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        DependencyObject<T> Current<T>() where T : class;
+        void Unregister<T>() where T : INotifyPropertyChanged;
     }
 }

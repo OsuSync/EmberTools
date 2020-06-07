@@ -21,17 +21,18 @@ namespace EmberKernel.Services.UI.Mvvm.Model.Configuration.Extension
             where TPlugin : Plugin
             where TOptions : class, new()
         {
-            var modelManager = scope.Resolve<IModelManager>();
             var dependencyObject = scope.Resolve<ConfigurationDependencyObject<TPlugin, TOptions>>();
-            modelManager.Register(dependencyObject);
+            var settingManager = scope.Resolve<IConfigurationModelManager>();
+            settingManager.Add(dependencyObject);
         }
 
         public static void UnregisterUIModel<TPlugin, TOptions>(this ILifetimeScope scope)
             where TPlugin : Plugin
             where TOptions : class, new()
         {
-            var modelManager = scope.Resolve<IModelManager>();
-            modelManager.Unregister<TOptions>();
+            var settingManager = scope.Resolve<IConfigurationModelManager>();
+            var dependencyObject = scope.Resolve<ConfigurationDependencyObject<TPlugin, TOptions>>();
+            settingManager.Remove(dependencyObject);
         }
     }
 }
