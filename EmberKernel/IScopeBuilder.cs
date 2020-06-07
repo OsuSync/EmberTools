@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EmberKernel
 {
-    public interface IScopeBilder
+    public interface IScopeBuilder
     {
         void BuildScope(ContainerBuilder builder);
         Task Run(ILifetimeScope scope);
