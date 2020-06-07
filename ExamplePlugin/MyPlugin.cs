@@ -15,7 +15,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ExamplePlugin.Models.EventSubscription;
 using ExamplePlugin.Models;
-using EmberKernel.Services.UI.Mvvm.Model.Configuration.Extension;
+using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
 
 namespace ExamplePlugin
 {
