@@ -11,12 +11,13 @@ using System.Threading.Tasks;
 
 namespace EmberKernel.Services.UI.Mvvm.Model.Configuration
 {
-    public class ConfigurationDependencyObject<TPlugin, TOptions> : DependencyObject<TOptions>
+    public class ConfigurationDependencyObject<TPlugin, TOptions> : DependencyObject<TOptions>, IDisposable
         where TPlugin : Plugin
         where TOptions : class, new()
     {
         private readonly IOptionsMonitor<TOptions> Option;
         private TOptions CurrentValue;
+        private readonly IDisposable OnChangeBinding;
         public ConfigurationDependencyObject(ILifetimeScope scope)
         {
             if (!(scope.Resolve<IOptionsMonitor<TOptions>>() is var option))
@@ -24,7 +25,7 @@ namespace EmberKernel.Services.UI.Mvvm.Model.Configuration
                 throw new ArgumentNullException(typeof(TOptions).Name, "Option not registered with UsePluginOptionsModel");
             }
             Option = option;
-            Option.OnChange((latestOption) =>
+            OnChangeBinding = Option.OnChange((latestOption) =>
             {
                 CurrentValue = latestOption;
                 foreach (var item in TypeDependencies)
@@ -33,6 +34,11 @@ namespace EmberKernel.Services.UI.Mvvm.Model.Configuration
                 }
             });
             this.CurrentValue = Option.CurrentValue;
+        }
+
+        public void Dispose()
+        {
+            OnChangeBinding.Dispose();
         }
 
         protected override F GetValue<F>(string propertyName, Func<TOptions, F> getter)
