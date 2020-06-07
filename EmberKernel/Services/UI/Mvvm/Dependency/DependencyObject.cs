@@ -7,34 +7,48 @@ using System.Text;
 
 namespace EmberKernel.Services.UI.Mvvm.Dependency
 {
-    public abstract class DependencyObject<T> : INotifyPropertyChanged
+    public abstract class DependencyObject : INotifyPropertyChanged
     {
-        protected readonly static IReadOnlyDictionary<PropertyInfo, string> TypeDependencies;
-        static DependencyObject()
+        private readonly static Dictionary<PropertyInfo, string> _typeDependencies = new Dictionary<PropertyInfo, string>();
+        private readonly static Dictionary<string, PropertyInfo> _nameDependencies = new Dictionary<string, PropertyInfo>();
+        protected static void AddDependencyProperty(PropertyInfo propertyInfo, string name)
         {
-            var buildDependencies = new Dictionary<PropertyInfo, string>();
-            var type = typeof(T);
-            foreach (var property in type.GetProperties())
-            {
-                var _attr = property.GetCustomAttribute<DependencyPropertyAttribute>();
-                if (_attr is DependencyPropertyAttribute attr)
-                {
-                    buildDependencies.Add(property, attr.Name);
-                }
-            }
-            TypeDependencies = buildDependencies;
+            _typeDependencies.Add(propertyInfo, name);
+            _nameDependencies.Add(name, propertyInfo);
         }
+        public static IDictionary<PropertyInfo, string> TypeDependencies => _typeDependencies;
+        public static IDictionary<string, PropertyInfo> NameDependencies => _nameDependencies;
 
-        public DependencyObject()
-        {
-        }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChangedEvent(object sender, PropertyChangedEventArgs args)
         {
             PropertyChanged?.Invoke(sender, args);
         }
 
-        protected abstract F GetValue<F>(string propertyName, Func<T, F> selector);
+        public abstract object GetValue(string propertyName, PropertyInfo property);
+        public abstract void SetValue(string propertyName, PropertyInfo property, object value);
+    }
+
+    public abstract class DependencyObject<T> : DependencyObject
+    {
+        static DependencyObject()
+        {
+            var type = typeof(T);
+            foreach (var property in type.GetProperties())
+            {
+                var _attr = property.GetCustomAttribute<DependencyPropertyAttribute>();
+                if (_attr is DependencyPropertyAttribute attr)
+                {
+                    AddDependencyProperty(property, attr.Name);
+                }
+            }
+        }
+
+        public DependencyObject()
+        {
+        }
+
+        protected abstract F GetValue<F>(string propertyName, PropertyInfo property);
         public F GetValue<F>(Expression<Func<T, F>> selector)
         {
             if (selector == null) throw new ArgumentNullException(nameof(selector));
@@ -44,8 +58,9 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
             if (!(member.Member is PropertyInfo property) || !TypeDependencies.ContainsKey(property))
                 throw new ArgumentException("Not a property or property not registered", member.Member.Name);
 
-            return GetValue(TypeDependencies[property], selector.Compile());
+            return GetValue<F>(TypeDependencies[property], property);
         }
+        public override object GetValue(string propertyName, PropertyInfo property) => GetValue<object>(propertyName, property);
 
         protected abstract void SetValue<F>(string propertyName, PropertyInfo property, F value);
         public void SetValue<F>(Expression<Func<T, F>> selector, F value)
@@ -59,6 +74,6 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
 
             SetValue(TypeDependencies[property], property, value);
         }
-
+        public override void SetValue(string propertyName, PropertyInfo property, object value) => SetValue<object>(propertyName, property, value);
     }
 }

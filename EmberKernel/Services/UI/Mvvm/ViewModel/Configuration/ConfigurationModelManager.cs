@@ -8,13 +8,15 @@ using System.Text;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration
 {
-    public class ConfigurationModelManager : ObservableCollection<object>, IConfigurationModelManager, IDisposable
+    public class ConfigurationModelManager : ObservableCollection<object>, INotifyPropertyChanged, IConfigurationModelManager, IDisposable
     {
+        public new event PropertyChangedEventHandler PropertyChanged;
         private IViewModelManager manager;
         public ConfigurationModelManager(IViewModelManager manager)
         {
             this.manager = manager;
             this.manager.Register(this);
+            base.PropertyChanged += DependencyObject_PropertyChanged;
         }
 
         public void Add<TPlugin, TOptions>(ConfigurationDependencyObject<TPlugin, TOptions> dependencyObject)
@@ -27,7 +29,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration
 
         private void DependencyObject_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            base.OnPropertyChanged(e);
+            PropertyChanged?.Invoke(sender, e);
         }
 
         public void Remove<TPlugin, TOptions>(ConfigurationDependencyObject<TPlugin, TOptions> dependencyObject)

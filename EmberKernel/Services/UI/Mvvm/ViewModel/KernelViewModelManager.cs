@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using EmberKernel.Services.UI.Mvvm.Dependency;
+using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,7 +23,6 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel
         public void RaisePropertyChangeEvent(object sender, PropertyChangedEventArgs args)
         {
             PropertyChanged?.Invoke(sender, args);
-            Logger.LogDebug($"Property changed: {args.PropertyName}");
         }
 
         public KernelViewModelManager(ILifetimeScope scope, ILogger<IViewModelManager> logger)

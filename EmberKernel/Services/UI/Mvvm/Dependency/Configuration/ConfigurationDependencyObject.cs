@@ -44,9 +44,9 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
             OnChangeBinding.Dispose();
         }
 
-        protected override F GetValue<F>(string propertyName, Func<TOptions, F> getter)
+        protected override F GetValue<F>(string propertyName, PropertyInfo property)
         {
-            return getter(CurrentValue);
+            return (F)property.GetValue(CurrentValue);
         }
 
         protected override void SetValue<F>(string propertyName, PropertyInfo property, F value)
