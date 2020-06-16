@@ -22,7 +22,7 @@ namespace EmberWpfCore
 
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.ConfigureComponent<WpfUIComponent<Main>>();
+            builder.ConfigureComponent<WpfUIComponent<Main>>().SingleInstance();
         }
 
         public override Task Initialize(ILifetimeScope scope)
