@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
 {
-    public class ConfigurationDependencyObject<TPlugin, TOptions> : DependencyObject<TOptions>, IDisposable
+    public class ConfigurationDependencySet<TPlugin, TOptions> : DependencySet<TOptions>, IDisposable
         where TPlugin : Plugin
         where TOptions : class, new()
     {
@@ -19,7 +19,8 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
         private readonly IPluginOptions<TPlugin, TOptions> PluginOptions;
         private TOptions CurrentValue;
         private readonly IDisposable OnChangeBinding;
-        public ConfigurationDependencyObject(ILifetimeScope scope)
+        private bool latestSetValue = false;
+        public ConfigurationDependencySet(ILifetimeScope scope)
         {
             if (!(scope.Resolve<IOptionsMonitor<TOptions>>() is IOptionsMonitor<TOptions> option)
                 || !(scope.Resolve<IPluginOptions<TPlugin, TOptions>>() is IPluginOptions<TPlugin, TOptions> pluginOption))
@@ -30,6 +31,11 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
             PluginOptions = pluginOption;
             OnChangeBinding = Option.OnChange((latestOption) =>
             {
+                if (latestSetValue)
+                {
+                    latestSetValue = false;
+                    return;
+                }
                 CurrentValue = latestOption;
                 foreach (var item in TypeDependencies)
                 {
@@ -53,7 +59,14 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
         {
             var latestValue = PluginOptions.Create();
             property.SetValue(latestValue, value);
-            PluginOptions.SaveAsync(latestValue).Wait();
+            property.SetValue(CurrentValue, value);
+            latestSetValue = true;
+            Task.Run(() => PluginOptions.SaveAsync(latestValue));
+        }
+
+        public override string ToString()
+        {
+            return typeof(TOptions).Name;
         }
     }
 }
