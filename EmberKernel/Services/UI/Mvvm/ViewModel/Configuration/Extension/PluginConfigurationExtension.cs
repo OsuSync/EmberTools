@@ -15,7 +15,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension
             where TPlugin : Plugin
             where TOptions : class, new()
         {
-            builder.Container.RegisterType<ConfigurationDependencyObject<TPlugin, TOptions>>();
+            builder.Container.RegisterType<ConfigurationDependencyObject<TPlugin, TOptions>>().SingleInstance();
         }
 
         public static void RegisterUIModel<TPlugin, TOptions>(this ILifetimeScope scope)
