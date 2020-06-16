@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
-using EmberKernel.Services.UI.Mvvm.View;
 using System;
 using System.Collections.Generic;
 using System.Text;
