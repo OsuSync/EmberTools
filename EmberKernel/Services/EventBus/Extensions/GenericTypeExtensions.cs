@@ -24,6 +24,15 @@ namespace EmberKernel
             return typeName;
         }
 
+        public static string GetGenericName(this Type type, int index = 0)
+        {
+            if (type.IsGenericType)
+            {
+                return type.GetGenericArguments()[index].GetGenericTypeName();
+            }
+            return string.Empty;
+        }
+
         public static string GetGenericTypeName(this object @object)
         {
             return @object.GetType().GetGenericTypeName();

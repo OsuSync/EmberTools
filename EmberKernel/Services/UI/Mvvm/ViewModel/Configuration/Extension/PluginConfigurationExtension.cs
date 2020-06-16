@@ -15,14 +15,14 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension
             where TPlugin : Plugin
             where TOptions : class, new()
         {
-            builder.Container.RegisterType<ConfigurationDependencyObject<TPlugin, TOptions>>().SingleInstance();
+            builder.Container.RegisterType<ConfigurationDependencySet<TPlugin, TOptions>>().SingleInstance();
         }
 
         public static void RegisterUIModel<TPlugin, TOptions>(this ILifetimeScope scope)
             where TPlugin : Plugin
             where TOptions : class, new()
         {
-            var dependencyObject = scope.Resolve<ConfigurationDependencyObject<TPlugin, TOptions>>();
+            var dependencyObject = scope.Resolve<ConfigurationDependencySet<TPlugin, TOptions>>();
             var settingManager = scope.Resolve<IConfigurationModelManager>();
             settingManager.Add(dependencyObject);
         }
@@ -32,7 +32,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension
             where TOptions : class, new()
         {
             var settingManager = scope.Resolve<IConfigurationModelManager>();
-            var dependencyObject = scope.Resolve<ConfigurationDependencyObject<TPlugin, TOptions>>();
+            var dependencyObject = scope.Resolve<ConfigurationDependencySet<TPlugin, TOptions>>();
             settingManager.Remove(dependencyObject);
         }
     }

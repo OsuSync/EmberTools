@@ -1,9 +1,11 @@
 ﻿using EmberKernel.Plugins;
+using EmberKernel.Services.UI.Mvvm.Dependency;
 using EmberKernel.Services.UI.Mvvm.Dependency.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration
@@ -19,7 +21,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration
             base.PropertyChanged += DependencyObject_PropertyChanged;
         }
 
-        public void Add<TPlugin, TOptions>(ConfigurationDependencyObject<TPlugin, TOptions> dependencyObject)
+        public void Add<TPlugin, TOptions>(ConfigurationDependencySet<TPlugin, TOptions> dependencyObject)
             where TPlugin : Plugin
             where TOptions : class, new()
         {
@@ -32,12 +34,27 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration
             PropertyChanged?.Invoke(sender, e);
         }
 
-        public void Remove<TPlugin, TOptions>(ConfigurationDependencyObject<TPlugin, TOptions> dependencyObject)
+        public void Remove<TPlugin, TOptions>(ConfigurationDependencySet<TPlugin, TOptions> dependencyObject)
             where TPlugin : Plugin
             where TOptions : class, new()
         {
             dependencyObject.PropertyChanged -= DependencyObject_PropertyChanged;
             base.Remove(dependencyObject);
+        }
+
+        public DependencySet GetDependency(string name)
+        {
+            foreach (object dependency in this)
+            {
+                if (dependency is DependencySet dc)
+                {
+                    if (dc.GetType().GetGenericName(1) == name)
+                    {
+                        return dc;
+                    }
+                }
+            }
+            return null;
         }
 
         public void Dispose()
