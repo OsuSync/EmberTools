@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using Autofac.Util;
 using EmberCore.KernelServices.PluginResolver;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
@@ -61,7 +63,6 @@ namespace EmberCore.Services
                     if (scope.TryResolveNamed(pluginDesciptor, type, out var instnace) && instnace is IPlugin plugin)
                     {
                         await Load(plugin);
-                        if (plugin is IEntryComponent entry) EntryComponents.Add(entry);
                         Logger.LogInformation($"Loaded plugin {pluginDesciptor}");
                     }
                 }
@@ -72,23 +73,24 @@ namespace EmberCore.Services
             }
         }
 
-        public async Task RunEntryComponents()
+        public Task RunEntryComponents()
         {
             Logger.LogInformation($"Start execute entries...");
-            await Task.WhenAll(EntryComponents.Select(entry => entry.Start()).ToArray());
-            Logger.LogInformation($"Done execute entries...");
+            Task.WhenAll(EntryComponents.Select(entry => entry.Start()).ToArray())
+            .ContinueWith((_) => Logger.LogInformation($"Done execute entries..."));
+            return Task.CompletedTask;
         }
 
         public IEnumerable<Type> Resolve(Assembly assembly)
         {
-            foreach (var type in assembly.GetTypes())
+            foreach (var type in assembly.GetLoadableTypes())
             {
                 if (typeof(Plugin).IsAssignableFrom(type))
                 {
                     var attribute = type.GetCustomAttribute<EmberPluginAttribute>();
                     if (attribute == null)
                     {
-                        Logger.LogError($"Plugin in Assembly {assembly.FullName} no [CorePlugin] attribute definition. Skipped");
+                        Logger.LogError($"Plugin in Assembly {assembly.FullName} no [EmberPluginAttribute] attribute definition. Skipped");
                         continue;
                     }
 
@@ -100,9 +102,10 @@ namespace EmberCore.Services
 
         public async Task Load(IPlugin plugin)
         {
+            var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
             try
             {
-                var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
+                if (plugin is IEntryComponent entry) EntryComponents.Add(entry);
                 var pluginScope = PluginLayerScope.BeginLifetimeScope((builder) => plugin.BuildComponents(new ComponentBuilder(builder, PluginLayerScope)));
                 if (!PluginScopes.ContainsKey(plugin))
                 {
@@ -113,10 +116,17 @@ namespace EmberCore.Services
                     PluginScopes[plugin] = pluginScope;
                 }
                 await plugin.Initialize(pluginScope);
+                foreach (var entryRegistrion in pluginScope.ComponentRegistry.Registrations)
+                {
+                    if (entryRegistrion.Activator.LimitType.IsAssignableTo<IEntryComponent>())
+                    {
+                        EntryComponents.Add((IEntryComponent)pluginScope.Resolve(entryRegistrion.Activator.LimitType));
+                    }
+                }
             }
             catch (Exception e)
             {
-                e.ToString();
+                Logger.LogWarning(e, $"Can't load {pluginDesciptor}");
             }
         }
 

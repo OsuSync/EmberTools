@@ -17,7 +17,9 @@
     <ProjectReference Include="..\EmberKernel\EmberKernel.csproj">
       <Private>false</Private>
     </ProjectReference>
-    <ProjectReference Include="..\share\OsuUtils\OsuUtils.csproj" />
+    <ProjectReference Include="..\share\OsuUtils\OsuUtils.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +27,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="move $(OutDir)\$(TargetFileName) $(OutDir)\$(TargetName).plugin&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)&#xD;&#xA;copy $(OutDir)\*  $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)" ContinueOnError="true" IgnoreExitCode="true" />
+    <Exec Command="move $(OutDir)\$(TargetFileName) $(OutDir)\$(TargetName).dll&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)&#xD;&#xA;copy $(OutDir)\*  $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)" ContinueOnError="true" IgnoreExitCode="true" />
   </Target>
 
 </Project>
