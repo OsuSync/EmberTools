@@ -7,7 +7,7 @@ using System.Text;
 
 namespace EmberKernel.Services.UI.Mvvm.Dependency
 {
-    public abstract class DependencyObject : INotifyPropertyChanged
+    public abstract class DependencySet : INotifyPropertyChanged
     {
         private readonly static Dictionary<PropertyInfo, string> _typeDependencies = new Dictionary<PropertyInfo, string>();
         private readonly static Dictionary<string, PropertyInfo> _nameDependencies = new Dictionary<string, PropertyInfo>();
@@ -16,8 +16,8 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
             _typeDependencies.Add(propertyInfo, name);
             _nameDependencies.Add(name, propertyInfo);
         }
-        public static IDictionary<PropertyInfo, string> TypeDependencies => _typeDependencies;
-        public static IDictionary<string, PropertyInfo> NameDependencies => _nameDependencies;
+        public static IReadOnlyDictionary<PropertyInfo, string> TypeDependencies => _typeDependencies;
+        public static IReadOnlyDictionary<string, PropertyInfo> NameDependencies => _nameDependencies;
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected void RaisePropertyChangedEvent(object sender, PropertyChangedEventArgs args)
@@ -29,9 +29,9 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
         public abstract void SetValue(string propertyName, PropertyInfo property, object value);
     }
 
-    public abstract class DependencyObject<T> : DependencyObject
+    public abstract class DependencySet<T> : DependencySet
     {
-        static DependencyObject()
+        static DependencySet()
         {
             var type = typeof(T);
             foreach (var property in type.GetProperties())
@@ -44,7 +44,7 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
             }
         }
 
-        public DependencyObject()
+        public DependencySet()
         {
         }
 
