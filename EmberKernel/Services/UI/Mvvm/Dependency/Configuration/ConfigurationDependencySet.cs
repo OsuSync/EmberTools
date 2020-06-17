@@ -37,7 +37,7 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
                     return;
                 }
                 CurrentValue = latestOption;
-                foreach (var item in TypeDependencies)
+                foreach (var item in GetDependency<TOptions>().TypeDependencies)
                 {
                     RaisePropertyChangedEvent(this, new PropertyChangedEventArgs(item.Value));
                 }

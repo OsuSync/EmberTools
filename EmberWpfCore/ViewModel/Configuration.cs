@@ -10,11 +10,13 @@ namespace EmberWpfCore.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        DependencySet Dependency { get; set; }
+        DependencySet DependencySet { get; set; }
+        private TypeDependency Dependency { get; }
         public ConfigurationViewModel(DependencySet dependency)
         {
-            Dependency = dependency;
-            Dependency.PropertyChanged += Dependency_PropertyChanged;
+            DependencySet = dependency;
+            DependencySet.PropertyChanged += Dependency_PropertyChanged;
+            Dependency = DependencySet.Dependency;
         }
 
         private void Dependency_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -24,14 +26,14 @@ namespace EmberWpfCore.ViewModel
 
         public string LatestBeatmapFile
         {
-            get => (string)Dependency.GetValue(nameof(LatestBeatmapFile), DependencySet.NameDependencies[nameof(LatestBeatmapFile)]);
-            set => Dependency.SetValue(nameof(LatestBeatmapFile), DependencySet.NameDependencies[nameof(LatestBeatmapFile)], value);
+            get => (string)DependencySet.GetValue(nameof(LatestBeatmapFile), Dependency.NameDependencies[nameof(LatestBeatmapFile)]);
+            set => DependencySet.SetValue(nameof(LatestBeatmapFile), Dependency.NameDependencies[nameof(LatestBeatmapFile)], value);
         }
 
         public int MyIntValue
         {
-            get => (int)Dependency.GetValue(nameof(MyIntValue), DependencySet.NameDependencies[nameof(MyIntValue)]);
-            set => Dependency.SetValue(nameof(MyIntValue), DependencySet.NameDependencies[nameof(MyIntValue)], value);
+            get => (int)DependencySet.GetValue(nameof(MyIntValue), Dependency.NameDependencies[nameof(MyIntValue)]);
+            set => DependencySet.SetValue(nameof(MyIntValue), Dependency.NameDependencies[nameof(MyIntValue)], value);
         }
 
     }
