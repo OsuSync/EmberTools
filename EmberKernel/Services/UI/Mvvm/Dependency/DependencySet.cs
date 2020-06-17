@@ -40,6 +40,21 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
 
         public abstract object GetValue(string propertyName, PropertyInfo property);
         public abstract void SetValue(string propertyName, PropertyInfo property, object value);
+        public object GetValue(string propertyName)
+        {
+            var property = Dependencies[_holdType.GetFullEventName()].NameDependencies[propertyName];
+            return GetValue(propertyName, property);
+        }
+        public void SetValue(string propertyName, object value)
+        {
+            var property = Dependencies[_holdType.GetFullEventName()].NameDependencies[propertyName];
+            SetValue(propertyName, property, value);
+        }
+        public object this[string index]
+        {
+            get => GetValue(index);
+            set => SetValue(index, value);
+        }
     }
 
     public abstract class DependencySet<T> : DependencySet
