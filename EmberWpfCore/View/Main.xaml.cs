@@ -34,18 +34,7 @@ namespace EmberWpfCore.View
         public Task Initialize(ILifetimeScope scope)
         {
             var tabs = scope.Resolve<RegisteredTabs>();
-            //(FindName("RegisteredTabs") as ListBox).ItemsSource = tabs;
             (FindName("Tabs") as TabControl).ItemsSource = tabs;
-            //foreach (var tab in tabs)
-            //{
-            //    var tabItem = new TabItem
-            //    {
-            //        Name = tab.Name,
-            //        Header = tab.Name,
-            //        Content = tab.Instance
-            //    };
-            //    (FindName("Tabs") as TabControl).Items.Add(tabItem);
-            //}
             Show();
             return Task.CompletedTask;
         }

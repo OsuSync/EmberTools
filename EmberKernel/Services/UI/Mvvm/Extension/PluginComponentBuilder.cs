@@ -24,7 +24,7 @@ namespace EmberKernel.Services.UI.Mvvm.Extension
         public static void ConfigureUIComponent<TComponent>(this IComponentBuilder builder) where TComponent : IViewComponent, new()
         {
             Resolve(builder.ParentScope).RegisterComponent<TComponent>();
-            builder.ConfigureComponent<TComponent>();
+            builder.ConfigureComponent<TComponent>().SingleInstance();
         }
         public static void ConfigureUIComponent<TComponent>(this IComponentBuilder builder, string category) where TComponent : IViewComponent, new()
         {

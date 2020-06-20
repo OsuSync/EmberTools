@@ -4,6 +4,7 @@ using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
 using ExamplePlugin.ViewModel;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
@@ -39,25 +40,31 @@ namespace ExamplePlugin.ViewComponents
             var manager = scope.Resolve<IConfigurationModelManager>();
             ConfigurationManager = manager;
             ConfigurationManager.CollectionChanged += Manager_CollectionChanged;
+            InitializeDependecy(ConfigurationManager);
             return Task.CompletedTask;
+        }
+
+        private void InitializeDependecy(IEnumerable initilizer)
+        {
+            foreach (var item in initilizer)
+            {
+                if (item is DependencySet dependencySet && dependencySet.GetTypeName() == "MyPluginConfiguration")
+                {
+                    ViewMode = new ConfigurationViewModel(dependencySet);
+                    if (FindName("configurations") is ListBox list)
+                    {
+                        list.ItemsSource = ConfigurationManager;
+                    }
+                    DataContext = ViewMode;
+                }
+            }
         }
 
         private void Manager_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                foreach (var item in e.NewItems)
-                {
-                    if (item is DependencySet dependencySet && dependencySet.GetTypeName() == "MyPluginConfiguration")
-                    {
-                        ViewMode = new ConfigurationViewModel(dependencySet);
-                        if (FindName("configurations") is ListBox list)
-                        {
-                            list.ItemsSource = ConfigurationManager;
-                        }
-                        DataContext = ViewMode;
-                    }
-                }
+                InitializeDependecy(e.NewItems);
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
@@ -78,6 +85,7 @@ namespace ExamplePlugin.ViewComponents
 
         public Task Uninitialize(ILifetimeScope scope)
         {
+            if (ConfigurationManager != null) ConfigurationManager.CollectionChanged -= Manager_CollectionChanged;
             return Task.CompletedTask;
         }
 

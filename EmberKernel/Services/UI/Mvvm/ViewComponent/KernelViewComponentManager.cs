@@ -44,16 +44,16 @@ namespace EmberKernel.Services.UI.Mvvm.ViewComponent
             {
                 throw new InvalidCastException();
             }
+            var instance = scope.Resolve(type) as IViewComponent;
+            foreach (var category in ComponentCategories[type])
+            {
+                CategoryComponents[category].Remove(type);
+            }
+            ComponentScopes.Remove(type);
+            Instance.Remove(type);
             await WindowManager.BeginUIThreadScope(async () =>
             {
-                var instance = scope.Resolve(type) as IViewComponent;
                 await instance.Uninitialize(scope);
-                foreach (var category in ComponentCategories[type])
-                {
-                    CategoryComponents[category].Remove(type);
-                }
-                ComponentScopes.Remove(type);
-                Instance.Remove(type);
                 this.Remove(instance);
             });
         }

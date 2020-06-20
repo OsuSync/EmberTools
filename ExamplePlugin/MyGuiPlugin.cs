@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ExamplePlugin
 {
-    [EmberPlugin(Author = "ZeroAsh", Name = "Example GUI Plugin - 3", Version = "1.0")]
+    [EmberPlugin(Author = "ZeroAsh", Name = "MyGUI", Version = "1.0")]
     class MyGuiPlugin : Plugin
     {
         public override void BuildComponents(IComponentBuilder builder)

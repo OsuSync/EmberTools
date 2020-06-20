@@ -1,6 +1,7 @@
 ﻿using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -20,20 +21,27 @@ namespace EmberWpfCore.ViewModel
 
     public class RegisteredTabs : ObservableCollection<TabViewModel>, IComponent
     {
-        private IViewComponentManager ComponentManager { get; set; }
         public RegisteredTabs(IViewComponentManager manager)
         {
-            this.ComponentManager = manager;
             manager.CollectionChanged += Manager_CollectionChanged;
             var tabTypes = manager.GetComponentType<ITabCategory>();
-            //foreach (var type in tabTypes)
-            //{
-            //    this.Add(new TabViewModel()
-            //    {
-            //        Name = type.Name,
-            //        Instance = Activator.CreateInstance(type) as UserControl,
-            //    });
-            //}
+            ProcessNewItems(manager);
+        }
+
+        private void ProcessNewItems(IEnumerable enumerator)
+        {
+            foreach (var item in enumerator)
+            {
+                if (item.GetType().IsSameCategoryComponent<ITabCategory>())
+                {
+                    this.Add(new TabViewModel()
+                    {
+                        Name = item.GetType().Name,
+                        Header = item.GetType().Name,
+                        Content = item as UserControl,
+                    });
+                }
+            }
         }
 
         private void Manager_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -52,25 +60,13 @@ namespace EmberWpfCore.ViewModel
             {
                 if (e.NewItems[0].GetType().IsSameCategoryComponent<ITabCategory>())
                 {
-                    foreach (var item in e.NewItems)
-                    {
-                        if (item.GetType().IsSameCategoryComponent<ITabCategory>())
-                        {
-                            this.Add(new TabViewModel()
-                            {
-                                Name = item.GetType().Name,
-                                Header = item.GetType().Name,
-                                Content = item as UserControl,
-                            });
-                        }
-                    }
+                    ProcessNewItems(e.NewItems);
                 }
             }
         }
 
         public void Dispose()
         {
-            this.ClearItems();
         }
     }
 }
