@@ -2,6 +2,7 @@
 using EmberCore.KernelServices.UI.View;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.Dependency;
+using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
 using EmberWpfCore.ViewModel;
 using System;
@@ -23,24 +24,37 @@ namespace EmberWpfCore.View
     /// <summary>
     /// Interaction logic for Main.xaml
     /// </summary>
-    partial class Main : Window, IHostedWpfWindow
+    partial class Main : Window, IHostedWindow
     {
-        public static IConfigurationModelManager ConfigurationManager { get; set; }
         public Main()
         {
             InitializeComponent();
         }
-        ConfigurationViewModel ViewMode { get; set; }
-        public void Initialize(ILifetimeScope scope)
+
+        public Task Initialize(ILifetimeScope scope)
         {
-            var manager = scope.Resolve<IConfigurationModelManager>();
-            ConfigurationManager = manager;
-            ViewMode = new ConfigurationViewModel(manager.GetDependency("MyPluginConfiguration"));
-            this.DataContext = ViewMode;
-            if (this.FindName("configurations") is ListBox list)
-            {
-                list.ItemsSource = manager;
-            }
+            var tabs = scope.Resolve<RegisteredTabs>();
+            //(FindName("RegisteredTabs") as ListBox).ItemsSource = tabs;
+            (FindName("Tabs") as TabControl).ItemsSource = tabs;
+            //foreach (var tab in tabs)
+            //{
+            //    var tabItem = new TabItem
+            //    {
+            //        Name = tab.Name,
+            //        Header = tab.Name,
+            //        Content = tab.Instance
+            //    };
+            //    (FindName("Tabs") as TabControl).Items.Add(tabItem);
+            //}
+            Show();
+            return Task.CompletedTask;
+        }
+
+        public Task Uninitialize(ILifetimeScope scope)
+        {
+            Hide();
+            Close();
+            return Task.CompletedTask;
         }
     }
 }

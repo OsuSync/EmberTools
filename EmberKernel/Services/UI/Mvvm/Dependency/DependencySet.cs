@@ -36,6 +36,7 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
         {
             _holdType = holdType;
         }
+        public string GetTypeName() => GetType().GetGenericName(1);
         public TypeDependency Dependency => GetDependency(_holdType);
 
         public abstract object GetValue(string propertyName, PropertyInfo property);

@@ -39,7 +39,9 @@ namespace ExamplePlugin.Components
         [CommandHandler(Command = "enable")]
         public void EnablePlugin(string plugin)
         {
-            _pluginMan.Load(FindPlugin(plugin));
+            var pluginInstance = FindPlugin(plugin);
+            _pluginMan.Load(pluginInstance);
+            _pluginMan.Initialize(pluginInstance);
         }
 
         [CommandHandler(Command = "disable")]

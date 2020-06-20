@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace EmberKernel.Services.EventBus
 {
-    public class MemoryEventBus : KernelService, IEventBus, IDisposable
+    public class MemoryEventBus : IKernelService, IEventBus, IDisposable
     {
         private readonly ISubscriptionManager _subsManager;
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();

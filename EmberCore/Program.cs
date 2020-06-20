@@ -9,6 +9,10 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using EmberKernel.Services.UI.Extension;
+using EmberCore.KernelServices.UI.View;
+using Autofac;
+using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
+using System.Windows;
 
 namespace EmberCore
 {
@@ -36,6 +40,7 @@ namespace EmberCore
                 .UseEventBus()
                 .UseCommandService()
                 .UseKernalService<CorePluginResolver>()
+                .UseWindowManager<EmberWpfUIService, Window>()
                 .UsePlugins<PluginsManager>()
                 .UseMvvmInterface((mvvm) => mvvm
                     .UseConfigurationModel())

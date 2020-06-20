@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using EmberKernel.Plugins;
 using EmberKernel.Services.Configuration;
+using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -37,10 +38,14 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
                     return;
                 }
                 CurrentValue = latestOption;
-                foreach (var item in GetDependency<TOptions>().TypeDependencies)
+                var windowManager = scope.Resolve<IWindowManager>();
+                windowManager.BeginUIThreadScope(() =>
                 {
-                    RaisePropertyChangedEvent(this, new PropertyChangedEventArgs(item.Value));
-                }
+                    foreach (var item in GetDependency<TOptions>().TypeDependencies)
+                    {
+                        RaisePropertyChangedEvent(this, new PropertyChangedEventArgs(item.Value));
+                    }
+                });
             });
             this.CurrentValue = Option.CurrentValue;
         }

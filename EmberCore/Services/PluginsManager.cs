@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Util;
 using EmberCore.KernelServices.PluginResolver;
+using EmberCore.KernelServices.UI.View;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
@@ -23,6 +24,7 @@ namespace EmberCore.Services
         private readonly ILifetimeScope PluginLayerScope;
         private readonly LinkedList<Type> LoadedTypes = new LinkedList<Type>();
         private readonly Dictionary<IPlugin, ILifetimeScope> PluginScopes = new Dictionary<IPlugin, ILifetimeScope>();
+        private readonly Dictionary<IPlugin, bool> PluginStatus = new Dictionary<IPlugin, bool>();
         private readonly List<IEntryComponent> EntryComponents = new List<IEntryComponent>();
         private ILogger<PluginsManager> Logger { get; }
         public PluginsManager(ILifetimeScope scope, CorePluginResolver resolver, ILogger<PluginsManager> logger)
@@ -51,6 +53,23 @@ namespace EmberCore.Services
             }
         }
 
+        public async Task Initialize(IPlugin plugin)
+        {
+            if (PluginStatus.ContainsKey(plugin) && !PluginStatus[plugin])
+            {
+                await plugin.Initialize(PluginScopes[plugin]);
+                PluginStatus[plugin] = true;
+            }
+        }
+
+        private async Task InitializeAllPlugins()
+        {
+            foreach (var (plugin, _) in PluginScopes)
+            {
+                await Initialize(plugin);
+            }
+        }
+
         public async Task Run(ILifetimeScope scope)
         {
             foreach (var type in LoadedTypes)
@@ -71,6 +90,7 @@ namespace EmberCore.Services
                     Logger.LogError(e, $"Error while load {pluginDesciptor}");
                 }
             }
+            await InitializeAllPlugins();
         }
 
         public Task RunEntryComponents()
@@ -100,46 +120,52 @@ namespace EmberCore.Services
             yield break;
         }
 
-        public async Task Load(IPlugin plugin)
+        public Task Load(IPlugin plugin)
         {
             var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
             try
             {
                 if (plugin is IEntryComponent entry) EntryComponents.Add(entry);
-                var pluginScope = PluginLayerScope.BeginLifetimeScope((builder) => plugin.BuildComponents(new ComponentBuilder(builder, PluginLayerScope)));
+                var pluginScope = PluginLayerScope.BeginLifetimeScope(plugin.GetType(), (builder) => plugin.BuildComponents(new ComponentBuilder(builder, PluginLayerScope)));
                 if (!PluginScopes.ContainsKey(plugin))
                 {
                     PluginScopes.Add(plugin, pluginScope);
+                    PluginStatus.Add(plugin, false);
+                    foreach (var entryRegistrion in pluginScope.ComponentRegistry.Registrations)
+                    {
+                        if (entryRegistrion.Activator.LimitType.IsAssignableTo<IEntryComponent>())
+                        {
+                            EntryComponents.Add((IEntryComponent)pluginScope.Resolve(entryRegistrion.Activator.LimitType));
+                        }
+                    }
                 }
                 else
                 {
                     PluginScopes[plugin] = pluginScope;
-                }
-                await plugin.Initialize(pluginScope);
-                foreach (var entryRegistrion in pluginScope.ComponentRegistry.Registrations)
-                {
-                    if (entryRegistrion.Activator.LimitType.IsAssignableTo<IEntryComponent>())
-                    {
-                        EntryComponents.Add((IEntryComponent)pluginScope.Resolve(entryRegistrion.Activator.LimitType));
-                    }
                 }
             }
             catch (Exception e)
             {
                 Logger.LogWarning(e, $"Can't load {pluginDesciptor}");
             }
+            return Task.CompletedTask;
         }
 
         public async Task Unload(IPlugin plugin)
         {
             var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
             Logger.LogInformation($"Unloading plugin {pluginDesciptor}...");
-            if (PluginScopes.TryGetValue(plugin, out var scope))
+            if (PluginScopes.TryGetValue(plugin, out var scope) && scope != null)
             {
                 await plugin.Uninitialize(scope);
                 scope.Dispose();
                 PluginScopes[plugin] = null;
+                PluginStatus[plugin] = false;
                 Logger.LogInformation($"Unloaded pluging {pluginDesciptor}!");
+            }
+            else
+            {
+                Logger.LogInformation($"Plugin {pluginDesciptor} not initialized");
             }
         }
 

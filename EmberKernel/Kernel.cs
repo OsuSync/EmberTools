@@ -10,7 +10,6 @@ namespace EmberKernel
     {
         private ContainerBuilder Builder { get; }
         private IContainer Container { get; }
-        private ILifetimeScope topScope = null;
         private ILifetimeScope executionScope = null;
 
         public Kernel(ContainerBuilder builder)
@@ -26,16 +25,10 @@ namespace EmberKernel
 
         public async Task RunAsync()
         {
-            topScope = Container.BeginLifetimeScope(builder =>
+            var pluginLayer = Container.Resolve<IPluginsLayer>();
+            executionScope = Container.BeginLifetimeScope(builder =>
             {
-                // Build base infrastructures here
-            });
-
-            var pluginLayer = topScope.Resolve<IPluginsLayer>();
-            // Build execution scope
-            executionScope = topScope.BeginLifetimeScope(builder =>
-            {
-                if (topScope.IsRegistered<IPluginsLayer>())
+                if (Container.IsRegistered<IPluginsLayer>())
                 {
                     pluginLayer.BuildScope(builder);
                 }
@@ -47,7 +40,6 @@ namespace EmberKernel
         public void Dispose()
         {
             executionScope.Dispose();
-            topScope.Dispose();
         }
     }
 }

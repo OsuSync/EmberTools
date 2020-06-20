@@ -5,6 +5,7 @@ using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI;
 using EmberWpfCore.View;
+using EmberWpfCore.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -22,17 +23,18 @@ namespace EmberWpfCore
 
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.ConfigureComponent<WpfUIComponent<Main>>().SingleInstance();
+            builder.ConfigureComponent<RegisteredTabs>();
+            builder.ConfigureWpfWindow<Main>();
         }
 
-        public override Task Initialize(ILifetimeScope scope)
+        public override async Task Initialize(ILifetimeScope scope)
         {
-            return Task.CompletedTask;
+            await scope.InitializeWpfWindow<Main>();
         }
 
-        public override Task Uninitialize(ILifetimeScope scope)
+        public override async Task Uninitialize(ILifetimeScope scope)
         {
-            return Task.CompletedTask;
+            await scope.UninitializeWpfWindow<Main>();
         }
     }
 }

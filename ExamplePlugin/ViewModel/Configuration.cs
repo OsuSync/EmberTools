@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
-namespace EmberWpfCore.ViewModel
+namespace ExamplePlugin.ViewModel
 {
     public class ConfigurationViewModel : INotifyPropertyChanged
     {
