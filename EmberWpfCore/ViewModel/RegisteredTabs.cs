@@ -11,15 +11,7 @@ using System.Windows.Controls;
 
 namespace EmberWpfCore.ViewModel
 {
-    public class TabViewModel : TabItem
-    {
-        public override string ToString()
-        {
-            return Name;
-        }
-    }
-
-    public class RegisteredTabs : ObservableCollection<TabViewModel>, IComponent
+    public class RegisteredTabs : ObservableCollection<TabItem>, IComponent
     {
         public RegisteredTabs(IViewComponentManager manager)
         {
@@ -34,7 +26,7 @@ namespace EmberWpfCore.ViewModel
             {
                 if (item.GetType().IsSameCategoryComponent<ITabCategory>())
                 {
-                    this.Add(new TabViewModel()
+                    this.Add(new TabItem()
                     {
                         Name = item.GetType().Name,
                         Header = item.GetType().Name,

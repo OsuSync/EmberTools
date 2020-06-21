@@ -9,6 +9,6 @@ namespace EmberKernel.Services.EventBus.Handlers
 
     public interface IEventHandler<in TEvent> : IEventHandler
     {
-        Task Handle(TEvent @event);
+        ValueTask Handle(TEvent @event);
     }
 }

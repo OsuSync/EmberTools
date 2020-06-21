@@ -11,7 +11,7 @@ namespace EmberKernel.Services.EventBus
     public interface IEventBus
     {
         void Publish(Event @event);
-        Task Publish(Event @event, CancellationToken cancellationToken = default);
+        ValueTask Publish(Event @event, CancellationToken cancellationToken = default);
 
         void Subscribe<TEvent, THandler>(ILifetimeScope currentScope)
             where TEvent : Event

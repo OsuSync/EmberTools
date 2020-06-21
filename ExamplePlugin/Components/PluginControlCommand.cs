@@ -62,7 +62,7 @@ namespace ExamplePlugin.Components
         [CommandParser(typeof(CustomParser))]
         public void MyAsyncEventPublisher(int inputNumber)
         {
-            _eventBus.Publish(new ExamplePluginPublishEvent() { InputNumber = inputNumber }, default).Wait();
+            _eventBus.Publish(new ExamplePluginPublishEvent() { InputNumber = inputNumber }, default).AsTask().Wait();
             _logger.LogInformation($"Event published! Value = {inputNumber}");
         }
 

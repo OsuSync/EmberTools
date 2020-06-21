@@ -24,14 +24,14 @@ namespace EmberKernel.Services.EventBus
             Task.Run(() => Publish(@event, _cancellationTokenSource.Token));
         }
 
-        public Task Publish(Event @event, CancellationToken cancellation = default)
+        public ValueTask Publish(Event @event, CancellationToken cancellation = default)
         {
             var eventName = @event.GetType().GetFullEventName();
             var jsonMessage = JsonSerializer.Serialize(@event, @event.GetType());
             return ProcessEvent(eventName, jsonMessage, cancellation);
         }
 
-        private async Task ProcessEvent(string eventName, string message, CancellationToken cancellation = default)
+        private async ValueTask ProcessEvent(string eventName, string message, CancellationToken cancellation = default)
         {
             if (!_subsManager.HasSubscriptionForEvent(eventName)) return;
 
@@ -48,11 +48,11 @@ namespace EmberKernel.Services.EventBus
                 var method = concreteType.GetMethod("Handle");
                 if (method.GetParameters().Length == 2)
                 {
-                    await (Task)method.Invoke(handler, new object[] { @event, cancellation });
+                    await (ValueTask)method.Invoke(handler, new object[] { @event, cancellation });
                 }
                 else
                 {
-                    await (Task)method.Invoke(handler, new object[] { @event });
+                    await (ValueTask)method.Invoke(handler, new object[] { @event });
                 }
             }
         }
