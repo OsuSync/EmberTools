@@ -12,10 +12,16 @@ namespace EmberKernel.Plugins
     {
         IEnumerable<Type> Resolve(Assembly assembly);
         Task Load(IPlugin plugin);
+        Task Initialize(IPlugin plugin);
         Task Unload(IPlugin plugin);
 
         IPlugin GetPluginByDescriptor(PluginDescriptor descriptor);
+        bool IsPluginInitialized(IPlugin plugin);
 
         IEnumerable<PluginDescriptor> LoadedPlugins();
+
+        IDisposable OnPluginLoad(Action<PluginDescriptor> callback);
+        IDisposable OnPluginUnload(Action<PluginDescriptor> callback);
+        IDisposable OnPluginInitialized(Action<PluginDescriptor> callback);
     }
 }

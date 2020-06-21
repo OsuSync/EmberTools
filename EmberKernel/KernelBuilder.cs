@@ -51,16 +51,16 @@ namespace EmberKernel
             return this;
         }
 
-        public KernelBuilder UseKernalService<TKernelService>() where TKernelService : KernelService
+        public KernelBuilder UseKernalService<TKernelService>() where TKernelService : IKernelService
         {
-            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().As<TKernelService>().SingleInstance());
+            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().AsSelf().As<TKernelService>().SingleInstance());
             return this;
         }
 
 
-        public KernelBuilder UseKernalService<TKernelService, TIKernelService>() where TKernelService : KernelService, TIKernelService
+        public KernelBuilder UseKernalService<TKernelService, TIKernelService>() where TKernelService : IKernelService, TIKernelService
         {
-            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().As<TIKernelService>().SingleInstance());
+            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().AsSelf().As<TIKernelService>().SingleInstance());
             return this;
         }
 

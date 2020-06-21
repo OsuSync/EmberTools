@@ -1,7 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Autofac.Util;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
@@ -27,21 +29,20 @@ namespace EmberCore.KernelServices.PluginResolver.Loader
 
         public IEnumerable<Assembly> LoadAssemblies()
         {
-            var dllFiles = Directory.EnumerateFiles(FolderPath, "*.plugin");
-            foreach (var dllPath in dllFiles)
+            var pluginFiles = Directory.EnumerateFiles(FolderPath, "*.dll");
+            foreach (var pluginPath in pluginFiles)
             {
-                Assembly asm = default;
+                Assembly pluginAsm = default;
                 try
                 {
-                    asm = LoadFromAssemblyPath(Path.Combine(FolderPath, dllPath));
+                    pluginAsm = LoadFromAssemblyPath(Path.Combine(FolderPath, pluginPath));
                 }
                 catch (Exception e)
                 {
-                    Logger.LogWarning(e, $"Unknown plugin: {dllFiles}");
+                    Logger.LogWarning(e, $"Unknown plugin: {pluginPath}");
                 }
-                if (asm != null) yield return asm;
+                if (pluginAsm != null) yield return pluginAsm;
             }
-            
         }
     }
 }

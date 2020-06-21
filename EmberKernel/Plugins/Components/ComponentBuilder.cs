@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Builder;
+using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace EmberKernel.Plugins.Components
         internal ContainerBuilder Container { get; }
         internal ILifetimeScope ParentScope { get; }
         ContainerBuilder IComponentBuilder.Container => Container;
+        ILifetimeScope IComponentBuilder.ParentScope => ParentScope;
 
         public ComponentBuilder(ContainerBuilder container, ILifetimeScope parentScope)
         {
