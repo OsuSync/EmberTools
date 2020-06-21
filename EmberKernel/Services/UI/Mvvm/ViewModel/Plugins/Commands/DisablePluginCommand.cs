@@ -21,6 +21,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Plugins.Commands
 
         public bool CanExecute(object parameter)
         {
+            return true;
             if (parameter is PluginDescriptor descriptor)
             {
                 return PluginManagerViewModel.IsPluginInitialized(descriptor);

@@ -14,12 +14,15 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Plugins
     {
         private readonly IDisposable _onPluginLoad;
         private readonly IDisposable _onPluginUnload;
+        private readonly IDisposable _onPluginStatusUpdated;
         private IWindowManager WindowManager { get; }
         private IPluginsManager PluginsManager { get; }
         private readonly DisablePluginCommand disablePluginCommand;
         private readonly EnablePluginCommand enablePluginCommand;
         public ICommand DisablePluginCommand => disablePluginCommand;
         public ICommand EnablePluginCommand => enablePluginCommand;
+
+        public event Action<PluginDescriptor, PluginStatus> PluginStatusChanged;
 
         public PluginManagerViewModel(IPluginsManager pluginsManager, IWindowManager windowManager)
         {
@@ -30,6 +33,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Plugins
             InitializePlugins();
             _onPluginLoad = pluginsManager.OnPluginLoad((descriptor) => AddPlugin(descriptor));
             _onPluginUnload = pluginsManager.OnPluginUnload((desciptor) => RemovePlugin(desciptor));
+            _onPluginStatusUpdated = pluginsManager.OnPluginStatusUpdated(PluginStatusUpdated);
         }
 
         private void InitializePlugins()
@@ -39,8 +43,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Plugins
                 AddPlugin(item);
             }
         }
-
-
+        
         public void DisablePlugin(PluginDescriptor item)
         {
             if (PluginsManager.GetPluginByDescriptor(item) is IPlugin plugin)
@@ -70,17 +73,25 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Plugins
         private void AddPlugin(PluginDescriptor item)
         {
             WindowManager.BeginUIThreadScope(() => Add(item));
+            //PluginStatusChanged?.Invoke(???,???);
         }
 
         private void RemovePlugin(PluginDescriptor item)
         {
             WindowManager.BeginUIThreadScope(() => Remove(item));
+            //PluginStatusChanged?.Invoke(???,???);
+        }
+
+        private void PluginStatusUpdated(PluginDescriptor item)
+        {
+            //PluginStatusChanged?.Invoke(???,???);
         }
 
         public void Dispose()
         {
             _onPluginLoad.Dispose();
             _onPluginUnload.Dispose();
+            _onPluginStatusUpdated.Dispose();
         }
     }
 }

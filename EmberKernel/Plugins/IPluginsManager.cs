@@ -22,5 +22,6 @@ namespace EmberKernel.Plugins
 
         IDisposable OnPluginLoad(Action<PluginDescriptor> callback);
         IDisposable OnPluginUnload(Action<PluginDescriptor> callback);
+        IDisposable OnPluginStatusUpdated(Action<PluginDescriptor> callback);
     }
 }

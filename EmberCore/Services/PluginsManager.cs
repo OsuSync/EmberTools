@@ -29,6 +29,7 @@ namespace EmberCore.Services
         private ILogger<PluginsManager> Logger { get; }
         private event Action<PluginDescriptor> PluginLoaded;
         private event Action<PluginDescriptor> PluginUnloaded;
+        private event Action<PluginDescriptor> PluginStatusUpdated;
         public PluginsManager(ILifetimeScope scope, CorePluginResolver resolver, ILogger<PluginsManager> logger)
         {
             Resolver = resolver;
@@ -71,6 +72,7 @@ namespace EmberCore.Services
                 await Initialize(plugin);
                 var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
                 PluginLoaded?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
+                PluginStatusUpdated?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
             }
         }
 
@@ -168,6 +170,7 @@ namespace EmberCore.Services
                 PluginStatus[plugin] = false;
                 Logger.LogInformation($"Unloaded pluging {pluginDesciptor}!");
                 PluginUnloaded?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
+                PluginStatusUpdated?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
             }
             else
             {
@@ -231,6 +234,19 @@ namespace EmberCore.Services
             public void OnChange(PluginDescriptor descriptor) => listener.Invoke(descriptor);
             public void Dispose() => _pluginsManager.PluginUnloaded -= listener;
         }
+        private struct PluginStatusUpdateTracker : IDisposable
+        {
+            private readonly PluginsManager _pluginsManager;
+            private readonly Action<PluginDescriptor> listener;
+            public PluginStatusUpdateTracker(PluginsManager pluginsManager, Action<PluginDescriptor> callback)
+            {
+                this._pluginsManager = pluginsManager;
+                this.listener = callback;
+            }
+
+            public void OnChange(PluginDescriptor descriptor) => listener.Invoke(descriptor);
+            public void Dispose() => _pluginsManager.PluginUnloaded -= listener;
+        }
 
         public IDisposable OnPluginLoad(Action<PluginDescriptor> listener)
         {
@@ -243,6 +259,13 @@ namespace EmberCore.Services
         {
             var disposable = new PluginUnloadTracker(this, listener);
             PluginUnloaded += disposable.OnChange;
+            return disposable;
+        }
+
+        public IDisposable OnPluginStatusUpdated(Action<PluginDescriptor> listener)
+        {
+            var disposable = new PluginStatusUpdateTracker(this, listener);
+            PluginStatusUpdated += disposable.OnChange;
             return disposable;
         }
 
