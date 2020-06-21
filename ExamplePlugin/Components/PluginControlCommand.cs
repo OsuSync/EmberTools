@@ -40,8 +40,8 @@ namespace ExamplePlugin.Components
         public void EnablePlugin(string plugin)
         {
             var pluginInstance = FindPlugin(plugin);
-            _pluginMan.Load(pluginInstance);
-            _pluginMan.Initialize(pluginInstance);
+            _pluginMan.Load(pluginInstance).Wait();
+            _pluginMan.Initialize(pluginInstance).Wait();
         }
 
         [CommandHandler(Command = "disable")]

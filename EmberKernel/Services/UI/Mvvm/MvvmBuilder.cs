@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
+using EmberKernel.Services.UI.Mvvm.ViewModel.Plugins;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,12 +20,8 @@ namespace EmberKernel.Services.UI.Mvvm
         {
             kernelBuilder._containerBuilder
                 .RegisterType<ConfigurationModelManager>()
+                .AsSelf()
                 .As<IConfigurationModelManager>()
-                .SingleInstance();
-
-            kernelBuilder._containerBuilder
-                .RegisterType<KernelViewComponentManager>()
-                .As<IViewComponentManager>()
                 .SingleInstance();
             return this;
         }
