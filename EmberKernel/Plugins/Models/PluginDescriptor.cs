@@ -21,6 +21,16 @@ namespace EmberKernel.Plugins.Models
             };
         }
 
+        public override bool Equals(object obj)
+        {
+            return this.GetHashCode() == obj.GetHashCode();
+        }
+
+        public override int GetHashCode()
+        {
+            return ToString().GetHashCode();
+        }
+
         public override string ToString()
         {
             return $"{Name}({Author}) - {Version}";

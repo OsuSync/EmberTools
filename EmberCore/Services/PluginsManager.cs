@@ -29,7 +29,7 @@ namespace EmberCore.Services
         private ILogger<PluginsManager> Logger { get; }
         private event Action<PluginDescriptor> PluginLoaded;
         private event Action<PluginDescriptor> PluginUnloaded;
-        private event Action<PluginDescriptor> PluginStatusUpdated;
+        private event Action<PluginDescriptor> PluginInitialized;
         public PluginsManager(ILifetimeScope scope, CorePluginResolver resolver, ILogger<PluginsManager> logger)
         {
             Resolver = resolver;
@@ -62,6 +62,8 @@ namespace EmberCore.Services
             {
                 await plugin.Initialize(PluginScopes[plugin]);
                 PluginStatus[plugin] = true;
+                var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
+                PluginInitialized?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
             }
         }
 
@@ -70,9 +72,6 @@ namespace EmberCore.Services
             foreach (var (plugin, _) in PluginScopes)
             {
                 await Initialize(plugin);
-                var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
-                PluginLoaded?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
-                PluginStatusUpdated?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
             }
         }
 
@@ -128,7 +127,8 @@ namespace EmberCore.Services
 
         public Task Load(IPlugin plugin)
         {
-            var pluginDesciptor = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>().ToString();
+            var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
+            var pluginDesciptor = pluginDesciptorAttr.ToString();
             try
             {
                 if (plugin is IEntryComponent entry) EntryComponents.Add(entry);
@@ -154,6 +154,7 @@ namespace EmberCore.Services
             {
                 Logger.LogWarning(e, $"Can't load {pluginDesciptor}");
             }
+            PluginLoaded?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
             return Task.CompletedTask;
         }
 
@@ -170,7 +171,6 @@ namespace EmberCore.Services
                 PluginStatus[plugin] = false;
                 Logger.LogInformation($"Unloaded pluging {pluginDesciptor}!");
                 PluginUnloaded?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
-                PluginStatusUpdated?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
             }
             else
             {
@@ -187,10 +187,7 @@ namespace EmberCore.Services
         {
             foreach (var plugin in PluginScopes.Keys)
             {
-                if (PluginStatus[plugin])
-                {
-                    yield return PluginDescriptor.FromAttribute(plugin.GetType().GetCustomAttribute<EmberPluginAttribute>());
-                }
+                yield return PluginDescriptor.FromAttribute(plugin.GetType().GetCustomAttribute<EmberPluginAttribute>());
             }
         }
 
@@ -234,11 +231,11 @@ namespace EmberCore.Services
             public void OnChange(PluginDescriptor descriptor) => listener.Invoke(descriptor);
             public void Dispose() => _pluginsManager.PluginUnloaded -= listener;
         }
-        private struct PluginStatusUpdateTracker : IDisposable
+        private struct PluginInitializeTracker : IDisposable
         {
             private readonly PluginsManager _pluginsManager;
             private readonly Action<PluginDescriptor> listener;
-            public PluginStatusUpdateTracker(PluginsManager pluginsManager, Action<PluginDescriptor> callback)
+            public PluginInitializeTracker(PluginsManager pluginsManager, Action<PluginDescriptor> callback)
             {
                 this._pluginsManager = pluginsManager;
                 this.listener = callback;
@@ -262,10 +259,10 @@ namespace EmberCore.Services
             return disposable;
         }
 
-        public IDisposable OnPluginStatusUpdated(Action<PluginDescriptor> listener)
+        public IDisposable OnPluginInitialized(Action<PluginDescriptor> listener)
         {
-            var disposable = new PluginStatusUpdateTracker(this, listener);
-            PluginStatusUpdated += disposable.OnChange;
+            var disposable = new PluginInitializeTracker(this, listener);
+            PluginInitialized += disposable.OnChange;
             return disposable;
         }
 

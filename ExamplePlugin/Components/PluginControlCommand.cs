@@ -40,6 +40,11 @@ namespace ExamplePlugin.Components
         public void EnablePlugin(string plugin)
         {
             var pluginInstance = FindPlugin(plugin);
+            if (pluginInstance == null)
+            {
+                _logger.LogWarning($"Plugin {plugin} not found!");
+                return;
+            }
             _pluginMan.Load(pluginInstance).Wait();
             _pluginMan.Initialize(pluginInstance).Wait();
         }
