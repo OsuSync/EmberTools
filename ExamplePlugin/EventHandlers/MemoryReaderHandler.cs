@@ -23,7 +23,7 @@ namespace ExamplePlugin.EventHandlers
             _pluginOptions = pluginOptions;
         }
 
-        public Task Handle(GameStatusInfo @event)
+        public ValueTask Handle(GameStatusInfo @event)
         {
             if (@event.HasValue)
             {
@@ -33,10 +33,10 @@ namespace ExamplePlugin.EventHandlers
             {
                 _logger.LogInformation("Not game status found");
             }
-            return Task.CompletedTask;
+            return default;
         }
 
-        public async Task Handle(BeatmapInfo @event)
+        public async ValueTask Handle(BeatmapInfo @event)
         {
             if (@event.HasValue)
             {
@@ -51,7 +51,7 @@ namespace ExamplePlugin.EventHandlers
             }
         }
 
-        public Task Handle(PlayingInfo @event)
+        public ValueTask Handle(PlayingInfo @event)
         {
             if (@event.HasValue)
             {
@@ -61,7 +61,7 @@ namespace ExamplePlugin.EventHandlers
             {
                 _logger.LogInformation("No beatmap found");
             }
-            return Task.CompletedTask;
+            return default;
         }
     }
 }

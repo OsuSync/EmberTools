@@ -26,19 +26,19 @@ namespace EmberMemoryReader.Components.Collector
         }
 
         CancellationTokenSource tokenSource;
-        Task IEventHandler<OsuProcessMatchedEvent>.Handle(OsuProcessMatchedEvent @event)
+        ValueTask IEventHandler<OsuProcessMatchedEvent>.Handle(OsuProcessMatchedEvent @event)
         {
             tokenSource = new CancellationTokenSource();
             return StartCollectorAsync(@event);
         }
 
-        Task IEventHandler<OsuProcessTerminatedEvent>.Handle(OsuProcessTerminatedEvent @event)
+        ValueTask IEventHandler<OsuProcessTerminatedEvent>.Handle(OsuProcessTerminatedEvent @event)
         {
             using (tokenSource) tokenSource.Cancel();
-            return Task.CompletedTask;
+            return default;
         }
 
-        public async Task StartCollectorAsync(OsuProcessMatchedEvent @event)
+        public async ValueTask StartCollectorAsync(OsuProcessMatchedEvent @event)
         {
             var process = Process.GetProcessById(@event.ProcessId);
             if (process == null) return;

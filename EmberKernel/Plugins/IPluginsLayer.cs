@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EmberKernel.Plugins
 {
-    public interface IPluginsLayer : IScopeBilder
+    public interface IPluginsLayer : IScopeBuilder
     {
     }
 }

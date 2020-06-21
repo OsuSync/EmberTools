@@ -39,7 +39,14 @@ namespace ExamplePlugin.Components
         [CommandHandler(Command = "enable")]
         public void EnablePlugin(string plugin)
         {
-            _pluginMan.Load(FindPlugin(plugin));
+            var pluginInstance = FindPlugin(plugin);
+            if (pluginInstance == null)
+            {
+                _logger.LogWarning($"Plugin {plugin} not found!");
+                return;
+            }
+            _pluginMan.Load(pluginInstance).Wait();
+            _pluginMan.Initialize(pluginInstance).Wait();
         }
 
         [CommandHandler(Command = "disable")]
@@ -60,7 +67,7 @@ namespace ExamplePlugin.Components
         [CommandParser(typeof(CustomParser))]
         public void MyAsyncEventPublisher(int inputNumber)
         {
-            _eventBus.Publish(new ExamplePluginPublishEvent() { InputNumber = inputNumber }, default).Wait();
+            _eventBus.Publish(new ExamplePluginPublishEvent() { InputNumber = inputNumber }, default).AsTask().Wait();
             _logger.LogInformation($"Event published! Value = {inputNumber}");
         }
 

@@ -12,7 +12,7 @@ using System.Text;
 
 namespace EmberCore.KernelServices.PluginResolver
 {
-    public class CorePluginResolver : KernelService
+    public class CorePluginResolver : IKernelService
     {
         private IOptionsSnapshot<CoreAppSetting> CoreAppSetting { get; }
         private ILogger<CorePluginResolver> Logger { get; }

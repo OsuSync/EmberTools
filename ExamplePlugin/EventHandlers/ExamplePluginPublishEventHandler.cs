@@ -19,10 +19,10 @@ namespace ExamplePlugin.EventHandlers
             _logger = logger;
         }
 
-        public Task Handle(ExamplePluginPublishEvent @event)
+        public ValueTask Handle(ExamplePluginPublishEvent @event)
         {
             _logger.LogInformation($" !!! Event handled !! -> value = {@event.InputNumber}");
-            return Task.CompletedTask;
+            return default;
         }
     }
 }

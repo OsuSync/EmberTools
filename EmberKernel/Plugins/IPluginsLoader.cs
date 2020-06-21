@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace EmberKernel.Plugins
 {
-    public interface IPluginsLoader : IScopeBilder
+    public interface IPluginsLoader : IScopeBuilder
     {
         Task RunEntryComponents();
     }

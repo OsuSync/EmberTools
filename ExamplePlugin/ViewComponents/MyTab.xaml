@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="ExamplePlugin.ViewComponents.MyTab"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:local="clr-namespace:ExamplePlugin.ViewComponents"
+              mc:Ignorable="d" 
+              d:DesignHeight="450" d:DesignWidth="800"
+              x:Name="tab">
+    <Grid>
+        <Label
+            Content="{Binding Path=DataContext.LatestBeatmapFile, ElementName=tab, Mode=TwoWay}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top" Width="781" Background="#FF797979" Height="23" Margin="0,10,0,0"
+        />
+        <ListBox HorizontalAlignment="Left" Height="386" Margin="10,38,0,0" VerticalAlignment="Top" Width="246" x:Name="configurations"/>
+    </Grid>
+</UserControl>

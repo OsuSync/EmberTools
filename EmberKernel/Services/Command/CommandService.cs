@@ -21,7 +21,7 @@ using EmberKernel.Services.Command.HelpGenerator;
 
 namespace EmberKernel.Services.Command
 {
-    public class CommandService : KernelService, ICommandService
+    public class CommandService : IKernelService, ICommandService
     {
         private ILogger<CommandService> Logger { get; }
         private int CommandSourceOperationTimeLimit { get; }
