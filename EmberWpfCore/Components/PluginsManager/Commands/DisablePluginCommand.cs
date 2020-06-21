@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
 
-namespace EmberWpfCore.View.Tabs.Commands
+namespace EmberWpfCore.Components.PluginsManager.Commands
 {
     class DisablePluginCommand : ICommand
     {
