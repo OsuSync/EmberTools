@@ -88,6 +88,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Plugins
         {
             _onPluginLoad.Dispose();
             _onPluginUnload.Dispose();
+            _onPluginInitialized.Dispose();
         }
     }
 }
