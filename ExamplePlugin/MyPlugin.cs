@@ -23,7 +23,7 @@ namespace ExamplePlugin
     [EmberPlugin(Author = "ZeroAsh", Name = "ExamplePlugin", Version = "1.0")]
     public class MyPlugin : Plugin
     {
-        public override Task Initialize(ILifetimeScope scope)
+        public override ValueTask Initialize(ILifetimeScope scope)
         {
             scope.UseCommandContainer<MyCommandComponent>();
             scope.Subscription<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
@@ -31,10 +31,10 @@ namespace ExamplePlugin
             scope.Subscription<BeatmapInfo, MemoryReaderHandler>();
             scope.Subscription<PlayingInfo, MemoryReaderHandler>();
             scope.RegisterUIModel<MyPlugin, MyPluginConfiguration>();
-            return Task.CompletedTask;
+            return default;
         }
 
-        public override Task Uninitialize(ILifetimeScope scope)
+        public override ValueTask Uninitialize(ILifetimeScope scope)
         {
             scope.RemoveCommandContainer<MyCommandComponent>();
             scope.Unsubscription<ExamplePluginPublishEvent, ExamplePluginPublishEventHandler>();
@@ -42,7 +42,7 @@ namespace ExamplePlugin
             scope.Unsubscription<BeatmapInfo, MemoryReaderHandler>();
             scope.Unsubscription<PlayingInfo, MemoryReaderHandler>();
             scope.UnregisterUIModel<MyPlugin, MyPluginConfiguration>();
-            return Task.CompletedTask;
+            return default;
         }
 
         public override void BuildComponents(IComponentBuilder builder)

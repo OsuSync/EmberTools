@@ -10,7 +10,7 @@ namespace EmberKernel.Plugins
     public abstract class Plugin : IPlugin
     {
         public abstract void BuildComponents(IComponentBuilder builder);
-        public abstract Task Initialize(ILifetimeScope scope);
-        public abstract Task Uninitialize(ILifetimeScope scope);
+        public abstract ValueTask Initialize(ILifetimeScope scope);
+        public abstract ValueTask Uninitialize(ILifetimeScope scope);
     }
 }

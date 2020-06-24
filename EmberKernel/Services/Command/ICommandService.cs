@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Command
 {
-    public interface ICommandService : IDisposable
+    public interface ICommandService : IDisposable, IAsyncDisposable
     {
         void RegisterCommandContainer(ICommandContainer commandHandler, bool enableCommandHelp = true);
         void UnregisterCommandContainer(ICommandContainer commandHandler);
 
-        Task ConfigureCommandSource(Action<ICommandSourceBuilder> builder);
+        ValueTask ConfigureCommandSource(Action<ICommandSourceBuilder> builder);
     }
 }

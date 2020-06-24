@@ -27,7 +27,7 @@ namespace EmberMemoryReader
                 );
         }
 
-        public override Task Initialize(ILifetimeScope scope)
+        public override ValueTask Initialize(ILifetimeScope scope)
         {
             // handle the event
             scope.Subscription<OsuProcessMatchedEvent, MemoryDataCollector>();
@@ -35,15 +35,15 @@ namespace EmberMemoryReader
             // search osu! process
             var listener = scope.Resolve<IProcessListener>();
             Task.Run(() => listener.SearchProcessAsync(listenTokenSource.Token));
-            return Task.CompletedTask;
+            return default;
         }
 
-        public override Task Uninitialize(ILifetimeScope scope)
+        public override ValueTask Uninitialize(ILifetimeScope scope)
         {
             scope.Unsubscription<OsuProcessMatchedEvent, MemoryDataCollector>();
             scope.Unsubscription<OsuProcessTerminatedEvent, MemoryDataCollector>();
             listenTokenSource.Cancel();
-            return Task.CompletedTask;
+            return default;
         }
     }
 }

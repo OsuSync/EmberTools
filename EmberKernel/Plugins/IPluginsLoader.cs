@@ -7,6 +7,6 @@ namespace EmberKernel.Plugins
 {
     public interface IPluginsLoader : IScopeBuilder
     {
-        Task RunEntryComponents();
+        ValueTask RunEntryComponents();
     }
 }

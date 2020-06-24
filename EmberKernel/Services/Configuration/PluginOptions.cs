@@ -33,7 +33,7 @@ namespace EmberKernel.Services.Configuration
             return Factory.Create($"{typeof(TPlugin).Name}.{typeof(TOptions).Name}");
         }
 
-        public async Task SaveAsync(TOptions options, CancellationToken cancellationToken = default)
+        public async ValueTask SaveAsync(TOptions options, CancellationToken cancellationToken = default)
         {
             Dictionary<string, object> dict = default;
             using (var readStream = File.OpenRead(Setting.PersistFilePath))

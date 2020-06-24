@@ -11,9 +11,9 @@ namespace EmberKernel.Plugins
     public interface IPluginsManager : IPluginsLoader
     {
         IEnumerable<Type> Resolve(Assembly assembly);
-        Task Load(IPlugin plugin);
-        Task Initialize(IPlugin plugin);
-        Task Unload(IPlugin plugin);
+        ValueTask Load(IPlugin plugin);
+        ValueTask Initialize(IPlugin plugin);
+        ValueTask Unload(IPlugin plugin);
 
         IPlugin GetPluginByDescriptor(PluginDescriptor descriptor);
         bool IsPluginInitialized(IPlugin plugin);

@@ -18,16 +18,16 @@ namespace ExamplePlugin
             builder.UseConfigurationModel<MyPluginConfiguration>("MyPlugin");
         }
 
-        public override Task Initialize(ILifetimeScope scope)
+        public override ValueTask Initialize(ILifetimeScope scope)
         {
             scope.UseCommandContainer<PluginControlCommand>();
-            return Task.CompletedTask;
+            return default;
         }
 
-        public override Task Uninitialize(ILifetimeScope scope)
+        public override ValueTask Uninitialize(ILifetimeScope scope)
         {
             scope.RemoveCommandContainer<PluginControlCommand>();
-            return Task.CompletedTask;
+            return default;
         }
     }
 }

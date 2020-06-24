@@ -8,6 +8,6 @@ namespace EmberMemoryReader.Components.Collector.Collectors
 {
     public interface ICollectorManager
     {
-        public Task StartCollectors(CancellationToken token = default);
+        public ValueTask StartCollectors(CancellationToken token = default);
     }
 }

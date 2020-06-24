@@ -19,7 +19,7 @@ namespace EmberKernel.Plugins
             }
         }
 
-        public async Task Run(ILifetimeScope scope)
+        public async ValueTask Run(ILifetimeScope scope)
         {
             var pluginLoader = scope.Resolve<IPluginsLoader>();
             using var pluginsScope = scope.BeginLifetimeScope(builder =>

@@ -56,7 +56,7 @@ namespace EmberCore.Services
             }
         }
 
-        public async Task Initialize(IPlugin plugin)
+        public async ValueTask Initialize(IPlugin plugin)
         {
             if (PluginStatus.ContainsKey(plugin) && !PluginStatus[plugin])
             {
@@ -67,7 +67,7 @@ namespace EmberCore.Services
             }
         }
 
-        private async Task InitializeAllPlugins()
+        private async ValueTask InitializeAllPlugins()
         {
             foreach (var (plugin, _) in PluginScopes)
             {
@@ -75,7 +75,7 @@ namespace EmberCore.Services
             }
         }
 
-        public async Task Run(ILifetimeScope scope)
+        public async ValueTask Run(ILifetimeScope scope)
         {
             foreach (var type in LoadedTypes)
             {
@@ -98,12 +98,14 @@ namespace EmberCore.Services
             await InitializeAllPlugins();
         }
 
-        public Task RunEntryComponents()
+        public async ValueTask RunEntryComponents()
         {
             Logger.LogInformation($"Start execute entries...");
-            Task.WhenAll(EntryComponents.Select(entry => entry.Start()).ToArray())
-            .ContinueWith((_) => Logger.LogInformation($"Done execute entries..."));
-            return Task.CompletedTask;
+            foreach (var component in EntryComponents)
+            {
+                await component.Start();
+            }
+            Logger.LogInformation($"Done execute entries...");
         }
 
         public IEnumerable<Type> Resolve(Assembly assembly)
@@ -125,7 +127,7 @@ namespace EmberCore.Services
             yield break;
         }
 
-        public Task Load(IPlugin plugin)
+        public ValueTask Load(IPlugin plugin)
         {
             var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
             var pluginDesciptor = pluginDesciptorAttr.ToString();
@@ -155,10 +157,10 @@ namespace EmberCore.Services
                 Logger.LogWarning(e, $"Can't load {pluginDesciptor}");
             }
             PluginLoaded?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
-            return Task.CompletedTask;
+            return default;
         }
 
-        public async Task Unload(IPlugin plugin)
+        public async ValueTask Unload(IPlugin plugin)
         {
             var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
             var pluginDesciptor = pluginDesciptorAttr.ToString();

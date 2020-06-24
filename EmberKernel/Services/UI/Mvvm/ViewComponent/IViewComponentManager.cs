@@ -14,7 +14,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewComponent
         void RegisterComponent<IComponent>(string category) where IComponent : IViewComponent, new();
         void RegisterComponent<IComponent>() where IComponent : IViewComponent, new();
         IEnumerable<Type> GetComponentType<ICategory>();
-        Task InitializeComponent(ILifetimeScope scope, Type type);
-        Task UninitializeComponent(ILifetimeScope scope, Type type);
+        ValueTask InitializeComponent(ILifetimeScope scope, Type type);
+        ValueTask UninitializeComponent(ILifetimeScope scope, Type type);
     }
 }

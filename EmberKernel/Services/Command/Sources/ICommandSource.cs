@@ -9,8 +9,8 @@ namespace EmberKernel.Services.Command.Sources
 {
     public interface ICommandSource : IDisposable
     {
-        Task Initialize(CancellationToken cancellationToken);
-        Task Stop(CancellationToken cancellationToken);
-        Task<CommandArgument> Read(CancellationToken cancellationToken);
+        ValueTask Initialize(CancellationToken cancellationToken);
+        ValueTask Stop(CancellationToken cancellationToken);
+        ValueTask<CommandArgument> Read(CancellationToken cancellationToken);
     }
 }
