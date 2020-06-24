@@ -47,7 +47,7 @@ namespace EmberKernel.Services.Command
 
             CommandSourceOperationTimeLimit = int.Parse(coreAppSetting["CommandSourceOperationTimeLimit"] ?? "5");
 
-            ConfigureCommandSource(builder => builder.ConfigureSource<ConsoleSource>()).Wait();
+            ConfigureCommandSource(builder => builder.ConfigureSource<ConsoleSource>()).AsTask().Wait();
             Keeper = new Thread(() =>
             {
                 while (notDisposed) Thread.Sleep(1);
@@ -148,26 +148,30 @@ namespace EmberKernel.Services.Command
 
         public void Dispose()
         {
+            DisposeAsync().AsTask().Wait();
+        }
+        public async ValueTask DisposeAsync()
+        {
             notDisposed = false;
             Keeper.Abort();
             CommandNamespaces.Clear();
             CommandContainerAlias.Clear();
             CommandScope.Clear();
-            StopCurrentCommandLooping().Wait();
+            await StopCurrentCommandLooping();
             if (CurrentCommandScope != null)
             {
                 CurrentCommandScope.Dispose();
             }
         }
 
-        public async Task StopCurrentCommandLooping()
+        public async ValueTask StopCurrentCommandLooping()
         {
             if (BackgroundCancellationSource != null && !BackgroundCancellationSource.IsCancellationRequested) BackgroundCancellationSource.Cancel();
             if (CurrentRunningCommandLooping != null) await CurrentRunningCommandLooping;
             if (CurrentCommandScope != null) using (CurrentCommandScope) { }
         }
 
-        public async Task ConfigureCommandSource(Action<ICommandSourceBuilder> builder)
+        public async ValueTask ConfigureCommandSource(Action<ICommandSourceBuilder> builder)
         {
             // Clean and dispose previous ICommandSource
             await StopCurrentCommandLooping();
@@ -182,7 +186,7 @@ namespace EmberKernel.Services.Command
         private CancellationTokenSource CreateOperationTimeLimitSource()
             => new CancellationTokenSource(TimeSpan.FromSeconds(CommandSourceOperationTimeLimit));
 
-        private async Task BackgroundLooping(CancellationToken token)
+        private async ValueTask BackgroundLooping(CancellationToken token)
         {
             // Resolve ICommandSource
             using var commandSource = CurrentCommandScope.Resolve<ICommandSource>();
@@ -244,5 +248,6 @@ namespace EmberKernel.Services.Command
 
             manager.Invoke(argument);
         }
+
     }
 }

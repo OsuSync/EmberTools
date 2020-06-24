@@ -43,7 +43,7 @@ namespace EmberCore.KernelServices.UI.View
             UIThread?.Abort();
         }
 
-        private async Task RegisterWindow<TWindow>(CancellationToken token = default)
+        private async ValueTask RegisterWindow<TWindow>(CancellationToken token = default)
             where TWindow : Window, IHostedWindow, new()
         {
             await InitSemaphore.WaitAsync(token);
@@ -61,7 +61,7 @@ namespace EmberCore.KernelServices.UI.View
             }
         }
 
-        private async Task BeginIHostedWindowScope<TWindow>(Action<TWindow> scope)
+        private async ValueTask BeginIHostedWindowScope<TWindow>(Action<TWindow> scope)
             where TWindow : Window, IHostedWindow, new()
         {
             var app = (TWindow)RunningWindows[typeof(TWindow)];
@@ -71,39 +71,39 @@ namespace EmberCore.KernelServices.UI.View
         public void Register<TWindow>()
             where TWindow : Window, IHostedWindow, new()
         {
-            RegisterWindow<TWindow>().Wait();
+            RegisterWindow<TWindow>().AsTask().Wait();
         }
 
-        public async Task RegisterAsync<TWindow>(CancellationToken token = default)
+        public async ValueTask RegisterAsync<TWindow>(CancellationToken token = default)
             where TWindow : Window, IHostedWindow, new()
         {
             await RegisterWindow<TWindow>(token);
         }
 
-        public async Task InitializeAsync<TWindow>(ILifetimeScope initializeScope)
+        public async ValueTask InitializeAsync<TWindow>(ILifetimeScope initializeScope)
             where TWindow : Window, IHostedWindow, new()
         {
             await BeginIHostedWindowScope<TWindow>((app) => app.Initialize(initializeScope));
         }
 
-        public async Task UninitializeAsync<TWindow>(ILifetimeScope initializeScope)
+        public async ValueTask UninitializeAsync<TWindow>(ILifetimeScope initializeScope)
             where TWindow : Window, IHostedWindow, new()
         {
             await BeginIHostedWindowScope<TWindow>((app) => app.Uninitialize(initializeScope));
             RunningWindows.Remove(typeof(TWindow));
         }
 
-        public async Task BeginUIThreadScope(Func<Task> scope)
+        public async ValueTask BeginUIThreadScope(Func<ValueTask> scope)
         {
             await Application.Dispatcher.InvokeAsync(() => scope());
         }
 
-        public async Task<TResult> BeginUIThreadScope<TResult>(Func<TResult> scope)
+        public async ValueTask<TResult> BeginUIThreadScope<TResult>(Func<TResult> scope)
         {
             return await Application.Dispatcher.InvokeAsync(() => scope());
         }
 
-        public async Task BeginUIThreadScope(Action scope)
+        public async ValueTask BeginUIThreadScope(Action scope)
         {
             await Application.Dispatcher.InvokeAsync(() => scope());
         }

@@ -35,13 +35,13 @@ namespace ExamplePlugin.ViewComponents
 
         ConfigurationViewModel ViewMode { get; set; }
         IConfigurationModelManager ModelManager { get; set; }
-        public Task Initialize(ILifetimeScope scope)
+        public ValueTask Initialize(ILifetimeScope scope)
         {
             var manager = scope.Resolve<IConfigurationModelManager>();
             ConfigurationManager = manager;
             ConfigurationManager.CollectionChanged += Manager_CollectionChanged;
             InitializeDependecy(ConfigurationManager);
-            return Task.CompletedTask;
+            return default;
         }
 
         private void InitializeDependecy(IEnumerable initilizer)
@@ -83,10 +83,10 @@ namespace ExamplePlugin.ViewComponents
             }
         }
 
-        public Task Uninitialize(ILifetimeScope scope)
+        public ValueTask Uninitialize(ILifetimeScope scope)
         {
             if (ConfigurationManager != null) ConfigurationManager.CollectionChanged -= Manager_CollectionChanged;
-            return Task.CompletedTask;
+            return default;
         }
 
         public void Dispose()

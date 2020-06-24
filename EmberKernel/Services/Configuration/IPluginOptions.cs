@@ -12,6 +12,6 @@ namespace EmberKernel.Services.Configuration
         where TOptions : class, new()
     {
         public TOptions Create();
-        public Task SaveAsync(TOptions options, CancellationToken cancellationToken = default);
+        public ValueTask SaveAsync(TOptions options, CancellationToken cancellationToken = default);
     }
 }

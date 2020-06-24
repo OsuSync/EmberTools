@@ -7,6 +7,6 @@ namespace EmberKernel.Plugins.Components
 {
     public interface IEntryComponent : IComponent
     {
-        Task Start();
+        ValueTask Start();
     }
 }

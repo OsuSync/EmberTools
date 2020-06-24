@@ -15,13 +15,13 @@ namespace EmberKernel.Services.Command.Sources
             // nothing to dispose
         }
 
-        public async Task Initialize(CancellationToken cancellationToken)
+        public async ValueTask Initialize(CancellationToken cancellationToken)
         {
             await Task.Yield();
         }
 
         private readonly CommandArgument EmptyCommand = new CommandArgument() { Namespace = string.Empty, Argument = string.Empty, Command = string.Empty };
-        public async Task<CommandArgument> Read(CancellationToken cancellationToken)
+        public async ValueTask<CommandArgument> Read(CancellationToken cancellationToken)
         {
             return await Task.Run(async() =>
             {
@@ -39,7 +39,7 @@ namespace EmberKernel.Services.Command.Sources
             }, cancellationToken);
         }
 
-        public async Task Stop(CancellationToken cancellationToken)
+        public async ValueTask Stop(CancellationToken cancellationToken)
         {
             await Task.Yield();
         }

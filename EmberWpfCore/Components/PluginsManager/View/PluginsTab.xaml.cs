@@ -22,7 +22,7 @@ namespace EmberWpfCore.Components.PluginsManager.View
             InitializeComponent();
         }
 
-        public Task Initialize(ILifetimeScope scope)
+        public ValueTask Initialize(ILifetimeScope scope)
         {
             var logger = scope.Resolve<ILogger<PluginsTab>>();
             if (scope.TryResolve<IPluginManagerViewModel>(out var pluginsViewModel))
@@ -31,13 +31,13 @@ namespace EmberWpfCore.Components.PluginsManager.View
             }
             else
                 logger.LogError("Can't resolve 'IPluginManagerViewModel'");
-            return Task.CompletedTask;
+            return default;
         }
 
-        public Task Uninitialize(ILifetimeScope scope)
+        public ValueTask Uninitialize(ILifetimeScope scope)
         {
             this.DataContext = null;
-            return Task.CompletedTask;
+            return default;
         }
 
         public void Dispose()

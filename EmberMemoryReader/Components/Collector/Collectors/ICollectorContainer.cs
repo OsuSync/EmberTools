@@ -8,7 +8,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors
 {
     public interface ICollectorContainer
     {
-        public Task Run(CancellationToken cancellationToken);
+        public ValueTask Run(CancellationToken cancellationToken);
     }
     public interface ICollectorContainer<T> : ICollectorContainer where T : ICollector
     {

@@ -30,13 +30,13 @@ namespace EmberWpfCore
             builder.ConfigureUIComponent<PluginsTab>();
         }
 
-        public override async Task Initialize(ILifetimeScope scope)
+        public override async ValueTask Initialize(ILifetimeScope scope)
         {
             await scope.InitializeWpfWindow<Main>();
             scope.InitializeUIComponent<PluginsTab>();
         }
 
-        public override async Task Uninitialize(ILifetimeScope scope)
+        public override async ValueTask Uninitialize(ILifetimeScope scope)
         {
             await scope.UninitializeWpfWindow<Main>();
             scope.UninitializeUIComponent<PluginsTab>();

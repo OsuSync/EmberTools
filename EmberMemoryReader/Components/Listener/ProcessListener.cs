@@ -35,7 +35,7 @@ namespace EmberMemoryReader.Components.Listener
             SearchDelay = options.Value.SearchDelay;
         }
 
-        public async Task SearchProcessAsync(CancellationToken token = default)
+        public async ValueTask SearchProcessAsync(CancellationToken token = default)
         {
             using var searchScope = CurrentScope.BeginLifetimeScope((builder) => builder.RegisterType<TPredicator>());
             var pred = searchScope.Resolve<TPredicator>();
@@ -55,7 +55,7 @@ namespace EmberMemoryReader.Components.Listener
             }
         }
 
-        public async Task EnsureProcessLifetime(Process process, CancellationToken token = default)
+        public async ValueTask EnsureProcessLifetime(Process process, CancellationToken token = default)
         {
             using var lifetimeScope = CurrentScope.BeginLifetimeScope((builder) => builder.RegisterType<TLifeTrakcer>());
             var tracker = lifetimeScope.Resolve<TLifeTrakcer>();

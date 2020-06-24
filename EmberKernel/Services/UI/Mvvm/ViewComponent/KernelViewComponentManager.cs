@@ -22,7 +22,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewComponent
             this.WindowManager = manager;
         }
 
-        public async Task InitializeComponent(ILifetimeScope scope, Type type)
+        public async ValueTask InitializeComponent(ILifetimeScope scope, Type type)
         {
             if (!type.IsAssignableTo<IViewComponent>())
             {
@@ -38,7 +38,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewComponent
             });
         }
 
-        public async Task UninitializeComponent(ILifetimeScope scope, Type type)
+        public async ValueTask UninitializeComponent(ILifetimeScope scope, Type type)
         {
             if (!type.IsAssignableTo<IViewComponent>())
             {
