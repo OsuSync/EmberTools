@@ -17,8 +17,8 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
             this.Reader = reader;
         }
 
-        private IntPtr MultiplayerBeatmapAddress;
-        private const string MultiplayerBeatmapPattern = "\x8b\x4c\x98\x08\xa1\x0\x0\x0\x0\x8b\x50\x0c\x3b\x5a\x04";
+        private IntPtr MultiplayerBaseAddress;
+        private const string MultiplayerPattern = "\x8b\x4c\x98\x08\xa1\x0\x0\x0\x0\x8b\x50\x0c\x3b\x5a\x04";
         private const string MultiplayerBeatmapPatternMask = "xxxxx????xxxxxx";
         private const int BeatmapIdOffset = 0x2c;
 
@@ -28,11 +28,9 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
             try
             {
                 Reader.Reload();
-                if (!Reader.TryFindPattern(MultiplayerBeatmapPattern.ToBytes(), MultiplayerBeatmapPatternMask, 5, out MultiplayerBeatmapAddress))
+                if (!Reader.TryFindPattern(MultiplayerPattern.ToBytes(), MultiplayerBeatmapPatternMask, 5, out MultiplayerBaseAddress))
                     return false;
-                if (!Reader.TryReadIntPtr(MultiplayerBeatmapAddress, out MultiplayerBeatmapAddress))
-                    return false;
-                if (!Reader.TryReadIntPtr(MultiplayerBeatmapAddress, out MultiplayerBeatmapAddress))
+                if (!Reader.TryReadIntPtr(MultiplayerBaseAddress, out MultiplayerBaseAddress))
                     return false;
                 return true;
             }
@@ -46,7 +44,9 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
         public bool TryRead(out Event result)
         {
             result = EmptyResult;
-            if (!Reader.TryReadInt(MultiplayerBeatmapAddress + BeatmapIdOffset, out int value))
+            if (!Reader.TryReadIntPtr(MultiplayerBaseAddress, out var MultiplayerAddress))
+                return false;
+            if (!Reader.TryReadInt(MultiplayerAddress + BeatmapIdOffset, out int value))
                 return false;
             result = new MultiplayerBeatmapIdInfo() { BeatmapId = value, HasValue = true };
             return true;
