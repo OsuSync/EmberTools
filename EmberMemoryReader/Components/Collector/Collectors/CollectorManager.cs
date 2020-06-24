@@ -46,7 +46,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors
             {
                 var containerIType = genericContianerIType.MakeGenericType(type);
                 var container = CollectorReadScope.Resolve(containerIType) as ICollectorContainer;
-                Task.Run(() => container.Run(token), token);
+                container.Run(token);
             }
             return default;
         }
