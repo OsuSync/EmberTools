@@ -30,6 +30,7 @@ namespace ExamplePlugin
             scope.Subscription<GameStatusInfo, MemoryReaderHandler>();
             scope.Subscription<BeatmapInfo, MemoryReaderHandler>();
             scope.Subscription<PlayingInfo, MemoryReaderHandler>();
+            scope.Subscription<MultiplayerBeatmapIdInfo, MemoryReaderHandler>();
             scope.RegisterUIModel<MyPlugin, MyPluginConfiguration>();
             return default;
         }
@@ -41,6 +42,7 @@ namespace ExamplePlugin
             scope.Unsubscription<GameStatusInfo, MemoryReaderHandler>();
             scope.Unsubscription<BeatmapInfo, MemoryReaderHandler>();
             scope.Unsubscription<PlayingInfo, MemoryReaderHandler>();
+            scope.Unsubscription<MultiplayerBeatmapIdInfo, MemoryReaderHandler>();
             scope.UnregisterUIModel<MyPlugin, MyPluginConfiguration>();
             return default;
         }

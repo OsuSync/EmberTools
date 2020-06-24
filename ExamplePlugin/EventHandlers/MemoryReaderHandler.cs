@@ -13,7 +13,8 @@ namespace ExamplePlugin.EventHandlers
     public class MemoryReaderHandler :
         IEventHandler<GameStatusInfo>,
         IEventHandler<BeatmapInfo>,
-        IEventHandler<PlayingInfo>
+        IEventHandler<PlayingInfo>,
+        IEventHandler<MultiplayerBeatmapIdInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
         private readonly IPluginOptions<MyPlugin, MyPluginConfiguration> _pluginOptions;
@@ -60,6 +61,15 @@ namespace ExamplePlugin.EventHandlers
             else
             {
                 _logger.LogInformation("No beatmap found");
+            }
+            return default;
+        }
+
+        public ValueTask Handle(MultiplayerBeatmapIdInfo @event)
+        {
+            if (@event.HasValue)
+            {
+                _logger.LogInformation($"[Event] Multiplayer Lobby BeatmapId ={@event.BeatmapId}");
             }
             return default;
         }
