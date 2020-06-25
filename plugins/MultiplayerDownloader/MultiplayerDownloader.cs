@@ -21,13 +21,13 @@ namespace MultiplayerDownloader
 
         public override ValueTask Initialize(ILifetimeScope scope)
         {
-            scope.Subscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
+            //scope.Subscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
             return default;
         }
 
         public override ValueTask Uninitialize(ILifetimeScope scope)
         {
-            scope.Unsubscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
+            //scope.Unsubscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
             return default;
         }
     }
