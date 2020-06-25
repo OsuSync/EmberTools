@@ -18,7 +18,7 @@ namespace EmberWpfCore.Components.PluginsManager.View
     public partial class PluginsTab : UserControl, IViewComponent
     {
         public PluginsTab()
-        {
+        { 
             InitializeComponent();
         }
 
