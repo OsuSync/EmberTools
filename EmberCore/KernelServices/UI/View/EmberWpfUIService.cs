@@ -18,22 +18,36 @@ namespace EmberCore.KernelServices.UI.View
         private Thread UIThread { get; set; }
         private Dictionary<Type, Window> RunningWindows { get; } = new Dictionary<Type, Window>();
         private SemaphoreSlim InitSemaphore { get; } = new SemaphoreSlim(1);
+        private readonly List<ICoreWpfPlugin> CoreWpfPlugins = new List<ICoreWpfPlugin>();
+        private TaskCompletionSource<bool> WaitComplete = new TaskCompletionSource<bool>();
 
         public EmberWpfUIService()
         {
-            TaskCompletionSource<bool> waitComplete = new TaskCompletionSource<bool>();
+        }
+
+        internal void RegisterWpfPlugin(ICoreWpfPlugin wpfPlugin)
+        {
+            this.CoreWpfPlugins.Add(wpfPlugin);
+        }
+
+        internal async Task StartWpfUIService()
+        {
             UIThread = new Thread(() =>
             {
                 Application = new Application
                 {
                     ShutdownMode = ShutdownMode.OnExplicitShutdown
                 };
-                waitComplete.SetResult(true);
+                foreach (var configure in CoreWpfPlugins)
+                {
+                    configure.BuildApplication(Application);
+                }
+                Application.Startup += (_, __) => { WaitComplete.SetResult(true); };
                 Application.Run();
             });
             UIThread.SetApartmentState(ApartmentState.STA);
             UIThread.Start();
-            waitComplete.Task.Wait();
+            await WaitComplete.Task;
         }
 
         public void Dispose()
