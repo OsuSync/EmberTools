@@ -33,7 +33,6 @@ namespace EmberWpfCore.View
 
         public ValueTask Initialize(ILifetimeScope scope)
         {
-            var app = Application.Current;
             var tabs = scope.Resolve<RegisteredTabs>();
             (FindName("Tabs") as TabControl).ItemsSource = tabs;
             Show();

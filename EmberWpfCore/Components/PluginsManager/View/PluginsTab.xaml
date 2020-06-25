@@ -45,18 +45,21 @@
                 Content="Disable" />
         </StackPanel>-->
         <Label
-            Margin="5,10,0,5"
+            Margin="5,10,0,0"
             Content="Installed"
-            FontSize="20" />
+            FontSize="18"
+            FontWeight="Light" />
         <ListBox
             x:Name="List1"
             Grid.Row="1"
+            Padding="0,-3"
             Background="Transparent"
             BorderThickness="0"
             ItemsSource="{Binding PluginsViewModel, Mode=OneWay}"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.Resources>
                 <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="3" />
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type ListBoxItem}">

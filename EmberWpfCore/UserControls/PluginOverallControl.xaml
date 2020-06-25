@@ -11,14 +11,7 @@
     <d:Object.DataContext>
         <models:PluginDescriptor />
     </d:Object.DataContext>
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/EmberWpfCore;Component/Themes/Generic.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <Border Padding="5">
+    <Border Padding="2">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

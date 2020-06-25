@@ -13,9 +13,20 @@
     mc:Ignorable="d">
     <Window.Resources>
         <BitmapImage x:Key="Logo" UriSource="pack://application:,,,/EmberWpfCore;Component/logo.png" />
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="#212121" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="#212121" />
+        </Style>
     </Window.Resources>
     <WindowChrome.WindowChrome>
-        <WindowChrome CaptionHeight="58" UseAeroCaptionButtons="False" />
+        <WindowChrome
+            CaptionHeight="58"
+            CornerRadius="0"
+            GlassFrameThickness="1,1,1,1"
+            ResizeBorderThickness="3"
+            UseAeroCaptionButtons="False" />
     </WindowChrome.WindowChrome>
     <Grid>
 
@@ -34,10 +45,7 @@
                 VerticalAlignment="Center"
                 Source="{StaticResource Logo}" />
         </Border>
-        <Border
-            Height="60"
-            Margin="0,0,0,-20"
-            Panel.ZIndex="1">
+        <Border Height="40" Panel.ZIndex="1">
             <Grid>
                 <Label
                     Margin="5,2"
@@ -57,7 +65,7 @@
                     FontSize="28"
                     WindowChrome.IsHitTestVisibleInChrome="True" />
                 <StackPanel
-                    Margin="3"
+                    Margin="0,0,3,-17"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Orientation="Horizontal"
@@ -76,6 +84,7 @@
         <TabControl
             x:Name="Tabs"
             Grid.Row="1"
+            Margin="3"
             Background="#f7f7f7"
             BorderThickness="0"
             WindowChrome.IsHitTestVisibleInChrome="True" />
