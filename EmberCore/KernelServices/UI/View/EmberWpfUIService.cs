@@ -30,7 +30,7 @@ namespace EmberCore.KernelServices.UI.View
             this.CoreWpfPlugins.Add(wpfPlugin);
         }
 
-        internal Task StartWpfUIService()
+        internal async Task StartWpfUIService()
         {
             UIThread = new Thread(() =>
             {
@@ -47,8 +47,7 @@ namespace EmberCore.KernelServices.UI.View
             });
             UIThread.SetApartmentState(ApartmentState.STA);
             UIThread.Start();
-            WaitComplete.Task.Wait();
-            return Task.CompletedTask;
+            await WaitComplete.Task;
         }
 
         public void Dispose()
