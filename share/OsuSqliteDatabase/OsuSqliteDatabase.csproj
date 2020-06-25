@@ -11,7 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EmberSqlite\EmberSqlite.csproj" />
+    <ProjectReference Include="..\EmberSqlite\EmberSqlite.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>

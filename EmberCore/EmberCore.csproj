@@ -26,8 +26,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EmberKernel\EmberKernel.csproj" />
-    <ProjectReference Include="..\share\EmberSqlite\EmberSqlite.csproj" />
+    <ProjectReference Include="..\EmberKernel\EmberKernel.csproj">
+      <Private>true</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\share\EmberSqlite\EmberSqlite.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 
   <ItemGroup>
