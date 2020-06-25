@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuUtils", "share\OsuUtils\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberWpfCore", "EmberWpfCore\EmberWpfCore.csproj", "{2D33AA17-4CE7-4C77-9306-175F0D0A4E61}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{B93D5B77-B8CA-4B7A-B5BE-ABD27EB57D27}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MultiplayerDownloader", "plugins\MultiplayerDownloader\MultiplayerDownloader.csproj", "{7BAED4BB-F3FF-4C96-A8E5-E1A1CC9F70EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,12 +57,17 @@ Global
 		{2D33AA17-4CE7-4C77-9306-175F0D0A4E61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2D33AA17-4CE7-4C77-9306-175F0D0A4E61}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2D33AA17-4CE7-4C77-9306-175F0D0A4E61}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BAED4BB-F3FF-4C96-A8E5-E1A1CC9F70EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BAED4BB-F3FF-4C96-A8E5-E1A1CC9F70EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BAED4BB-F3FF-4C96-A8E5-E1A1CC9F70EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BAED4BB-F3FF-4C96-A8E5-E1A1CC9F70EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{867D93CA-FA42-43F3-B193-82EA2925B367} = {239B3BE6-770D-4BAD-AA11-FD91A2D62D02}
+		{7BAED4BB-F3FF-4C96-A8E5-E1A1CC9F70EB} = {B93D5B77-B8CA-4B7A-B5BE-ABD27EB57D27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57B800AC-CFE3-4081-8EC4-9BD1C74869B0}

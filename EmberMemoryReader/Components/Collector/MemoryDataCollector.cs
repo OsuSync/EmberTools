@@ -62,6 +62,7 @@ namespace EmberMemoryReader.Components.Collector
         public void Dispose() 
         {
             tokenSource.Cancel();
+            tokenSource.Dispose();
         }
     }
 }
