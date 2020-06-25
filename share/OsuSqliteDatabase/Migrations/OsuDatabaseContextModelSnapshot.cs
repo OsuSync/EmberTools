@@ -28,6 +28,9 @@ namespace OsuSqliteDatabase.Migrations
                     b.Property<int>("BeatmapCount")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("FolderCount")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Permission")
                         .HasColumnType("INTEGER");
 
@@ -65,6 +68,9 @@ namespace OsuSqliteDatabase.Migrations
                     b.Property<string>("AudioFileName")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("AudioPreviewTime")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("BeatmapId")
                         .HasColumnType("INTEGER");
 
@@ -95,6 +101,9 @@ namespace OsuSqliteDatabase.Migrations
                     b.Property<string>("Difficult")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("DrainTime")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("FileName")
                         .HasColumnType("TEXT");
 
@@ -110,7 +119,10 @@ namespace OsuSqliteDatabase.Migrations
                     b.Property<DateTime>("LatestModifiedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("LatestUpdatedAt")
+                    b.Property<DateTime>("LatestPlayedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LatestUpdateAt")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LocalOffset")
@@ -143,14 +155,14 @@ namespace OsuSqliteDatabase.Migrations
                     b.Property<int>("RuleSet")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Score")
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("SliderCount")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("SliderVelocity")
                         .HasColumnType("REAL");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("SpinnerCount")
                         .HasColumnType("INTEGER");
@@ -184,6 +196,9 @@ namespace OsuSqliteDatabase.Migrations
 
                     b.Property<string>("TitleUnicode")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("TotalTime")
+                        .HasColumnType("INTEGER");
 
                     b.Property<bool>("VideoDisabled")
                         .HasColumnType("INTEGER");
@@ -236,13 +251,13 @@ namespace OsuSqliteDatabase.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Mode")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("Moderators")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("OsuDatabaseBeatmapId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("RuleSet")
                         .HasColumnType("INTEGER");
 
                     b.Property<double>("StarRating")
@@ -289,7 +304,7 @@ namespace OsuSqliteDatabase.Migrations
             modelBuilder.Entity("OsuSqliteDatabase.Model.OsuDatabaseBeatmap", b =>
                 {
                     b.HasOne("OsuSqliteDatabase.Model.OsuDatabase", "OsuDatabase")
-                        .WithMany()
+                        .WithMany("Beatmaps")
                         .HasForeignKey("OsuDatabaseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

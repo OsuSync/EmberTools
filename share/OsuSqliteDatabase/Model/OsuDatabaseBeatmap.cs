@@ -30,6 +30,9 @@ namespace OsuSqliteDatabase.Model
         public double OverallDifficulty { get; set; }
         public double SliderVelocity { get; set; }
         public List<OsuDatabaseBeatmapStarRating> StarRatings { get; set; }
+        public int DrainTime { get; set; }
+        public int TotalTime { get; set; }
+        public int AudioPreviewTime { get; set; }
         public int TimingPointCount { get; set; }
         public List<OsuDatabaseTimings> OsuDatabaseTimings { get; set; }
         public int BeatmapId { get; set; }
@@ -42,20 +45,20 @@ namespace OsuSqliteDatabase.Model
         public int LocalOffset { get; set; }
         public double StackLeniency { get; set; }
         public OsuGameRuleSet RuleSet { get; set; }
-        public string Score { get; set; }
+        public string Source { get; set; }
         public string Tags { get; set; }
         public int OnlineOffset { get; set; }
         public string TitleFont { get; set; }
         public bool NotPlayed { get; set; }
         public bool IsOsz2 { get; set; }
+        public DateTime LatestPlayedAt { get; set; }
         public string FolderName { get; set; }
-        public DateTime LatestUpdatedAt { get; set; }
+        public DateTime LatestUpdateAt { get; set; }
         public bool BeatmapSoundIgnored { get; set; }
         public bool BeatmapSkinIgnored { get; set; }
         public bool StoryboardDisabled { get; set; }
         public bool VideoDisabled { get; set; }
         public bool VisualOverrided { get; set; }
         public int ManiaScrollSpeed { get; set; }
-
     }
 }
