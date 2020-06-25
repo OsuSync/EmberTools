@@ -10,7 +10,7 @@ namespace EmberMemoryReader.Components.Listener
 {
     public interface IProcessListener : IComponent
     {
-        Task SearchProcessAsync(CancellationToken token);
-        Task EnsureProcessLifetime(Process process, CancellationToken token);
+        ValueTask SearchProcessAsync(CancellationToken token);
+        ValueTask EnsureProcessLifetime(Process process, CancellationToken token);
     }
 }

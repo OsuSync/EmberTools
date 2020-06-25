@@ -52,6 +52,7 @@ namespace EmberMemoryReader.Components.Collector
                     .Collect<Beatmap>()
                     .Collect<GameStatus>()
                     .Collect<Playing>()
+                    .Collect<MultiplayerBeatmapId>()
                 );
             });
             var manager = ManagerScope.Resolve<ICollectorManager>();

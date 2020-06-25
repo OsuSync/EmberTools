@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -21,8 +22,10 @@ namespace EmberCore.Services
     {
 
         private CorePluginResolver Resolver { get; }
+        private EmberWpfUIService WpfUIService { get; }
         private readonly ILifetimeScope PluginLayerScope;
         private readonly LinkedList<Type> LoadedTypes = new LinkedList<Type>();
+        private readonly Dictionary<Type, string> LoadedTypeDescriptors = new Dictionary<Type, string>();
         private readonly Dictionary<IPlugin, ILifetimeScope> PluginScopes = new Dictionary<IPlugin, ILifetimeScope>();
         private readonly Dictionary<IPlugin, bool> PluginStatus = new Dictionary<IPlugin, bool>();
         private readonly List<IEntryComponent> EntryComponents = new List<IEntryComponent>();
@@ -30,11 +33,12 @@ namespace EmberCore.Services
         private event Action<PluginDescriptor> PluginLoaded;
         private event Action<PluginDescriptor> PluginUnloaded;
         private event Action<PluginDescriptor> PluginInitialized;
-        public PluginsManager(ILifetimeScope scope, CorePluginResolver resolver, ILogger<PluginsManager> logger)
+        public PluginsManager(ILifetimeScope scope, CorePluginResolver resolver, ILogger<PluginsManager> logger, EmberWpfUIService wpfUIService)
         {
             Resolver = resolver;
             Logger = logger;
             PluginLayerScope = scope;
+            WpfUIService = wpfUIService;
         }
 
         public void BuildScope(ContainerBuilder builder)
@@ -48,7 +52,7 @@ namespace EmberCore.Services
                     foreach (var type in Resolve(assembly))
                     {
                         var pluginDesciptor = type.GetCustomAttribute<EmberPluginAttribute>().ToString();
-                        builder.RegisterType(type).Named(pluginDesciptor, type);
+                        builder.RegisterType(type).Named(pluginDesciptor, type).SingleInstance();
 
                         LoadedTypes.AddLast(type);
                     }
@@ -56,7 +60,7 @@ namespace EmberCore.Services
             }
         }
 
-        public async Task Initialize(IPlugin plugin)
+        public async ValueTask Initialize(IPlugin plugin)
         {
             if (PluginStatus.ContainsKey(plugin) && !PluginStatus[plugin])
             {
@@ -67,7 +71,7 @@ namespace EmberCore.Services
             }
         }
 
-        private async Task InitializeAllPlugins()
+        private async ValueTask InitializeAllPlugins()
         {
             foreach (var (plugin, _) in PluginScopes)
             {
@@ -75,11 +79,29 @@ namespace EmberCore.Services
             }
         }
 
-        public async Task Run(ILifetimeScope scope)
+        public async ValueTask Run(ILifetimeScope scope)
         {
             foreach (var type in LoadedTypes)
             {
-                var pluginDesciptor = type.GetCustomAttribute<EmberPluginAttribute>().ToString();
+                LoadedTypeDescriptors.Add(type, type.GetCustomAttribute<EmberPluginAttribute>().ToString());
+            }
+            if (WpfUIService != null)
+            {
+                Logger.LogInformation($"Preparing UI service...");
+                foreach (var (type, pluginDesciptor) in LoadedTypeDescriptors)
+                {
+                    if (scope.TryResolveNamed(pluginDesciptor, type, out var instnace) && instnace is ICoreWpfPlugin plugin)
+                    {
+                        WpfUIService.RegisterWpfPlugin(plugin);
+                    }
+                }
+                Logger.LogInformation($"Starting UI Application...");
+                await WpfUIService.StartWpfUIService();
+                Logger.LogInformation($"Wpf UI Application started.");
+            }
+
+            foreach (var (type, pluginDesciptor) in LoadedTypeDescriptors)
+            {
                 Logger.LogInformation($"Preparing plugin {pluginDesciptor}...");
                 try
                 {
@@ -98,12 +120,14 @@ namespace EmberCore.Services
             await InitializeAllPlugins();
         }
 
-        public Task RunEntryComponents()
+        public async ValueTask RunEntryComponents()
         {
             Logger.LogInformation($"Start execute entries...");
-            Task.WhenAll(EntryComponents.Select(entry => entry.Start()).ToArray())
-            .ContinueWith((_) => Logger.LogInformation($"Done execute entries..."));
-            return Task.CompletedTask;
+            foreach (var component in EntryComponents)
+            {
+                await component.Start();
+            }
+            Logger.LogInformation($"Done execute entries...");
         }
 
         public IEnumerable<Type> Resolve(Assembly assembly)
@@ -125,7 +149,7 @@ namespace EmberCore.Services
             yield break;
         }
 
-        public Task Load(IPlugin plugin)
+        public async ValueTask Load(IPlugin plugin)
         {
             var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
             var pluginDesciptor = pluginDesciptorAttr.ToString();
@@ -155,10 +179,9 @@ namespace EmberCore.Services
                 Logger.LogWarning(e, $"Can't load {pluginDesciptor}");
             }
             PluginLoaded?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
-            return Task.CompletedTask;
         }
 
-        public async Task Unload(IPlugin plugin)
+        public async ValueTask Unload(IPlugin plugin)
         {
             var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
             var pluginDesciptor = pluginDesciptorAttr.ToString();

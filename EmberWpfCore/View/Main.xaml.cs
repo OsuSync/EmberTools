@@ -31,20 +31,20 @@ namespace EmberWpfCore.View
             InitializeComponent();
         }
 
-        public Task Initialize(ILifetimeScope scope)
+        public ValueTask Initialize(ILifetimeScope scope)
         {
             var app = Application.Current;
             var tabs = scope.Resolve<RegisteredTabs>();
             (FindName("Tabs") as TabControl).ItemsSource = tabs;
             Show();
-            return Task.CompletedTask;
+            return default;
         }
 
-        public Task Uninitialize(ILifetimeScope scope)
+        public ValueTask Uninitialize(ILifetimeScope scope)
         {
             Hide();
             Close();
-            return Task.CompletedTask;
+            return default;
         }
     }
 }

@@ -20,10 +20,10 @@ namespace EmberKernel
 
         public void Run()
         {
-            RunAsync().Wait();
+            RunAsync().AsTask().Wait();
         }
 
-        public async Task RunAsync()
+        public async ValueTask RunAsync()
         {
             var pluginLayer = Container.Resolve<IPluginsLayer>();
             executionScope = Container.BeginLifetimeScope(builder =>

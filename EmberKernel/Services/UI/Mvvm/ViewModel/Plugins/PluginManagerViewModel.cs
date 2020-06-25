@@ -24,19 +24,19 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Plugins
             WindowManager = windowManager;
             PluginsManager = pluginsManager;
             InitializePlugins();
-            _onPluginLoad = pluginsManager.OnPluginLoad((descriptor) =>
+            _onPluginLoad = PluginsManager.OnPluginLoad((descriptor) =>
             {
                 AddPlugin(descriptor);
-                OnPropertyChanged(new PropertyChangedEventArgs(descriptor.ToString()));
+                WindowManager.BeginUIThreadScope(() => OnPropertyChanged(new PropertyChangedEventArgs(descriptor.ToString())));
 
             });
-            _onPluginUnload = pluginsManager.OnPluginUnload((descriptor) =>
+            _onPluginUnload = PluginsManager.OnPluginUnload((descriptor) =>
             {
-                OnPropertyChanged(new PropertyChangedEventArgs(descriptor.ToString()));
+                WindowManager.BeginUIThreadScope(() => OnPropertyChanged(new PropertyChangedEventArgs(descriptor.ToString())));
             });
-            _onPluginInitialized = pluginsManager.OnPluginInitialized((descriptor) =>
+            _onPluginInitialized = PluginsManager.OnPluginInitialized((descriptor) =>
             {
-                OnPropertyChanged(new PropertyChangedEventArgs(descriptor.ToString()));
+                WindowManager.BeginUIThreadScope(() => OnPropertyChanged(new PropertyChangedEventArgs(descriptor.ToString())));
             });
         }
 

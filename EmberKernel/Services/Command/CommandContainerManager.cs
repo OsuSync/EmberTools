@@ -9,7 +9,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Command
 {
@@ -19,6 +21,7 @@ namespace EmberKernel.Services.Command
         {
             public MethodInfo CommandHandler { get; set; }
             public Type HandlerParserType { get; set; }
+            public bool IsAwaitable { get; set; }
         }
 
         private ILogger<CommandContainerManager> Logger { get; }
@@ -71,6 +74,7 @@ namespace EmberKernel.Services.Command
                 var commandHandlerInfo = new CommandHandlerInfo
                 {
                     CommandHandler = method,
+                    IsAwaitable = method.ReturnType.GetMethods().Any((method) => method.Name == "GetAwaiter"),
                 };
 
                 // Add parser instance to dictionary
@@ -116,7 +120,7 @@ namespace EmberKernel.Services.Command
             parsers.Clear();
         }
 
-        public void Invoke(CommandArgument argument)
+        public async ValueTask Invoke(CommandArgument argument)
         {
             var currentArgument = argument;
             if (argument.Command == null)
@@ -142,15 +146,27 @@ namespace EmberKernel.Services.Command
             }
 
             handlerInfo = commandHandlers[currentArgument.Command];
-
+            object ret = null;
             if (handlerInfo.CommandHandler.GetParameters().Length == 0)
             {
-                handlerInfo.CommandHandler.Invoke(CommandContainer, null);
+                ret = handlerInfo.CommandHandler.Invoke(CommandContainer, null);
             }
             else
             {
                 var parser = parsers[handlerInfo.HandlerParserType];
-                handlerInfo.CommandHandler.Invoke(CommandContainer, parser.ParseCommandArgument(argument).ToArray());
+                ret = handlerInfo.CommandHandler.Invoke(CommandContainer, parser.ParseCommandArgument(argument).ToArray());
+            }
+            if (ret != null && handlerInfo.IsAwaitable)
+            {
+                switch (ret)
+                {
+                    case Task task:
+                        await task;
+                        return;
+                    case ValueTask valueTask:
+                        await valueTask;
+                        return;
+                }
             }
         }
     }

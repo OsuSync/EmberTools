@@ -23,7 +23,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors
             RegisteredCollector = scope.ResolveNamed<HashSet<Type>>(CollectorManagerBuilder.RegisteredTypesType);
         }
 
-        public Task StartCollectors(CancellationToken token = default)
+        public ValueTask StartCollectors(CancellationToken token = default)
         {
             var genericContianerType = typeof(CollectorIntervalContainer<>);
             var genericContianerIType = typeof(CollectorIntervalContainer<>);
@@ -46,9 +46,9 @@ namespace EmberMemoryReader.Components.Collector.Collectors
             {
                 var containerIType = genericContianerIType.MakeGenericType(type);
                 var container = CollectorReadScope.Resolve(containerIType) as ICollectorContainer;
-                Task.Run(() => container.Run(token), token);
+                container.Run(token);
             }
-            return Task.CompletedTask;
+            return default;
         }
 
         public void Dispose()

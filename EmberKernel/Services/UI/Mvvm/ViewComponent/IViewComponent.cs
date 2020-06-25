@@ -9,7 +9,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewComponent
 {
     public interface IViewComponent : IComponent
     {
-        Task Initialize(ILifetimeScope scope);
-        Task Uninitialize(ILifetimeScope scope);
+        ValueTask Initialize(ILifetimeScope scope);
+        ValueTask Uninitialize(ILifetimeScope scope);
     }
 }

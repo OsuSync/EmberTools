@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ExamplePlugin.Components
 {
@@ -37,7 +38,7 @@ namespace ExamplePlugin.Components
         }
 
         [CommandHandler(Command = "enable")]
-        public void EnablePlugin(string plugin)
+        public async ValueTask EnablePlugin(string plugin)
         {
             var pluginInstance = FindPlugin(plugin);
             if (pluginInstance == null)
@@ -45,14 +46,14 @@ namespace ExamplePlugin.Components
                 _logger.LogWarning($"Plugin {plugin} not found!");
                 return;
             }
-            _pluginMan.Load(pluginInstance).Wait();
-            _pluginMan.Initialize(pluginInstance).Wait();
+            await _pluginMan.Load(pluginInstance);
+            await _pluginMan.Initialize(pluginInstance);
         }
 
         [CommandHandler(Command = "disable")]
-        public void DisablePlugin(string plugin)
+        public async ValueTask DisablePlugin(string plugin)
         {
-            _pluginMan.Unload(FindPlugin(plugin));
+            await _pluginMan.Unload(FindPlugin(plugin));
         }
 
         [CommandHandler(Command = "event")]

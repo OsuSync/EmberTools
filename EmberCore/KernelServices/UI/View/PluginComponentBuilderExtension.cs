@@ -24,12 +24,17 @@ namespace EmberCore.KernelServices.UI.View
             Resolve(builder.ParentScope).Register<T>();
         }
 
-        public static Task InitializeWpfWindow<T>(this ILifetimeScope scope) where T : Window, IHostedWindow, new()
+        public static void ConfigureWpfApplication(Action<Application> configure)
+        {
+
+        }
+
+        public static ValueTask InitializeWpfWindow<T>(this ILifetimeScope scope) where T : Window, IHostedWindow, new()
         {
             return Resolve(scope).InitializeAsync<T>(scope);
         }
 
-        public static Task UninitializeWpfWindow<T>(this ILifetimeScope scope) where T : Window, IHostedWindow, new()
+        public static ValueTask UninitializeWpfWindow<T>(this ILifetimeScope scope) where T : Window, IHostedWindow, new()
         {
             return Resolve(scope).UninitializeAsync<T>(scope);
         }

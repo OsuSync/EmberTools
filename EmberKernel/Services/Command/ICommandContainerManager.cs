@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Command
 {
@@ -12,6 +13,6 @@ namespace EmberKernel.Services.Command
         internal IEnumerable<(MethodInfo, CommandHandlerAttribute, Type)> ResolveHandlers();
         void InitializeHandlers(Action<string, CommandHandlerAttribute> globalCommandRegister);
         void RemoveHandlers();
-        void Invoke(CommandArgument argument);
+        ValueTask Invoke(CommandArgument argument);
     }
 }

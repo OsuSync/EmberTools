@@ -12,15 +12,21 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace EmberWpfCore
 {
-    [EmberPlugin(Author = "Deliay", Name = "CoreUI", Version = "0.0.1")]
-    public class UICorePlugin : Plugin
+    [EmberPlugin(Author = "yf_extension, Deliay", Name = "CoreUI", Version = "0.0.1")]
+    public class UICorePlugin : Plugin, ICoreWpfPlugin
     {
         public UICorePlugin()
         {
 
+        }
+
+        public void BuildApplication(Application application)
+        {
+            // do load resource stuff here
         }
 
         public override void BuildComponents(IComponentBuilder builder)
@@ -30,13 +36,13 @@ namespace EmberWpfCore
             builder.ConfigureUIComponent<PluginsTab>();
         }
 
-        public override async Task Initialize(ILifetimeScope scope)
+        public override async ValueTask Initialize(ILifetimeScope scope)
         {
             await scope.InitializeWpfWindow<Main>();
             scope.InitializeUIComponent<PluginsTab>();
         }
 
-        public override async Task Uninitialize(ILifetimeScope scope)
+        public override async ValueTask Uninitialize(ILifetimeScope scope)
         {
             await scope.UninitializeWpfWindow<Main>();
             scope.UninitializeUIComponent<PluginsTab>();

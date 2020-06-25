@@ -34,7 +34,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors
             }
         }
 
-        public async Task Run(CancellationToken cancellationToken)
+        public async ValueTask Run(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)
             {

@@ -40,8 +40,8 @@ namespace EmberCore
                 .UseEventBus()
                 .UseCommandService()
                 .UseKernalService<CorePluginResolver>()
-                .UseWindowManager<EmberWpfUIService, Window>()
                 .UsePlugins<PluginsManager>()
+                .UseWindowManager<EmberWpfUIService, Window>()
                 .UseMvvmInterface((mvvm) => mvvm
                     .UseConfigurationModel())
                 .Build()

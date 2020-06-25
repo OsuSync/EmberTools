@@ -9,6 +9,6 @@ namespace EmberKernel
     public interface IScopeBuilder
     {
         void BuildScope(ContainerBuilder builder);
-        Task Run(ILifetimeScope scope);
+        ValueTask Run(ILifetimeScope scope);
     }
 }

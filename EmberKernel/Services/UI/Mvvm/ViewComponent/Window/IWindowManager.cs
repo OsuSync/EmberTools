@@ -10,15 +10,15 @@ namespace EmberKernel.Services.UI.Mvvm.ViewComponent.Window
     public interface IWindowManager<T> : IWindowManager
     {
         void Register<TWindow>() where TWindow : T, IHostedWindow, new();
-        Task RegisterAsync<TWindow>(CancellationToken token = default) where TWindow : T, IHostedWindow, new();
-        Task InitializeAsync<TWindow>(ILifetimeScope initializeScope) where TWindow : T, IHostedWindow, new();
-        Task UninitializeAsync<TWindow>(ILifetimeScope initializeScope) where TWindow : T, IHostedWindow, new();
+        ValueTask RegisterAsync<TWindow>(CancellationToken token = default) where TWindow : T, IHostedWindow, new();
+        ValueTask InitializeAsync<TWindow>(ILifetimeScope initializeScope) where TWindow : T, IHostedWindow, new();
+        ValueTask UninitializeAsync<TWindow>(ILifetimeScope initializeScope) where TWindow : T, IHostedWindow, new();
     }
 
     public interface IWindowManager
     {
-        Task BeginUIThreadScope(Action scope);
-        Task BeginUIThreadScope(Func<Task> scope);
-        Task<TResult> BeginUIThreadScope<TResult>(Func<TResult> scope);
+        ValueTask BeginUIThreadScope(Action scope);
+        ValueTask BeginUIThreadScope(Func<ValueTask> scope);
+        ValueTask<TResult> BeginUIThreadScope<TResult>(Func<TResult> scope);
     }
 }
