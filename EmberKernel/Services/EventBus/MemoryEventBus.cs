@@ -42,7 +42,7 @@ namespace EmberKernel.Services.EventBus
                 var scope = subscription.Scope;
                 var handler = scope.ResolveOptional(subscription.HandlerType);
                 if (handler == null) continue;
-                var eventType = _subsManager.GetEventTypeByName(eventName);
+                var eventType = _subsManager.GetEventTypeByName(subscription.HandlerType, eventName);
                 var @event = JsonSerializer.Deserialize(message, eventType);
                 var concreteType = typeof(IEventHandler<>).MakeGenericType(eventType);
                 var method = concreteType.GetMethod("Handle");
