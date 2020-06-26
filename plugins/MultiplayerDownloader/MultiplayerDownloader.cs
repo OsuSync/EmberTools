@@ -4,8 +4,12 @@ using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus.Handlers;
+using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
+using MultiplayerDownloader.Extension;
 using MultiplayerDownloader.Models;
 using MultiplayerDownloader.Services;
+using MultiplayerDownloader.Services.DownloadProvider;
+using OsuSqliteDatabase.Database;
 using System;
 using System.Threading.Tasks;
 
@@ -16,18 +20,30 @@ namespace MultiplayerDownloader
     {
         public override void BuildComponents(IComponentBuilder builder)
         {
+            builder.ConfigureDbContext<OsuDatabaseContext>();
+
+            builder.UsePluginOptionsModel<MultiplayerDownloader, MpDownloaderConfiguration>();
+            builder.ConfigureUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
+
             builder.ConfigureComponent<BeatmapDownloadService>().SingleInstance();
+
+            builder.ConfigureDownloadProvider<SayobotDownloadProvider>();
+            builder.ConfigureDownloadProvider<BloodcatDownloadProvider>();
         }
 
         public override ValueTask Initialize(ILifetimeScope scope)
         {
-            //scope.Subscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
+            scope.Subscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
+            scope.Subscription<OsuProcessMatchedEvent, BeatmapDownloadService>();
+            scope.RegisterUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
             return default;
         }
 
         public override ValueTask Uninitialize(ILifetimeScope scope)
         {
-            //scope.Unsubscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
+            scope.Unsubscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
+            scope.Unsubscription<OsuProcessMatchedEvent, BeatmapDownloadService>();
+            scope.UnregisterUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
             return default;
         }
     }
