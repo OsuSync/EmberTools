@@ -42,6 +42,14 @@ namespace EmberSqliteSynchronizer.Utils
             for (int i = 0; i < list.Count; i += size) yield return list.GetRange(i, Math.Min(size, list.Count - i));
         }
 
+        /// <summary>
+        /// Update value to EntityFramework tracked entity by a new standalone entity
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entry"></param>
+        /// <param name="newEntity"></param>
+        /// <param name="emitSet"></param>
+        /// <returns></returns>
         public static int Update<T>(this EntityEntry<T> entry, T newEntity, HashSet<string> emitSet) where T : class
         {
             var type = typeof(T);

@@ -77,6 +77,13 @@ namespace EmberSqliteSynchronizer.Component
             }
         }
 
+        /// <summary>
+        /// Create a new database by loaded osu!db content
+        /// </summary>
+        /// <param name="dbInfo"></param>
+        /// <param name="beatmaps"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         private async ValueTask CreateDatabase(OsuDatabase dbInfo, List<OsuDatabaseBeatmap> beatmaps, CancellationToken token = default)
         {
             Logger.LogInformation("Creating database...");
@@ -86,6 +93,7 @@ namespace EmberSqliteSynchronizer.Component
 
             Db.RemoveRange(Db.OsuDatabaseBeatmap);
             await Db.SaveChangesAsync();
+            // Save all beatmaps
             foreach (var beatmap in beatmaps)
             {
                 if (token.IsCancellationRequested) return;
@@ -93,6 +101,8 @@ namespace EmberSqliteSynchronizer.Component
                 beatmap.OsuDatabaseTimings = null;
                 beatmap.StarRatings = null;
             }
+
+            // for performance, we save change every 5000 beatmaps
             foreach (var chunk in beatmaps.Chunk(5000))
             {
                 if (token.IsCancellationRequested) return;
@@ -115,6 +125,7 @@ namespace EmberSqliteSynchronizer.Component
             Db.Update(currentInfo);
             await Db.SaveChangesAsync();
 
+            // these properties temporarily move out of the comprasion fields
             var emitSet = new HashSet<string>()
             {
                 nameof(OsuDatabaseBeatmap.Id),
@@ -130,16 +141,20 @@ namespace EmberSqliteSynchronizer.Component
             foreach (var beatmap in beatmaps)
             {
                 if (token.IsCancellationRequested) return;
+                // query exist record basic on FileName and FolderName
                 var currentBeatmaps = await Db
                     .OsuDatabaseBeatmap
                     .Where((b) => b.FileName == beatmap.FileName && b.FolderName == beatmap.FolderName)
                     .ToListAsync();
+
+                // no records that exist, save to database directly
                 if (currentBeatmaps.Count == 0)
                 {
                     beatmap.OsuDatabaseId = currentInfo.Id;
                     Logger.LogInformation($"Found new beatmap {beatmap.Artist} - {beatmap.Title} ({beatmap.FolderName}\\{beatmap.FileName})");
                     await Db.AddAsync(beatmap);
                 }
+                // exist 1 record, update
                 else if (currentBeatmaps.Count == 1)
                 {
                     var currentBeatmap = currentBeatmaps[0];
@@ -148,6 +163,7 @@ namespace EmberSqliteSynchronizer.Component
                         Logger.LogInformation($"Update beatmap {beatmap.Artist} - {beatmap.Title} ({beatmap.FolderName}\\{beatmap.FileName})");
                     }
                 }
+                // exist more than one record, delete old records and create again
                 else
                 {
                     var corrupted = Db
@@ -172,6 +188,8 @@ namespace EmberSqliteSynchronizer.Component
             using var reader = new OsuDatabaseReader(dbPath);
             var newInfo = reader.ReadOsuDatabaseHead();
 
+
+            // Do update or create operation depend on dbCount
             var dbCount = await Db.OsuDatabases.CountAsync();
             OsuDatabase currentInfo = null;
             if (dbCount > 0)
@@ -191,10 +209,12 @@ namespace EmberSqliteSynchronizer.Component
             newInfo.Beatmaps = null;
             await Db.Database.AutoCommitTransactionScope(async () =>
             {
+                // dbCount == 0, do create operation
                 if (dbCount == 0)
                 {
                     await CreateDatabase(newInfo, beatmaps, token);
                 }
+                // else do update operation
                 else
                 {
                     await UpdateDatabase(currentInfo, newInfo, beatmaps, token);
