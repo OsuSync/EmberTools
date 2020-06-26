@@ -13,7 +13,7 @@ namespace EmberKernel.Services.EventBus
     public class MemoryEventBus : IKernelService, IEventBus, IDisposable
     {
         private readonly ISubscriptionManager _subsManager;
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public MemoryEventBus()
         {
             _subsManager = new EventSubscriptionManager();

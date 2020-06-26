@@ -1,10 +1,12 @@
 ﻿using Autofac;
 using EmberKernel.Plugins.Components;
+using EmberKernel.Plugins.Models;
 using EmberKernel.Services.EventBus.Handlers;
 using EmberMemoryReader.Components.Collector.Collectors;
 using EmberMemoryReader.Components.Collector.Collectors.Data;
 using EmberMemoryReader.Components.Collector.Readers;
 using EmberMemoryReader.Components.Collector.Readers.Windows;
+using EmberMemoryReader.Components.Listener;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,19 +18,20 @@ namespace EmberMemoryReader.Components.Collector
 {
     public class MemoryDataCollector : IComponent,
         IEventHandler<OsuProcessMatchedEvent>,
-        IEventHandler<OsuProcessTerminatedEvent>
+        IEventHandler<OsuProcessTerminatedEvent>,
+        IEventHandler<EmberInitializedEvent>
     {
         private ILifetimeScope CurrentScope { get; set; }
         private ILifetimeScope ManagerScope { get; set; }
         public MemoryDataCollector(ILifetimeScope scope)
         {
+            tokenSource = new CancellationTokenSource();
             this.CurrentScope = scope;
         }
 
-        CancellationTokenSource tokenSource;
+        private readonly CancellationTokenSource tokenSource;
         ValueTask IEventHandler<OsuProcessMatchedEvent>.Handle(OsuProcessMatchedEvent @event)
         {
-            tokenSource = new CancellationTokenSource();
             return StartCollectorAsync(@event);
         }
 
@@ -36,6 +39,12 @@ namespace EmberMemoryReader.Components.Collector
         {
             using (tokenSource) tokenSource.Cancel();
             return default;
+        }
+        public async ValueTask Handle(EmberInitializedEvent @event)
+        {
+            // search osu! process
+            var listener = CurrentScope.Resolve<IProcessListener>();
+            await listener.SearchProcessAsync(tokenSource.Token);
         }
 
         public async ValueTask StartCollectorAsync(OsuProcessMatchedEvent @event)
