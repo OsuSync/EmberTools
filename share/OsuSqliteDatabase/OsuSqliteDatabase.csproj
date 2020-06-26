@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EmberSqlite\EmberSqlite.csproj">
+      <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
 
