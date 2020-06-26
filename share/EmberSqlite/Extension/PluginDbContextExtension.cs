@@ -20,7 +20,7 @@ namespace EmberKernel.Plugins
         public static void ConfigureDbContext<T>(this IComponentBuilder builder)
             where T : EmberDbContext
         {
-            if (!builder.ParentScope.TryResolve<SqliteConfiguration>(out var sqliteConf))
+            if (!builder.ParentScope.TryResolve<SqliteConfiguration>(out _))
             {
                 throw new NullReferenceException("Can't resolve SqliteInformation, try build kernel with 'UseEFSqlite()' option.");
             }

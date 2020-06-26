@@ -95,17 +95,15 @@ namespace EmberMemoryReader.Components.Collector.Readers.Windows
             InitMemoryRegionInfo();
         }
 
-        private List<MemoryRegion> m_memoryRegionList = new List<MemoryRegion>();
+        private readonly List<MemoryRegion> m_memoryRegionList = new List<MemoryRegion>();
         private const int PROCESS_QUERY_INFORMATION = 0x0400;
         private const int MEM_COMMIT = 0x00001000;
-        private const int PAGE_READWRITE = 0x04;
         private const int PROCESS_WM_READ = 0x0010;
 
         private void InitMemoryRegionInfo()
         {
-            SYSTEM_INFO sys_info;
             //Get the maximum and minimum addresses of the process. 
-            GetSystemInfo(out sys_info);
+            GetSystemInfo(out SYSTEM_INFO sys_info);
             IntPtr proc_min_address = sys_info.minimumApplicationAddress;
             IntPtr proc_max_address = sys_info.maximumApplicationAddress;
 
@@ -120,14 +118,14 @@ namespace EmberMemoryReader.Components.Collector.Readers.Windows
                 return;
             }
 
-            MEMORY_BASIC_INFORMATION mem_basic_info = new MEMORY_BASIC_INFORMATION();
+            _ = new MEMORY_BASIC_INFORMATION();
 
             int mem_info_size = Marshal.SizeOf<MEMORY_BASIC_INFORMATION>();
 
             while (current_address < lproc_max_address)
             {
                 //Query the current memory page information.
-                int size = VirtualQueryEx(handle, new IntPtr(current_address), out mem_basic_info, (uint)mem_info_size);
+                int size = VirtualQueryEx(handle, new IntPtr(current_address), out MEMORY_BASIC_INFORMATION mem_basic_info, (uint)mem_info_size);
 
                 if (size != mem_info_size)
                 {
@@ -190,11 +188,10 @@ namespace EmberMemoryReader.Components.Collector.Readers.Windows
                     region.DumpedRegion = new byte[region.RegionSize];
 
                     bool bReturn = false;
-                    int nBytesRead = 0;
 
                     // Dump the memory.
                     bReturn = ReadProcessMemory(
-                        this.Process.Handle, region.BaseAddress, region.DumpedRegion, region.RegionSize, out nBytesRead
+                        this.Process.Handle, region.BaseAddress, region.DumpedRegion, region.RegionSize, out int nBytesRead
                         );
 
                     // Validation checks.
@@ -354,7 +351,7 @@ namespace EmberMemoryReader.Components.Collector.Readers.Windows
         public struct SYSTEM_INFO
         {
             public ushort processorArchitecture;
-            private ushort reserved;
+            private readonly ushort reserved;
             public uint pageSize;
             public IntPtr minimumApplicationAddress;
             public IntPtr maximumApplicationAddress;

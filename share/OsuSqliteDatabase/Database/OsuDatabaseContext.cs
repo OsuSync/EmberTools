@@ -33,6 +33,7 @@ namespace OsuSqliteDatabase.Database
             modelBuilder.Entity<OsuDatabaseBeatmap>().HasIndex(entity => entity.TitleUnicode);
             modelBuilder.Entity<OsuDatabaseBeatmap>().HasIndex(entity => entity.Creator);
             modelBuilder.Entity<OsuDatabaseBeatmap>().HasIndex(entity => entity.Difficult);
+            modelBuilder.Entity<OsuDatabaseBeatmap>().HasIndex(entity => new { entity.FolderName, entity.FileName });
             modelBuilder.Entity<OsuDatabaseBeatmap>().HasIndex(entity => new { entity.CircleCount, entity.SliderCount, entity.SpinnerCount });
             modelBuilder.Entity<OsuDatabaseBeatmap>().HasIndex(entity => new { entity.ApproachRate, entity.CircleSize, entity.HPDrain, entity.OverallDifficulty });
 

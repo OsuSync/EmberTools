@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OsuSqliteDatabase.Database;
 
 namespace OsuSqliteDatabase.Migrations
 {
     [DbContext(typeof(OsuDatabaseContext))]
-    partial class OsuDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20200626025731_AddIndexForBeatmapFolderAndFile")]
+    partial class AddIndexForBeatmapFolderAndFile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

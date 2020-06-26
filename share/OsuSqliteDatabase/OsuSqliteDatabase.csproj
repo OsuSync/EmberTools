@@ -7,12 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Model\pvypbb1s.qgo~" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\EmberSqlite\EmberSqlite.csproj">
-      <Private>true</Private>
     </ProjectReference>
   </ItemGroup>
 
@@ -22,10 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.5">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.5"/>
   </ItemGroup>
 
 </Project>

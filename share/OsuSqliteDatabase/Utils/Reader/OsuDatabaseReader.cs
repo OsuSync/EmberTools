@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OsuSqliteDatabase.Utils.Reader
 {
-    public class OsuDatabaseReader : IAsyncDisposable
+    public class OsuDatabaseReader : IDisposable
     {
         private BinaryReader Reader { get; }
         public OsuDatabaseReader(string path)
@@ -16,15 +16,21 @@ namespace OsuSqliteDatabase.Utils.Reader
             Reader = new BinaryReader(File.OpenRead(path), Encoding.UTF8);
         }
 
-        public OsuDatabase ReadOsuDatabase()
+        public OsuDatabase ReadOsuDatabaseHead()
         {
-            var db = new OsuDatabase();
-            db.Version = Reader.ReadInt32();
-            db.FolderCount = Reader.ReadInt32();
-            db.AccountLocked = Reader.ReadBoolean();
-            db.UnlockedAt = Reader.ReadDateTime();
-            db.PlayerName = Reader.ReadString();
-            db.BeatmapCount = Reader.ReadInt32();
+            return new OsuDatabase
+            {
+                Version = Reader.ReadInt32(),
+                FolderCount = Reader.ReadInt32(),
+                AccountLocked = Reader.ReadBoolean(),
+                UnlockedAt = Reader.ReadDateTime(),
+                PlayerName = Reader.ReadOsuString(),
+                BeatmapCount = Reader.ReadInt32()
+            };
+        }
+
+        public OsuDatabase ReadOsuDatabase(ref OsuDatabase db)
+        {
             db.Beatmaps = ReadBeatmap(db).ToList();
             db.Permission = (OsuGameBeatmapPermission)Reader.ReadInt32();
             return db;
@@ -36,15 +42,15 @@ namespace OsuSqliteDatabase.Utils.Reader
             {
                 var beatmap = new OsuDatabaseBeatmap();
                 if (db.Version < 20191106) beatmap.BytesOfBeatmapEntry = Reader.ReadInt32();
-                beatmap.Artist = Reader.ReadString();
-                beatmap.ArtistUnicode = Reader.ReadString();
-                beatmap.Title = Reader.ReadString();
-                beatmap.TitleUnicode = Reader.ReadString();
-                beatmap.Creator = Reader.ReadString();
-                beatmap.Difficult = Reader.ReadString();
-                beatmap.AudioFileName = Reader.ReadString();
-                beatmap.MD5Hash = Reader.ReadString();
-                beatmap.FileName = Reader.ReadString();
+                beatmap.Artist = Reader.ReadOsuString();
+                beatmap.ArtistUnicode = Reader.ReadOsuString();
+                beatmap.Title = Reader.ReadOsuString();
+                beatmap.TitleUnicode = Reader.ReadOsuString();
+                beatmap.Creator = Reader.ReadOsuString();
+                beatmap.Difficult = Reader.ReadOsuString();
+                beatmap.AudioFileName = Reader.ReadOsuString();
+                beatmap.MD5Hash = Reader.ReadOsuString();
+                beatmap.FileName = Reader.ReadOsuString();
                 beatmap.RankStatus = (OsuGameBeatmapRankStatus)Reader.ReadByte();
                 beatmap.CircleCount = Reader.ReadInt16();
                 beatmap.SliderCount = Reader.ReadInt16();
@@ -74,14 +80,14 @@ namespace OsuSqliteDatabase.Utils.Reader
                 beatmap.LocalOffset = Reader.ReadInt16();
                 beatmap.StackLeniency = Reader.ReadSingle();
                 beatmap.RuleSet = (OsuGameRuleSet)Reader.ReadByte();
-                beatmap.Source = Reader.ReadString();
-                beatmap.Tags = Reader.ReadString();
+                beatmap.Source = Reader.ReadOsuString();
+                beatmap.Tags = Reader.ReadOsuString();
                 beatmap.OnlineOffset = Reader.ReadInt16();
-                beatmap.TitleFont = Reader.ReadString();
+                beatmap.TitleFont = Reader.ReadOsuString();
                 beatmap.NotPlayed = Reader.ReadBoolean();
                 beatmap.LatestPlayedAt = Reader.ReadDateTime();
                 beatmap.IsOsz2 = Reader.ReadBoolean();
-                beatmap.FolderName = Reader.ReadString();
+                beatmap.FolderName = Reader.ReadOsuString();
                 beatmap.LatestPlayedAt = Reader.ReadDateTime();
                 beatmap.BeatmapSoundIgnored = Reader.ReadBoolean();
                 beatmap.BeatmapSkinIgnored = Reader.ReadBoolean();
@@ -133,10 +139,9 @@ namespace OsuSqliteDatabase.Utils.Reader
             }
         }
 
-        public ValueTask DisposeAsync()
+        public void Dispose()
         {
             Reader.Dispose();
-            return default;
         }
     }
 }
