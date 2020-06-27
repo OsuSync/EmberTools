@@ -29,7 +29,7 @@ namespace EmberWpfCore.ViewModel
                     this.Add(new TabItem()
                     {
                         Name = item.GetType().Name,
-                        Header = item.GetType().Name,
+                        Header = item.GetType().GetFriendlyDisplayName(),
                         Content = item as UserControl,
                     });
                 }
