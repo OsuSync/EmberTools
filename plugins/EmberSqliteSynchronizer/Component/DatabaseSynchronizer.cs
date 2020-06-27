@@ -64,6 +64,7 @@ namespace EmberSqliteSynchronizer.Component
                     if (args.Name == osuDbFile || Path.GetDirectoryName(Path.GetDirectoryName(args.FullPath)) == @event.BeatmapDirectory)
                     {
                         await SynchronizeLock.WaitAsync();
+                        await Task.Delay(500);
                         try
                         {
                             await MaintanceDatabase(dbPath, cancellationSource.Token);
