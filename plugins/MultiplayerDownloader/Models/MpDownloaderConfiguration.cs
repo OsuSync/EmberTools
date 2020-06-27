@@ -9,9 +9,9 @@ namespace MultiplayerDownloader.Models
     public class MpDownloaderConfiguration
     {
         [DependencyProperty(Name = nameof(DownloadNoVideo))]
-        public bool DownloadNoVideo { get; set; }
+        public bool DownloadNoVideo { get; set; } = true;
 
         [DependencyProperty(Name = nameof(DownloadProvider))]
-        public string DownloadProvider { get; set; } = typeof(SayobotDownloadProvider).Name;
+        public string DownloadProvider { get; set; } = typeof(BloodcatDownloadProvider).Name;
     }
 }

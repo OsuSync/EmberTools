@@ -1,16 +1,15 @@
 ﻿using Autofac;
-using EmberKernel.Plugins.Components;
-using EmberKernel.Services.UI.Mvvm.Extension;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using MultiplayerDownloader.Services.DownloadProvider;
 using MultiplayerDownloader.Services.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MultiplayerDownloader.Extension
 {
-    public static class ComponentBuilderExtension
+    public static class DownloadProviderUIExtension
     {
         private static IViewComponentManager Resolve(ILifetimeScope scope)
         {
@@ -20,12 +19,16 @@ namespace MultiplayerDownloader.Extension
             }
             return manager;
         }
-        public static void ConfigureDownloadProvider<T>(this IComponentBuilder builder)
-            where T : IDownloadProvier, IComponent, new()
+        public static ValueTask AddDownloadProviderUIOptions<T>(this ILifetimeScope scope)
+            where T : IDownloadProvier, new()
         {
-            Resolve(builder.ParentScope).RegisterComponent<T>();
-            builder.ConfigureComponent<T>().AsSelf().Named<IDownloadProvier>(typeof(T).Name);
+            return Resolve(scope).InitializeComponent(scope, typeof(T));
         }
 
+        public static ValueTask RemoveDownloadProviderUIOptions<T>(this ILifetimeScope scope)
+            where T : IDownloadProvier
+        {
+            return Resolve(scope).UninitializeComponent(scope, typeof(T));
+        }
     }
 }
