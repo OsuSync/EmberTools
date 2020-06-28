@@ -48,7 +48,7 @@ namespace EmberMemoryReader.Components.Collector.Collectors.Data
                 return false;
             if (!Reader.TryReadInt(MultiplayerAddress + BeatmapIdOffset, out int value))
                 return false;
-            result = new MultiplayerBeatmapIdInfo() { BeatmapId = value, HasValue = true };
+            result = new MultiplayerBeatmapIdInfo() { BeatmapId = value, HasValue = value > 0 };
             return true;
         }
     }

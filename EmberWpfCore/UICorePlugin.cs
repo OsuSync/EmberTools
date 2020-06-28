@@ -39,13 +39,13 @@ namespace EmberWpfCore
         public override async ValueTask Initialize(ILifetimeScope scope)
         {
             await scope.InitializeWpfWindow<Main>();
-            scope.InitializeUIComponent<PluginsTab>();
+            await scope.InitializeUIComponent<PluginsTab>();
         }
 
         public override async ValueTask Uninitialize(ILifetimeScope scope)
         {
             await scope.UninitializeWpfWindow<Main>();
-            scope.UninitializeUIComponent<PluginsTab>();
+            await scope.UninitializeUIComponent<PluginsTab>();
         }
     }
 }

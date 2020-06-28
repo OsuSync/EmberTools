@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac;
+using EmberKernel.Plugins.Models;
+using EmberKernel.Services.EventBus;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Plugins;
 
 namespace EmberKernel.Plugins
@@ -29,6 +31,10 @@ namespace EmberKernel.Plugins
 
             await pluginLoader.Run(pluginsScope);
             await pluginLoader.RunEntryComponents();
+
+            if (scope.TryResolve<IEventBus>(out var eventBus)) {
+                eventBus.Publish(EmberInitializedEvent.Empty);
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ namespace EmberKernel.Services.EventBus
     public class MemoryEventBus : IKernelService, IEventBus, IDisposable
     {
         private readonly ISubscriptionManager _subsManager;
-        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         public MemoryEventBus()
         {
             _subsManager = new EventSubscriptionManager();
@@ -42,7 +42,7 @@ namespace EmberKernel.Services.EventBus
                 var scope = subscription.Scope;
                 var handler = scope.ResolveOptional(subscription.HandlerType);
                 if (handler == null) continue;
-                var eventType = _subsManager.GetEventTypeByName(eventName);
+                var eventType = _subsManager.GetEventTypeByName(subscription.HandlerType, eventName);
                 var @event = JsonSerializer.Deserialize(message, eventType);
                 var concreteType = typeof(IEventHandler<>).MakeGenericType(eventType);
                 var method = concreteType.GetMethod("Handle");

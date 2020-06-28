@@ -44,6 +44,7 @@ namespace EmberCore
                 .UseWindowManager<EmberWpfUIService, Window>()
                 .UseMvvmInterface((mvvm) => mvvm
                     .UseConfigurationModel())
+                .UseEFSqlite(Path.Combine(Directory.GetCurrentDirectory(), "ember.sqlite"))
                 .Build()
                 .Run();
         }

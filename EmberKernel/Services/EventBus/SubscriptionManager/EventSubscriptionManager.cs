@@ -12,6 +12,7 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
     {
         private readonly Dictionary<string, List<SubscriptionInfo>> _handlers;
         private readonly List<Type> _eventTypes;
+        private readonly Dictionary<Type, List<Type>> _handlerEventTypes;
 
         public event EventHandler<string> OnEventRemoved;
 
@@ -19,6 +20,7 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
         {
             _handlers = new Dictionary<string, List<SubscriptionInfo>>();
             _eventTypes = new List<Type>();
+            _handlerEventTypes = new Dictionary<Type, List<Type>>();
         }
 
         public bool IsEmpty => _handlers.Count == 0;
@@ -62,11 +64,16 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
             {
                 _eventTypes.Add(typeof(TEvent));
             }
+            if (!_handlerEventTypes.ContainsKey(typeof(THandler)))
+            {
+                _handlerEventTypes.Add(typeof(THandler), new List<Type>());
+            }
+            _handlerEventTypes[typeof(THandler)].Add(typeof(TEvent));
         }
 
         public string GetEventKey(Type t) => t.GetFullEventName();
         public string GetEventKey<T>() => GetEventKey(typeof(T));
-        public Type GetEventTypeByName(string fullEventName) => _eventTypes.SingleOrDefault(t => t.GetFullEventName() == fullEventName);
+        public Type GetEventTypeByName(Type handler, string fullEventName) => _handlerEventTypes[handler].SingleOrDefault(t => t.GetFullEventName() == fullEventName);
 
         public IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : Event
         {

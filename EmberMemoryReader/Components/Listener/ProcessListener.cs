@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using EmberKernel.Plugins.Components;
+using EmberKernel.Plugins.Models;
 using EmberKernel.Services.EventBus;
+using EmberKernel.Services.EventBus.Handlers;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,8 @@ namespace EmberMemoryReader.Components.Listener
     /// Search executable name intervally
     /// <para>Send a <see cref="ProcessSearchResult"/> message when any process match the search condition </para>
     /// </summary>
-    public class ProcessListener<TPredicator, TPredEvent, TLifeTrakcer, TLifeEvent> : IProcessListener
+    public class ProcessListener<TPredicator, TPredEvent, TLifeTrakcer, TLifeEvent>
+        : IProcessListener
         where TPredEvent : Event<TPredEvent>
         where TPredicator : IProcessPredicator<TPredEvent>
         where TLifeEvent : Event<TLifeEvent>
@@ -33,6 +36,13 @@ namespace EmberMemoryReader.Components.Listener
             _EventBus = eventBus;
             selfToken = tokenSource.Token;
             SearchDelay = options.Value.SearchDelay;
+        }
+
+        public async ValueTask Handle(EmberInitializedEvent _)
+        {
+            // search osu! process
+            var listener = CurrentScope.Resolve<IProcessListener>();
+            await listener.SearchProcessAsync(tokenSource.Token);
         }
 
         public async ValueTask SearchProcessAsync(CancellationToken token = default)
