@@ -55,6 +55,12 @@ namespace MultiplayerDownloader.Services
 
                 var beatmapSetId = await downloadProvider.GetSetId(@event.BeatmapId);
 
+                if (!beatmapSetId.HasValue)
+                {
+                    Logger.LogInformation($"Can't find beatmap ({@event.BeatmapId}) in download provider {options.DownloadProvider}");
+                    return;
+                }
+
 
                 var hasBeatmap = await Db.OsuDatabaseBeatmap.AnyAsync(map => map.BeatmapSetId == beatmapSetId);
                 if (hasBeatmap)
@@ -63,7 +69,7 @@ namespace MultiplayerDownloader.Services
                     return;
                 }
 
-                var url = await downloadProvider.GetBeatmapSetDownloadUrl(beatmapSetId, options.DownloadNoVideo);
+                var url = await downloadProvider.GetBeatmapSetDownloadUrl(beatmapSetId.Value, options.DownloadNoVideo);
                 var targetFile = Path.Combine(OsuGamePath, "Downloads", $"{beatmapSetId}.osz");
 
                 Logger.LogInformation($"[Downloading] beatmap {@event.BeatmapId} (set = {beatmapSetId}) from ({options.DownloadProvider}) {url}");
@@ -73,7 +79,13 @@ namespace MultiplayerDownloader.Services
                     Logger.LogInformation($"[Downloading] beatmapSet {beatmapSetId} {percentage}%, {current/1024}/{total/1024}");
                 };
 
-                await downloadProvider.Download(targetFile, url);
+                var suggestFileName = await downloadProvider.Download(targetFile, url);
+                var suggestFilePath = Path.Combine(OsuGamePath, "Downloads", suggestFileName);
+                if (suggestFileName != null && suggestFileName.Length > 0 && suggestFileName.EndsWith(".osz"))
+                {
+                    File.Move(targetFile, suggestFilePath);
+                    targetFile = suggestFilePath;
+                }
 
                 Logger.LogInformation($"[Complete] download to {targetFile}");
                 try
@@ -89,7 +101,7 @@ namespace MultiplayerDownloader.Services
                 {
                     OsuDatabaseId = (await Db.OsuDatabases.FirstAsync()).Id,
                     BeatmapId = @event.BeatmapId,
-                    BeatmapSetId = beatmapSetId,
+                    BeatmapSetId = beatmapSetId.Value,
                 });
                 await Db.SaveChangesAsync();
             }

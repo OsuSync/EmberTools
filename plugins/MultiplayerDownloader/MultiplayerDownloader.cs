@@ -33,17 +33,25 @@ namespace MultiplayerDownloader
 
         public override ValueTask Initialize(ILifetimeScope scope)
         {
+            scope.RegisterUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
+
             scope.Subscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
             scope.Subscription<OsuProcessMatchedEvent, BeatmapDownloadService>();
-            scope.RegisterUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
+
+            scope.AddDownloadProviderUIOptions<SayobotDownloadProvider>();
+            scope.AddDownloadProviderUIOptions<BloodcatDownloadProvider>();
             return default;
         }
 
         public override ValueTask Uninitialize(ILifetimeScope scope)
         {
+            scope.UnregisterUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
+
             scope.Unsubscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
             scope.Unsubscription<OsuProcessMatchedEvent, BeatmapDownloadService>();
-            scope.UnregisterUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
+
+            scope.RemoveDownloadProviderUIOptions<SayobotDownloadProvider>();
+            scope.RemoveDownloadProviderUIOptions<BloodcatDownloadProvider>();
             return default;
         }
     }

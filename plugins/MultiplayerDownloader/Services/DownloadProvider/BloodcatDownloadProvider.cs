@@ -1,33 +1,57 @@
 ﻿using EmberKernel.Plugins.Components;
+using EmberKernel.Services.UI.Mvvm.ViewComponent;
+using MultiplayerDownloader.Services.UI;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MultiplayerDownloader.Services.DownloadProvider
 {
-    public class BloodcatDownloadProvider : IDownloadProvier, IComponent
+
+#pragma warning disable IDE1006 // Naming Styles
+    class BloodcatBeatmap
     {
-        public event Action<int, long, long> DownloadProgressChanged;
+        public string id { get; set; }
+    }
+    class BloodcatBeatmapSet
+    {
+        public string id { get; set; }
+        public List<BloodcatBeatmap> beatmaps { get; set; }
 
-        public void Dispose()
+    }
+#pragma warning restore IDE1006 // Naming Styles
+
+    [DownloadProviderList(Name = "Bloodcat")]
+    [ViewComponentNamespace("MultiplayerDownloader.IDownloadProvier")]
+    public class BloodcatDownloadProvider : HttpDownloadProvider
+    {
+
+        public override ValueTask<string> GetBeatmapSetDownloadUrl(int beatmapSetId, bool noVideo = true)
         {
-            throw new NotImplementedException();
+            if (noVideo)
+            {
+                var bloodcatCookie = $"DLOPT={JsonSerializer.Serialize(new { bg = false, video = noVideo, skin = false, cdn = false })}";
+                base.HttpUtils.Downloader.Headers.Add(HttpRequestHeader.Cookie, bloodcatCookie);
+            }
+            return new ValueTask<string>($"https://bloodcat.com/osu/s/{beatmapSetId}");
         }
 
-        public ValueTask Download(string targetFile, string url)
+        public override async ValueTask<int?> GetSetId(int beatmapId)
         {
-            throw new NotImplementedException();
-        }
-
-        public ValueTask<string> GetBeatmapSetDownloadUrl(int beatmapSetId, bool noVideo = true)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ValueTask<int> GetSetId(int beatmapId)
-        {
-            throw new NotImplementedException();
+            var request = (await HttpUtils.Requestor
+                .GetAsync($"https://bloodcat.com/osu/?mod=json&c=b&q={beatmapId}", CancellationSource.Token))
+                .EnsureSuccessStatusCode();
+            using var stream = await request.Content.ReadAsStreamAsync();
+            var result = await JsonSerializer.DeserializeAsync<List<BloodcatBeatmapSet>>(stream, cancellationToken: CancellationSource.Token);
+            if (result.Count == 0)
+            {
+                return null;
+            }
+            return int.Parse(result[0].id);
         }
     }
 }

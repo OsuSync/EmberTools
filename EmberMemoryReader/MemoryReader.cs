@@ -30,7 +30,7 @@ namespace EmberMemoryReader
         public override ValueTask Initialize(ILifetimeScope scope)
         {
             // handle the event
-            scope.Subscription<EmberInitializedEvent, MemoryDataCollector>();
+            scope.Subscription<EmberInitializedEvent, IProcessListener>();
             scope.Subscription<OsuProcessMatchedEvent, MemoryDataCollector>();
             scope.Subscription<OsuProcessTerminatedEvent, MemoryDataCollector>();
             return default;
@@ -38,7 +38,7 @@ namespace EmberMemoryReader
 
         public override ValueTask Uninitialize(ILifetimeScope scope)
         {
-            scope.Unsubscription<EmberInitializedEvent, MemoryDataCollector>();
+            scope.Unsubscription<EmberInitializedEvent, IProcessListener>();
             scope.Unsubscription<OsuProcessMatchedEvent, MemoryDataCollector>();
             scope.Unsubscription<OsuProcessTerminatedEvent, MemoryDataCollector>();
             return default;
