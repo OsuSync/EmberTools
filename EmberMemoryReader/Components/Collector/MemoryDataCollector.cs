@@ -1,10 +1,12 @@
 ﻿using Autofac;
 using EmberKernel.Plugins.Components;
+using EmberKernel.Plugins.Models;
 using EmberKernel.Services.EventBus.Handlers;
 using EmberMemoryReader.Components.Collector.Collectors;
 using EmberMemoryReader.Components.Collector.Collectors.Data;
 using EmberMemoryReader.Components.Collector.Readers;
 using EmberMemoryReader.Components.Collector.Readers.Windows;
+using EmberMemoryReader.Components.Listener;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,7 +27,7 @@ namespace EmberMemoryReader.Components.Collector
             this.CurrentScope = scope;
         }
 
-        CancellationTokenSource tokenSource;
+        private CancellationTokenSource tokenSource;
         ValueTask IEventHandler<OsuProcessMatchedEvent>.Handle(OsuProcessMatchedEvent @event)
         {
             tokenSource = new CancellationTokenSource();

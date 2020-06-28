@@ -28,10 +28,13 @@
   <ItemGroup>
     <ProjectReference Include="..\EmberKernel\EmberKernel.csproj">
       <Private>true</Private>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </ProjectReference>
     <ProjectReference Include="..\share\EmberSqlite\EmberSqlite.csproj">
       <Private>true</Private>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </ProjectReference>
+    <ProjectReference Include="..\share\OsuSqliteDatabase\OsuSqliteDatabase.csproj" />
   </ItemGroup>
 
   <ItemGroup>

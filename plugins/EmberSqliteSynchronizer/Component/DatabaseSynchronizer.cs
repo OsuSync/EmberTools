@@ -64,6 +64,7 @@ namespace EmberSqliteSynchronizer.Component
                     if (args.Name == osuDbFile || Path.GetDirectoryName(Path.GetDirectoryName(args.FullPath)) == @event.BeatmapDirectory)
                     {
                         await SynchronizeLock.WaitAsync();
+                        await Task.Delay(500);
                         try
                         {
                             await MaintanceDatabase(dbPath, cancellationSource.Token);
@@ -144,7 +145,10 @@ namespace EmberSqliteSynchronizer.Component
                 // query exist record basic on FileName and FolderName
                 var currentBeatmaps = await Db
                     .OsuDatabaseBeatmap
-                    .Where((b) => b.FileName == beatmap.FileName && b.FolderName == beatmap.FolderName)
+                    .Where((b) =>
+                        (b.FileName == beatmap.FileName && b.FolderName == beatmap.FolderName)
+                        || (b.BeatmapSetId > 0 && b.BeatmapId > 0
+                            && b.BeatmapSetId == beatmap.BeatmapSetId && b.BeatmapId == beatmap.BeatmapId))
                     .ToListAsync();
 
                 // no records that exist, save to database directly
@@ -170,8 +174,10 @@ namespace EmberSqliteSynchronizer.Component
                         .OsuDatabaseBeatmap
                         .Where((b) => b.FileName == beatmap.FileName && b.FolderName == beatmap.FolderName);
                     Db.OsuDatabaseBeatmap.RemoveRange(corrupted);
+                    beatmap.OsuDatabaseId = currentInfo.Id;
                     await Db.AddAsync(beatmap);
-                    Logger.LogInformation($"A corrupted data fixed");
+                    Logger.LogInformation($"A corrupted data detected. Path = {beatmap.FolderName}\\{beatmap.FileName}");
+
                 }
 
                 if (++currentModifiedCount % 500 == 0)
