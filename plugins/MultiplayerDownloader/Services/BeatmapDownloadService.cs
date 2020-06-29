@@ -53,6 +53,7 @@ namespace MultiplayerDownloader.Services
             {
                 var downloadProvider = Scope.ResolveNamed<IDownloadProvier>(options.DownloadProvider);
 
+                Logger.LogInformation($"Searching ({@event.BeatmapId}) in download provider {options.DownloadProvider}");
                 var beatmapSetId = await downloadProvider.GetSetId(@event.BeatmapId);
 
                 if (!beatmapSetId.HasValue)
