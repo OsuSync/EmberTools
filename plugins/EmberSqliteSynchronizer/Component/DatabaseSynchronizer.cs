@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace EmberSqliteSynchronizer.Component
 {
-    public class DatabaseSynchronizer : IComponent, IEventHandler<OsuProcessMatchedEvent>
+    public class DatabaseSynchronizer : IComponent, IEventHandler<OsuProcessMatchedEvent>, IEventHandler<OsuProcessTerminatedEvent>
     {
         private OsuDatabaseContext Db { get; }
         private ILogger<DatabaseSynchronizer> Logger { get; }
@@ -61,7 +61,9 @@ namespace EmberSqliteSynchronizer.Component
                 };
                 _fsWatcher.Changed += async(_, args) =>
                 {
-                    if (args.Name == osuDbFile || Path.GetDirectoryName(Path.GetDirectoryName(args.FullPath)) == @event.BeatmapDirectory)
+                    if (args.Name == osuDbFile
+                    || (Path.GetDirectoryName(Path.GetDirectoryName(args.FullPath)) == @event.BeatmapDirectory
+                        && args.FullPath.EndsWith(".osu")))
                     {
                         await SynchronizeLock.WaitAsync();
                         await Task.Delay(500);
@@ -75,6 +77,20 @@ namespace EmberSqliteSynchronizer.Component
                         }
                     }
                 };
+            }
+        }
+
+        public async ValueTask Handle(OsuProcessTerminatedEvent @event)
+        {
+            await SynchronizeLock.WaitAsync();
+            await Task.Delay(1000);
+            try
+            {
+                await MaintanceDatabase(_osuDbPath, cancellationSource.Token);
+            }
+            finally
+            {
+                SynchronizeLock.Release();
             }
         }
 

@@ -24,11 +24,13 @@ namespace EmberSqliteSynchronizer
         {
             await scope.MigrateDbContext<OsuDatabaseContext>();
             scope.Subscription<OsuProcessMatchedEvent, DatabaseSynchronizer>();
+            scope.Subscription<OsuProcessTerminatedEvent, DatabaseSynchronizer>();
         }
 
         public override ValueTask Uninitialize(ILifetimeScope scope)
         {
             scope.Unsubscription<OsuProcessMatchedEvent, DatabaseSynchronizer>();
+            scope.Unsubscription<OsuProcessTerminatedEvent, DatabaseSynchronizer>();
             return default;
         }
     }
