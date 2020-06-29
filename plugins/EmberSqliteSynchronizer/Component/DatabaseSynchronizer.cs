@@ -107,6 +107,7 @@ namespace EmberSqliteSynchronizer.Component
             await Db.AddAsync(dbInfo);
             await Db.SaveChangesAsync();
             Logger.LogInformation($"Processing {dbInfo.BeatmapCount} beatmap...");
+            DateTimeOffset startTime = DateTimeOffset.Now;
 
             Db.RemoveRange(Db.OsuDatabaseBeatmap);
             await Db.SaveChangesAsync();
@@ -127,6 +128,7 @@ namespace EmberSqliteSynchronizer.Component
                 await Db.SaveChangesAsync();
                 Logger.LogInformation($"Processed {chunk.Count} beatmap.");
             }
+            Logger.LogInformation($"Create database complete in {(DateTimeOffset.Now - startTime).TotalMilliseconds}ms");
         }
 
         private async ValueTask UpdateDatabase(OsuDatabase currentInfo, OsuDatabase newInfo, List<OsuDatabaseBeatmap> beatmaps, CancellationToken token = default)
