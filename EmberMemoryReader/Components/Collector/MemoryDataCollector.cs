@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Plugins.Models;
+using EmberKernel.Services.EventBus;
 using EmberKernel.Services.EventBus.Handlers;
 using EmberMemoryReader.Components.Collector.Collectors;
 using EmberMemoryReader.Components.Collector.Collectors.Data;
@@ -16,10 +17,35 @@ using System.Threading.Tasks;
 
 namespace EmberMemoryReader.Components.Collector
 {
-    public class MemoryDataCollector : IComponent,
-        IEventHandler<OsuProcessMatchedEvent>,
-        IEventHandler<OsuProcessTerminatedEvent>
+    public abstract class MemoryDataCollector<TCollector, TMatchedEvent, TTerminatedEvent> : IComponent
+        where TCollector : MemoryDataCollector<TCollector, TMatchedEvent, TTerminatedEvent>
+        where TMatchedEvent : ProcessMatchedEvent<TMatchedEvent>
+        where TTerminatedEvent : ProcessTerminatedEvent<TTerminatedEvent>
     {
+        public abstract class Handler<T> : IEventHandler<T> where T : Event<T>
+        {
+            protected TCollector DataCollector { get; }
+            public Handler(TCollector collector)
+            {
+                this.DataCollector = collector;
+            }
+
+            public ValueTask Handle(T @event)
+            => @event switch
+            {
+                TMatchedEvent matched => DataCollector.Handle(matched),
+                TTerminatedEvent terminated => DataCollector.Handle(terminated),
+                _ => throw new InvalidCastException(),
+            };
+        }
+        public class MatchedHandler : Handler<TMatchedEvent>
+        {
+            public MatchedHandler(TCollector collector) : base(collector) { }
+        }
+        public class TerminatedHandler : Handler<TTerminatedEvent>
+        {
+            public TerminatedHandler(TCollector collector) : base(collector) { }
+        }
         private ILifetimeScope CurrentScope { get; set; }
         private ILifetimeScope ManagerScope { get; set; }
         public MemoryDataCollector(ILifetimeScope scope)
@@ -28,43 +54,34 @@ namespace EmberMemoryReader.Components.Collector
         }
 
         private CancellationTokenSource tokenSource;
-        ValueTask IEventHandler<OsuProcessMatchedEvent>.Handle(OsuProcessMatchedEvent @event)
+        public virtual ValueTask Handle(TMatchedEvent @event)
         {
+            tokenSource?.Cancel();
+            tokenSource?.Dispose();
             tokenSource = new CancellationTokenSource();
             return StartCollectorAsync(@event);
         }
 
-        ValueTask IEventHandler<OsuProcessTerminatedEvent>.Handle(OsuProcessTerminatedEvent @event)
+        public virtual ValueTask Handle(TTerminatedEvent @event)
         {
             using (tokenSource) tokenSource.Cancel();
             return default;
         }
-
-        public async ValueTask StartCollectorAsync(OsuProcessMatchedEvent @event)
+        protected abstract bool BuildCollectScope(CollectorBuilder builder, TMatchedEvent @event);
+        public async ValueTask StartCollectorAsync(TMatchedEvent @event)
         {
             var process = Process.GetProcessById(@event.ProcessId);
             if (process == null) return;
 
-            this.ManagerScope = CurrentScope.BeginLifetimeScope((builder) =>
-            {
-                builder
-                .ReadMemoryWith<WindowsReader>()
-                .UseOsuProcessEvent(@event)
-                .UseCollectorManager(manager => manager
-                    .Collect<Beatmap>()
-                    .Collect<GameStatus>()
-                    .Collect<Playing>()
-                    .Collect<MultiplayerBeatmapId>()
-                );
-            });
+            this.ManagerScope = CurrentScope.BeginLifetimeScope((builder) => this.BuildCollectScope(new CollectorBuilder(builder), @event));
             var manager = ManagerScope.Resolve<ICollectorManager>();
             await manager.StartCollectors(tokenSource.Token);
         }
 
         public void Dispose() 
         {
-            tokenSource.Cancel();
-            tokenSource.Dispose();
+            tokenSource?.Cancel();
+            tokenSource?.Dispose();
         }
     }
 }

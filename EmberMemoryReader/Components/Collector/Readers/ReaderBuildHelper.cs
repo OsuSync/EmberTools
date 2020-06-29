@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using EmberMemoryReader.Components.Collector.Collectors;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,11 +8,11 @@ namespace EmberMemoryReader.Components.Collector.Readers
 {
     public static class ReaderBuildHelper
     {
-        public static ContainerBuilder ReadMemoryWith<T>
-            (this ContainerBuilder builder)
+        public static CollectorBuilder ReadMemoryWith<T>
+            (this CollectorBuilder builder)
             where T : DirectMemoryReader
         {
-            builder.RegisterType<T>().As<DirectMemoryReader>();
+            builder.Builder.RegisterType<T>().As<DirectMemoryReader>();
             return builder;
         }
     }
