@@ -5,7 +5,8 @@ using System.Text;
 
 namespace EmberMemoryReader.Components
 {
-    public class OsuProcessTerminatedEvent : ProcessTerminatedEvent<OsuProcessTerminatedEvent>
+    public class ProcessMatchedEvent<T> : Event<T> where T : ProcessMatchedEvent<T>
     {
+        public int ProcessId { get; set; }
     }
 }

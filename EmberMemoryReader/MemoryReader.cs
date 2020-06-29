@@ -19,7 +19,7 @@ namespace EmberMemoryReader
     {
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.ConfigureComponent<MemoryDataCollector>().SingleInstance();
+            builder.UseMemoryDataCollector<OsuMemoryDataCollector, OsuProcessMatchedEvent, OsuProcessTerminatedEvent>();
             builder.UsePluginOptionsModel<MemoryReader, PorcessListenerConfiguration>();
             builder.UseProcessListener(listen => listen
                 .UseLifetimeTracker<OsuProcessTracker, OsuProcessTerminatedEvent>()
@@ -31,16 +31,16 @@ namespace EmberMemoryReader
         {
             // handle the event
             scope.Subscription<EmberInitializedEvent, IProcessListener>();
-            scope.Subscription<OsuProcessMatchedEvent, MemoryDataCollector>();
-            scope.Subscription<OsuProcessTerminatedEvent, MemoryDataCollector>();
+            scope.Subscription<OsuProcessMatchedEvent, OsuMemoryDataCollector.MatchedHandler>();
+            scope.Subscription<OsuProcessTerminatedEvent, OsuMemoryDataCollector.TerminatedHandler>();
             return default;
         }
 
         public override ValueTask Uninitialize(ILifetimeScope scope)
         {
             scope.Unsubscription<EmberInitializedEvent, IProcessListener>();
-            scope.Unsubscription<OsuProcessMatchedEvent, MemoryDataCollector>();
-            scope.Unsubscription<OsuProcessTerminatedEvent, MemoryDataCollector>();
+            scope.Unsubscription<OsuProcessMatchedEvent, OsuMemoryDataCollector.MatchedHandler>();
+            scope.Unsubscription<OsuProcessTerminatedEvent, OsuMemoryDataCollector.TerminatedHandler>();
             return default;
         }
     }

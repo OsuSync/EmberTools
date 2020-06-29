@@ -27,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberSqlite", "share\EmberS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuSqliteDatabase", "share\OsuSqliteDatabase\OsuSqliteDatabase.csproj", "{9DE8B7B9-6688-41CE-A525-F09E3BDA6A58}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberSqliteSynchronizer", "plugins\EmberSqliteSynchronizer\EmberSqliteSynchronizer.csproj", "{7C01191C-AD6E-40B4-A3BF-DA210EF44D35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberSqliteSynchronizer", "plugins\EmberSqliteSynchronizer\EmberSqliteSynchronizer.csproj", "{7C01191C-AD6E-40B4-A3BF-DA210EF44D35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

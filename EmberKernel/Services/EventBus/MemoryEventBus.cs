@@ -21,7 +21,7 @@ namespace EmberKernel.Services.EventBus
 
         public void Publish(Event @event)
         {
-            Task.Run(() => Publish(@event, _cancellationTokenSource.Token));
+            Publish(@event, _cancellationTokenSource.Token);
         }
 
         public ValueTask Publish(Event @event, CancellationToken cancellation = default)
