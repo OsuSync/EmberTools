@@ -4,5 +4,9 @@
   "Locale": "System",
   "PluginsFolder": "plugins",
   "PluginsCacheFolder": "cache",
-  "CommandSourceOperationTimeLimit": 5
+  "CommandSourceOperationTimeLimit": 5,
+  "Logging": {
+    "LogFolder": "logs",
+    "LogFilePattern": "logs_.txt"
+  }
 }
