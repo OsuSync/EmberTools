@@ -8,11 +8,11 @@ namespace EmberWpfCore.Components.Configuration.ViewModel
 {
     public class ConfigurationItemViewModel : INotifyPropertyChanged
     {
-        public string Value { get => DependencySet.GetValue(Name)?.ToString();
+        public object Value { get => DependencySet.GetValue(Name);
             set
             {
                 DependencySet.SetValue(Name, value);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Value));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Name));
             }
         }
         public string Name { get; }
