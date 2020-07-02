@@ -5,6 +5,7 @@ using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI;
 using EmberKernel.Services.UI.Mvvm.Extension;
+using EmberWpfCore.Components.Configuration.View;
 using EmberWpfCore.Components.PluginsManager.View;
 using EmberWpfCore.View;
 using EmberWpfCore.ViewModel;
@@ -34,18 +35,21 @@ namespace EmberWpfCore
             builder.ConfigureComponent<RegisteredTabs>();
             builder.ConfigureWpfWindow<Main>();
             builder.ConfigureUIComponent<PluginsTab>();
+            builder.ConfigureUIComponent<ConfigurationTab>();
         }
 
         public override async ValueTask Initialize(ILifetimeScope scope)
         {
             await scope.InitializeWpfWindow<Main>();
             await scope.InitializeUIComponent<PluginsTab>();
+            await scope.InitializeUIComponent<ConfigurationTab>();
         }
 
         public override async ValueTask Uninitialize(ILifetimeScope scope)
         {
             await scope.UninitializeWpfWindow<Main>();
             await scope.UninitializeUIComponent<PluginsTab>();
+            await scope.UninitializeUIComponent<ConfigurationTab>();
         }
     }
 }
