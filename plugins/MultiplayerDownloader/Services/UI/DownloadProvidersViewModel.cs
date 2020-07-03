@@ -14,8 +14,27 @@ namespace MultiplayerDownloader.Services.UI
 
     public class UIDownloadProdiver
     {
-        public string DisplayName { get; set; }
-        public string ClassName { get; set; }
+        public string Name { get; set; }
+        public string Id { get; set; }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is UIDownloadProdiver provider)
+            {
+                return provider.Id == Id;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
     public class DownloadProvidersViewModel : ObservableCollection<UIDownloadProdiver>, IComponent
     {
@@ -35,8 +54,8 @@ namespace MultiplayerDownloader.Services.UI
                 {
                     this.Add(new UIDownloadProdiver()
                     {
-                        ClassName = item.GetType().Name,
-                        DisplayName = item.GetProviderListDisplayName(),
+                        Id = item.GetType().Name,
+                        Name = item.GetProviderListDisplayName(),
                     });
                 }
             }
@@ -49,7 +68,7 @@ namespace MultiplayerDownloader.Services.UI
                 {
                     if (item.GetType().IsSameCategoryComponent<IDownloadProvier>())
                     {
-                        this.Remove(this.First((model) => model.ClassName == e.OldItems[0].GetType().Name));
+                        this.Remove(this.First((model) => model.Id == e.OldItems[0].GetType().Name));
                     }
                 }
             }

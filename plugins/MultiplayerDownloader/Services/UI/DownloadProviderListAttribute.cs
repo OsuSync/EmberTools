@@ -12,6 +12,15 @@ namespace MultiplayerDownloader.Services.UI
 
     public static class DownloadProviderListAttributeExtension
     {
+        public static string GetProviderListDisplayName(this Type type)
+        {
+            if (type.GetCustomAttribute<DownloadProviderListAttribute>()
+                is DownloadProviderListAttribute attr)
+            {
+                return attr.Name ?? type.Name;
+            }
+            return type.Name;
+        }
         public static string GetProviderListDisplayName(this object obj)
         {
             if (obj.GetType().GetCustomAttribute<DownloadProviderListAttribute>()
