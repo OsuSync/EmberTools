@@ -21,13 +21,14 @@
             <StackPanel Orientation="Horizontal">
                 <Label Content="{Binding Path=SelectedSet.Name, Mode=OneWay}" />
             </StackPanel>
-            <ItemsControl x:Name="theSettingGroup" 
-                      ItemsSource="{Binding SelectedSet}" >
+            <ItemsControl ItemsSource="{Binding SelectedSet}" >
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="{Binding Path=Name, Mode=OneWay}" />
-                            <TextBox Text="{Binding Path=Value}"/>
+                            <ContentPresenter
+                                DataContext="{Binding Path=Value}"
+                                Content="{Binding Path=InputControl, Mode=OneWay}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

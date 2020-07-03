@@ -1,10 +1,12 @@
 ﻿using Autofac;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
+using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
 using EmberWpfCore.Components.Configuration.ViewModel;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,9 +40,10 @@ namespace EmberWpfCore.Components.Configuration.View
         public ValueTask Initialize(ILifetimeScope scope)
         {
             var logger = scope.Resolve<ILogger<ConfigurationTab>>();
+            var wm = scope.Resolve<IWindowManager>();
             if (scope.TryResolve<IConfigurationModelManager>(out var configViewModel))
             {
-                this.DataContext = new ConfigurationViewModel(configViewModel);
+                this.DataContext = new ConfigurationViewModel(configViewModel, wm);
             }
             else
                 logger.LogError("Can't resolve 'IPluginManagerViewModel'");
