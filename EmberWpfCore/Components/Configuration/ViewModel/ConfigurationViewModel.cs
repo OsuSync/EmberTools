@@ -16,7 +16,7 @@ namespace EmberWpfCore.Components.Configuration.ViewModel
     public class ConfigurationViewModel : INotifyPropertyChanged
     {
         private IConfigurationModelManager ConfigurationModelManager { get; }
-        //private IWindowManager WindowManager { get; }
+        private IWindowManager WindowManager { get; }
         private Dictionary<Type, ConfigurationSetViewModel> ViewModels = new Dictionary<Type, ConfigurationSetViewModel>();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -38,10 +38,10 @@ namespace EmberWpfCore.Components.Configuration.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ConfigurationViewModel(IConfigurationModelManager configurationModelManager) //, IWindowManager windowManager)
+        public ConfigurationViewModel(IConfigurationModelManager configurationModelManager, IWindowManager windowManager)
         {
             ConfigurationModelManager = configurationModelManager;
-            //WindowManager = windowManager;
+            WindowManager = windowManager;
             LoadConfigurationModels(ConfigurationModelManager);
             ConfigurationModelManager.CollectionChanged += ConfigurationModelManager_CollectionChanged;
         }
@@ -78,7 +78,7 @@ namespace EmberWpfCore.Components.Configuration.ViewModel
             var itemType = item.GetType();
             if (!(item is DependencySet dependency)) return;
             if (ViewModels.ContainsKey(itemType)) return;
-            var vm = new ConfigurationSetViewModel(dependency);
+            var vm = new ConfigurationSetViewModel(dependency, WindowManager);
             ViewModels.Add(itemType, vm);
             vm.LoadDependencySet();
             vm.CollectionChanged += Vm_CollectionChanged;

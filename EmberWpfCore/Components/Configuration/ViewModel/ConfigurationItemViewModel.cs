@@ -1,31 +1,54 @@
-﻿using EmberKernel.Services.UI.Mvvm.Dependency;
+﻿using EmberCore.KernelServices.UI.ViewModel.Configuration;
+using EmberKernel.Services.UI.Mvvm.Dependency;
+using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
+using EmberWpfCore.Components.Configuration.View.Component;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace EmberWpfCore.Components.Configuration.ViewModel
 {
-    public class ConfigurationItemViewModel : INotifyPropertyChanged
+    public class ConfigurationItemViewModel
     {
-        public object Value { get => DependencySet.GetValue(Name);
-            set
-            {
-                DependencySet.SetValue(Name, value);
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(Name));
-            }
-        }
+        public ConfigurationSingleValueViewModel Value { get; }
         public string Name { get; }
         public Type ValueType { get; }
-        private DependencySet DependencySet { get; }
+        public Control InputControl { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public ConfigurationItemViewModel(Type propertyType, string name, DependencySet dependencySet)
+        public ConfigurationItemViewModel(Type propertyType, string name, DependencySet dependencySet, IWindowManager windowManager)
         {
             Name = name;
             ValueType = propertyType;
-            DependencySet = dependencySet;
+            var type = ComponentFactory.GetControl(propertyType);
+            if (dependencySet.HasAttach(WpfFeatureBuilder.WpfRenderControl))
+            {
+                var customControls = dependencySet.GetAttach<Dictionary<string, Type>>(WpfFeatureBuilder.WpfRenderControl);
+                if (customControls.ContainsKey(name))
+                {
+                    type = customControls[name];
+                }
+            }
+            if (dependencySet.HasAttach(WpfFeatureBuilder.WpfMultiOptionFields))
+            {
+                var multiSet = dependencySet.GetAttach<HashSet<string>>(WpfFeatureBuilder.WpfMultiOptionFields);
+                if (multiSet.Contains(name))
+                {
+                    Value = new ConfigurationMultiValueViewModel(name, dependencySet);
+                }
+            }
+            if (Value == null)
+            {
+                Value = new ConfigurationSingleValueViewModel(name, dependencySet);
+            }
+
+            windowManager.BeginUIThreadScope(() =>
+            {
+                InputControl = (Control)Activator.CreateInstance(type);
+                InputControl.DataContext = Value;
+            });
         }
 
         public override string ToString()
