@@ -2,13 +2,12 @@
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.Extension;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
-using MultiplayerDownloader.Services.DownloadProvider;
-using MultiplayerDownloader.Services.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using BeatmapDownloader.Abstract.Services.DownloadProvider;
 
-namespace MultiplayerDownloader.Extension
+namespace BeatmapDownloader.Extension
 {
     public static class ComponentBuilderExtension
     {

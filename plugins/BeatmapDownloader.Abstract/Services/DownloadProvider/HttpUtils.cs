@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 
-namespace MultiplayerDownloader.Services.DownloadProvider
+namespace BeatmapDownloader.Abstract.Services.DownloadProvider
 {
     public class HttpUtils : IDisposable
     {
@@ -18,7 +18,7 @@ namespace MultiplayerDownloader.Services.DownloadProvider
         public HttpUtils()
         {
             Requestor = new HttpClient();
-            var downloaderAssembly = typeof(MultiplayerDownloader).Assembly.GetName(false);
+            var downloaderAssembly = typeof(HttpUtils).Assembly.GetName(false);
             var emberKernelVersion = typeof(IComponent).Assembly.GetName(false);
             var executeVersion = Assembly.GetEntryAssembly().GetName();
             Requestor.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(downloaderAssembly.Name, downloaderAssembly.Version.ToString()));

@@ -1,6 +1,5 @@
 ﻿using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
-using MultiplayerDownloader.Services.UI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,8 +11,9 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using BeatmapDownloader.Abstract.Services.UI;
 
-namespace MultiplayerDownloader.Services.DownloadProvider
+namespace BeatmapDownloader.Abstract.Services.DownloadProvider
 {
 #pragma warning disable IDE1006 // Naming Styles
     class SayobotBeatmapSet
@@ -48,6 +48,5 @@ namespace MultiplayerDownloader.Services.DownloadProvider
             if (result.status != 0) return null;
             return result.data.sid;
         }
-
     }
 }

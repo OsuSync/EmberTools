@@ -1,6 +1,5 @@
 ﻿using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
-using MultiplayerDownloader.Services.DownloadProvider;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,35 +7,13 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using BeatmapDownloader.Abstract.Models;
+using BeatmapDownloader.Abstract.Services.DownloadProvider;
+using BeatmapDownloader.Abstract.Services.UI;
 
-namespace MultiplayerDownloader.Services.UI
+namespace BeatmapDownloader.WpfUI.UI.ViewModel
 {
-
-    public class UIDownloadProdiver
-    {
-        public string Name { get; set; }
-        public string Id { get; set; }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj is UIDownloadProdiver provider)
-            {
-                return provider.Id == Id;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
-    }
-    public class DownloadProvidersViewModel : ObservableCollection<UIDownloadProdiver>, IComponent
+    public class DownloadProvidersViewModel : ObservableCollection<DownloadProvider>, IComponent
     {
         public static readonly string DownloadProdiversCategory = $"MultiplayerDownloader.{nameof(IDownloadProvier)}";
         public DownloadProvidersViewModel(IViewComponentManager manager)
@@ -52,7 +29,7 @@ namespace MultiplayerDownloader.Services.UI
             {
                 if (item.GetType().IsSameCategoryComponent<IDownloadProvier>())
                 {
-                    this.Add(new UIDownloadProdiver()
+                    this.Add(new DownloadProvider()
                     {
                         Id = item.GetType().Name,
                         Name = item.GetProviderListDisplayName(),

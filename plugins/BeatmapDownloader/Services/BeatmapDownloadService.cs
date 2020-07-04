@@ -1,11 +1,11 @@
 ﻿using Autofac;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Configuration;
+using EmberKernel.Services.EventBus;
 using EmberKernel.Services.EventBus.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using MultiplayerDownloader.Models;
-using MultiplayerDownloader.Services.DownloadProvider;
+using BeatmapDownloader.Models;
 using OsuSqliteDatabase.Database;
 using OsuSqliteDatabase.Model;
 using System;
@@ -14,8 +14,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using BeatmapDownloader.Abstract.Services.DownloadProvider;
+using BeatmapDownloader.Abstract.Models;
+using BeatmapDownloader.Database.Database;
+using BeatmapDownloader.Database.Model;
 
-namespace MultiplayerDownloader.Services
+namespace BeatmapDownloader.Services
 {
     public class BeatmapDownloadService : IComponent,
         IEventHandler<MultiplayerBeatmapIdInfo>,
@@ -23,18 +27,24 @@ namespace MultiplayerDownloader.Services
     {
         private ILifetimeScope Scope { get; }
         private ILogger<BeatmapDownloadService> Logger { get; }
-        private OsuDatabaseContext Db { get; }
+        private IEventBus EventBus { get; }
+        private OsuDatabaseContext OsuDb { get; }
+        private BeatmapDownloaderDatabaseContext DownloadDb { get; }
         private string OsuGamePath { get; set; } = string.Empty;
         private IPluginOptions<MultiplayerDownloader, MpDownloaderConfiguration> Options { get; }
         public BeatmapDownloadService(ILifetimeScope scope,
             ILogger<BeatmapDownloadService> logger,
-            OsuDatabaseContext db,
-            IPluginOptions<MultiplayerDownloader, MpDownloaderConfiguration> options)
+            OsuDatabaseContext osuDb,
+            BeatmapDownloaderDatabaseContext downloadDb,
+            IPluginOptions<MultiplayerDownloader, MpDownloaderConfiguration> options,
+            IEventBus eventBus)
         {
             Scope = scope;
             Logger = logger;
-            Db = db;
+            OsuDb = osuDb;
+            DownloadDb = downloadDb;
             Options = options;
+            EventBus = eventBus;
         }
 
         public ValueTask Handle(OsuProcessMatchedEvent @event)
@@ -63,7 +73,7 @@ namespace MultiplayerDownloader.Services
                 }
 
 
-                var hasBeatmap = await Db.OsuDatabaseBeatmap.AnyAsync(map => map.BeatmapSetId == beatmapSetId);
+                var hasBeatmap = await OsuDb.OsuDatabaseBeatmap.AnyAsync(map => map.BeatmapSetId == beatmapSetId);
                 if (hasBeatmap)
                 {
                     Logger.LogInformation($"HINT: Current beatmapset already created in your local osu!, downloader will not process this beatmapset");
@@ -98,13 +108,23 @@ namespace MultiplayerDownloader.Services
                     Logger.LogWarning($"[Auto-Import] Failed to open .osz file, the file association not working.");
                 }
 
-                await Db.OsuDatabaseBeatmap.AddAsync(new OsuDatabaseBeatmap()
+                await OsuDb.OsuDatabaseBeatmap.AddAsync(new OsuDatabaseBeatmap()
                 {
-                    OsuDatabaseId = (await Db.OsuDatabases.FirstAsync()).Id,
+                    OsuDatabaseId = (await OsuDb.OsuDatabases.FirstAsync()).Id,
                     BeatmapId = @event.BeatmapId,
                     BeatmapSetId = beatmapSetId.Value,
                 });
-                await Db.SaveChangesAsync();
+                await OsuDb.SaveChangesAsync();
+
+                await DownloadDb.AddAsync(new DownloadBeatmapSet()
+                {
+                    BeatmapSetId = beatmapSetId.Value,
+                    BeatmapId = @event.BeatmapId,
+                    DownloadProviderId = options.DownloadProvider.Id,
+                    DownloadProviderName = options.DownloadProvider.Name,
+                    DownloadTime = DateTime.Now,
+                });
+                await DownloadDb.SaveChangesAsync();
             }
             catch (Exception ex)
             {

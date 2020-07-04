@@ -1,13 +1,12 @@
 ﻿using Autofac;
+using BeatmapDownloader.Abstract.Services.DownloadProvider;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
-using MultiplayerDownloader.Services.DownloadProvider;
-using MultiplayerDownloader.Services.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MultiplayerDownloader.Extension
+namespace BeatmapDownloader.Extension
 {
     public static class DownloadProviderUIExtension
     {

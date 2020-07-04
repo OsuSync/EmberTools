@@ -1,6 +1,5 @@
-﻿using EmberKernel.Plugins.Components;
+﻿using BeatmapDownloader.Abstract.Services.UI;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
-using MultiplayerDownloader.Services.UI;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -9,7 +8,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MultiplayerDownloader.Services.DownloadProvider
+namespace BeatmapDownloader.Abstract.Services.DownloadProvider
 {
 
 #pragma warning disable IDE1006 // Naming Styles

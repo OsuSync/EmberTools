@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MultiplayerDownloader.Models
+namespace BeatmapDownloader.Models
 {
     [EventNamespace("MemoryReader")]
     public class MultiplayerBeatmapIdInfo : Event<MultiplayerBeatmapIdInfo>

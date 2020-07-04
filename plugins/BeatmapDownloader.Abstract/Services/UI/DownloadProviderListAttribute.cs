@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace MultiplayerDownloader.Services.UI
+namespace BeatmapDownloader.Abstract.Services.UI
 {
     public class DownloadProviderListAttribute : Attribute
     {
@@ -14,21 +14,19 @@ namespace MultiplayerDownloader.Services.UI
     {
         public static string GetProviderListDisplayName(this Type type)
         {
-            if (type.GetCustomAttribute<DownloadProviderListAttribute>()
-                is DownloadProviderListAttribute attr)
+            foreach (var attribute in type.GetCustomAttributes())
             {
-                return attr.Name ?? type.Name;
+                if (attribute.GetType().FullName == typeof(DownloadProviderListAttribute).FullName)
+                {
+                    var prop = attribute.GetType().GetProperty(nameof(DownloadProviderListAttribute.Name));
+                    return prop.GetValue(attribute)?.ToString() ?? type.Name;
+                }
             }
             return type.Name;
         }
         public static string GetProviderListDisplayName(this object obj)
         {
-            if (obj.GetType().GetCustomAttribute<DownloadProviderListAttribute>()
-                is DownloadProviderListAttribute attr)
-            {
-                return attr.Name ?? obj.GetType().Name;
-            }
-            return obj.GetType().Name;
+            return GetProviderListDisplayName(obj.GetType());
         }
     }
 }

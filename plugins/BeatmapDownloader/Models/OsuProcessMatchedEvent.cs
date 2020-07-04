@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MultiplayerDownloader.Models
+namespace BeatmapDownloader.Models
 {
     public class OsuProcessMatchedEvent : Event<OsuProcessMatchedEvent>
     {

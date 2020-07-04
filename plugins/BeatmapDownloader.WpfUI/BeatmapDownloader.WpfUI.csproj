@@ -1,7 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+	<UseWPF>true</UseWPF>
+    <OutputType>Library</OutputType>
+	  <StartupObject></StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -14,15 +17,23 @@
     </ProjectReference>
     <ProjectReference Include="..\..\EmberKernel\EmberKernel.csproj">
       <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
     </ProjectReference>
     <ProjectReference Include="..\..\share\EmberSqlite\EmberSqlite.csproj">
       <Private>false</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\share\OsuSqliteDatabase\OsuSqliteDatabase.csproj">
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-    </ProjectReference>
+    <ProjectReference Include="..\BeatmapDownloader.Abstract\BeatmapDownloader.Abstract.csproj" />
+    <ProjectReference Include="..\BeatmapDownloader.Database\BeatmapDownloader.Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="UI\View\MultiplayerDownloaderTab.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

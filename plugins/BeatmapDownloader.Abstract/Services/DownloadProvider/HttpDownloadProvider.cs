@@ -1,6 +1,6 @@
 ﻿using Autofac;
+using BeatmapDownloader.Abstract.Services.UI;
 using EmberKernel.Plugins.Components;
-using MultiplayerDownloader.Services.UI;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MultiplayerDownloader.Services.DownloadProvider
+namespace BeatmapDownloader.Abstract.Services.DownloadProvider
 {
     public abstract class HttpDownloadProvider : IDownloadProvier
     {
