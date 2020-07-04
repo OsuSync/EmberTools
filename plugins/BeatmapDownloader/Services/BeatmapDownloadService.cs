@@ -31,20 +31,18 @@ namespace BeatmapDownloader.Services
         private OsuDatabaseContext OsuDb { get; }
         private BeatmapDownloaderDatabaseContext DownloadDb { get; }
         private string OsuGamePath { get; set; } = string.Empty;
-        private IPluginOptions<MultiplayerDownloader, MpDownloaderConfiguration> Options { get; }
+        private IReadOnlyPluginOptions<MpDownloaderConfiguration> Options { get; }
         public BeatmapDownloadService(ILifetimeScope scope,
             ILogger<BeatmapDownloadService> logger,
             OsuDatabaseContext osuDb,
             BeatmapDownloaderDatabaseContext downloadDb,
-            IPluginOptions<MultiplayerDownloader, MpDownloaderConfiguration> options,
-            IEventBus eventBus)
+            IReadOnlyPluginOptions<MpDownloaderConfiguration> options)
         {
             Scope = scope;
             Logger = logger;
             OsuDb = osuDb;
             DownloadDb = downloadDb;
             Options = options;
-            EventBus = eventBus;
         }
 
         public ValueTask Handle(OsuProcessMatchedEvent @event)

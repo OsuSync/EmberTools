@@ -25,7 +25,7 @@ namespace BeatmapDownloader
             builder.ConfigureDbContext<OsuDatabaseContext>();
             builder.ConfigureDbContext<BeatmapDownloaderDatabaseContext>();
 
-            builder.UsePluginOptionsModel<MultiplayerDownloader, MpDownloaderConfiguration>();
+            builder.UseConfigurationModel<MpDownloaderConfiguration>("MultiPlayerDownloaderUI");
             builder.ConfigureUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
 
             builder.ConfigureComponent<BeatmapDownloadService>().SingleInstance();
