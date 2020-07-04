@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace EmberCore.KernelServices.UI.ViewModel.Configuration.Component
+namespace EmberCore.KernelServices.UI.View.Configuration.Components
 {
     /// <summary>
     /// Interaction logic for IntegerComponent.xaml
     /// </summary>
-    public partial class DoubleComponent : TextBox
+    public partial class StringComponent : TextBox
     {
-        public DoubleComponent()
+        public StringComponent()
         {
             InitializeComponent();
         }

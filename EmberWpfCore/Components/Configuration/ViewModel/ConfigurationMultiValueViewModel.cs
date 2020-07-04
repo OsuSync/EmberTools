@@ -1,6 +1,5 @@
 ﻿using EmberCore.KernelServices.UI.ViewModel.Configuration;
 using EmberKernel.Services.UI.Mvvm.Dependency;
-using EmberWpfCore.Components.Configuration.View.Component;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

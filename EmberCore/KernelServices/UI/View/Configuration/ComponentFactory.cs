@@ -1,4 +1,4 @@
-﻿using EmberCore.KernelServices.UI.ViewModel.Configuration.Component;
+﻿using EmberCore.KernelServices.UI.View.Configuration.Components;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using EmberKernel.Services.UI.Mvvm.ViewModel;
@@ -8,9 +8,9 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace EmberWpfCore.Components.Configuration.View.Component
+namespace EmberCore.KernelServices.UI.View.Configuration
 {
-    public class ComponentFactory : DataTemplateSelector
+    public class ComponentFactory
     {
         private static readonly Dictionary<Type, Type> TypeBinding = new Dictionary<Type, Type>();
         static ComponentFactory()

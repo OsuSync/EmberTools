@@ -6,7 +6,6 @@ using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus.Handlers;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
-using EmberWpfCore.Components.Configuration.View.Component;
 using MultiplayerDownloader.Extension;
 using MultiplayerDownloader.Models;
 using MultiplayerDownloader.Services;

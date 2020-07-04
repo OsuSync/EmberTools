@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Data;
 
-namespace EmberWpfCore.Components.Configuration.View.Component.Converts
+namespace EmberCore.KernelServices.UI.View.Configuration.Converts
 {
     public abstract class CastToConverter<T> : IValueConverter
     {

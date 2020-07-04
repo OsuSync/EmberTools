@@ -1,4 +1,4 @@
-﻿using EmberCore.KernelServices.UI.ViewModel.Configuration.Component;
+﻿using EmberCore.KernelServices.UI.View.Configuration.Components;
 using EmberKernel.Plugins;
 using EmberKernel.Services.UI.Mvvm.Dependency;
 using EmberKernel.Services.UI.Mvvm.Dependency.Configuration;

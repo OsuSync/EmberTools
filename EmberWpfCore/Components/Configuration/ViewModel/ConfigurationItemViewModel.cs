@@ -1,7 +1,7 @@
-﻿using EmberCore.KernelServices.UI.ViewModel.Configuration;
+﻿using EmberCore.KernelServices.UI.View.Configuration;
+using EmberCore.KernelServices.UI.ViewModel.Configuration;
 using EmberKernel.Services.UI.Mvvm.Dependency;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
-using EmberWpfCore.Components.Configuration.View.Component;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

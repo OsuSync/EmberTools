@@ -1,5 +1,4 @@
-﻿using EmberWpfCore.Components.Configuration.View.Component.Converts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -12,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace EmberCore.KernelServices.UI.ViewModel.Configuration.Component
+namespace EmberCore.KernelServices.UI.View.Configuration.Components
 {
     /// <summary>
     /// Interaction logic for IntegerComponent.xaml
     /// </summary>
-    public partial class CheckComponent : CheckBox
+    public partial class IntegerComponent : TextBox
     {
-        public CheckComponent()
+        public IntegerComponent()
         {
             InitializeComponent();
         }
