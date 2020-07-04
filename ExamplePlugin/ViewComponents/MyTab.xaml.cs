@@ -68,7 +68,7 @@ namespace ExamplePlugin.ViewComponents
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                foreach (var item in e.NewItems)
+                foreach (var item in e.OldItems)
                 {
                     if (item is DependencySet dependencySet && dependencySet.GetTypeName() == "MyPluginConfiguration")
                     {

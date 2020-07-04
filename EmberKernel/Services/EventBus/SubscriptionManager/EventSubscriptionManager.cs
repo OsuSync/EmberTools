@@ -115,6 +115,7 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
         {
             if (subsToRemove != null)
             {
+                _handlerEventTypes.Remove(subsToRemove.HandlerType);
                 _handlers[eventName].Remove(subsToRemove);
                 if (!_handlers.ContainsKey(eventName))
                 {

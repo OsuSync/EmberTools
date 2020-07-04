@@ -44,7 +44,7 @@ namespace EmberWpfCore.ViewModel
                 {
                     if (item.GetType().IsSameCategoryComponent<ITabCategory>())
                     {
-                        this.Remove(this.First((model) => model.Content == e.OldItems[0]));
+                        this.Remove(this.First((model) => model.Content == item));
                     }
                 }
             }

@@ -56,6 +56,13 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
             get => GetValue(index);
             set => SetValue(index, value);
         }
+
+        private readonly Dictionary<string, object> _attach = new Dictionary<string, object>();
+        public void Attach(string key, object data) => _attach.Add(key, data);
+        public object GetAttach(string key) => _attach[key];
+        public T GetAttach<T>(string key) => (T)_attach[key];
+        public bool HasAttach(string key) => _attach.ContainsKey(key);
+
     }
 
     public abstract class DependencySet<T> : DependencySet
