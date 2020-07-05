@@ -66,7 +66,7 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
             property.SetValue(latestValue, value);
             property.SetValue(CurrentValue, value);
             latestSetValue = true;
-            Task.Run(() => PluginOptions.SaveAsync(latestValue));
+            PluginOptions.SaveAsync(latestValue);
         }
 
         public override string ToString()

@@ -114,13 +114,13 @@
             <TextBlock
                 HorizontalAlignment="Left"
                 Foreground="#9f9f9f"
-                Text="Select which plug-ins to use to retrieve data from games, start synchronize, reply message in game, and more."
+                Text="Install plug-ins to retrieve data from games, start synchronize, reply message in game, and more."
                 TextWrapping="Wrap" />
             <TextBlock
                 Margin="0,15,0,0"
                 HorizontalAlignment="Left"
                 Foreground="#9f9f9f"
-                Text="Install plug-ins online that Sync recommends."
+                Text="We recommend install plug-ins using Ember Market."
                 TextWrapping="Wrap" />
             <TextBlock Margin="0,20,0,10" Text="Get update" />
             <TextBlock Foreground="#3060ef" Text="Check Plug-ins Update" />

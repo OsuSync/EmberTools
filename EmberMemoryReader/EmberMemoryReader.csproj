@@ -16,7 +16,12 @@
   <ItemGroup>
     <ProjectReference Include="..\EmberKernel\EmberKernel.csproj">
       <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
     </ProjectReference>
+	<ProjectReference Include="..\share\EmberMemory\EmberMemory.csproj">
+		<Private>true</Private>
+		<CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+	</ProjectReference>
     <ProjectReference Include="..\share\OsuUtils\OsuUtils.csproj">
       <Private>true</Private>
     </ProjectReference>
