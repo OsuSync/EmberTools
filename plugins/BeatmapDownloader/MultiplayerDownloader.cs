@@ -22,36 +22,44 @@ namespace BeatmapDownloader
     {
         public override void BuildComponents(IComponentBuilder builder)
         {
+            // database
             builder.ConfigureDbContext<OsuDatabaseContext>();
             builder.ConfigureDbContext<BeatmapDownloaderDatabaseContext>();
 
+            // configuration
             builder.UseConfigurationModel<MpDownloaderConfiguration>("MultiPlayerDownloaderUI");
-            builder.ConfigureUIModel<MultiplayerDownloader, MpDownloaderConfiguration>();
 
+            // service
             builder.ConfigureComponent<BeatmapDownloadService>().SingleInstance();
 
+            // download providers
             builder.ConfigureDownloadProvider<SayobotDownloadProvider>();
             builder.ConfigureDownloadProvider<BloodcatDownloadProvider>();
         }
 
-        public override ValueTask Initialize(ILifetimeScope scope)
+        public override async ValueTask Initialize(ILifetimeScope scope)
         {
+            // migerate db
+            await scope.MigrateDbContext<BeatmapDownloaderDatabaseContext>();
+
+            // subscribe events
             scope.Subscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
             scope.Subscription<OsuProcessMatchedEvent, BeatmapDownloadService>();
 
-            scope.AddDownloadProviderUIOptions<SayobotDownloadProvider>();
-            scope.AddDownloadProviderUIOptions<BloodcatDownloadProvider>();
-            return default;
+            // add download provider options to UI
+            await scope.AddDownloadProviderUIOptions<SayobotDownloadProvider>();
+            await scope.AddDownloadProviderUIOptions<BloodcatDownloadProvider>();
         }
 
-        public override ValueTask Uninitialize(ILifetimeScope scope)
+        public override async ValueTask Uninitialize(ILifetimeScope scope)
         {
+            // unsubscribe events
             scope.Unsubscription<MultiplayerBeatmapIdInfo, BeatmapDownloadService>();
             scope.Unsubscription<OsuProcessMatchedEvent, BeatmapDownloadService>();
 
-            scope.RemoveDownloadProviderUIOptions<SayobotDownloadProvider>();
-            scope.RemoveDownloadProviderUIOptions<BloodcatDownloadProvider>();
-            return default;
+            // remove download provider options from UI
+            await scope.RemoveDownloadProviderUIOptions<SayobotDownloadProvider>();
+            await scope.RemoveDownloadProviderUIOptions<BloodcatDownloadProvider>();
         }
     }
 }

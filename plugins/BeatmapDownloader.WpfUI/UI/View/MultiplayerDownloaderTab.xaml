@@ -7,6 +7,41 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32px" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Width="Auto">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition ></ColumnDefinition>
+                <ColumnDefinition ></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Label Content="{Binding RecentDownloaded.Count}"></Label>
+                <Label>BeatmapSet downloaded</Label>
+            </StackPanel>
+            <ProgressBar Grid.Column="1" Value="{Binding Percentage}" Height="32px"></ProgressBar>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                <TextBlock Text="{Binding Percentage}"></TextBlock>
+                <TextBlock>% (</TextBlock>
+                <TextBlock Text="{Binding Source}"></TextBlock>
+                <TextBlock>,</TextBlock>
+                <TextBlock Text="{Binding CurrentStatus}"></TextBlock>
+                <TextBlock>)</TextBlock>
+            </StackPanel>
+        </Grid>
+        <DataGrid Grid.Row="1"
+                EnableRowVirtualization="True"
+                ItemsSource="{Binding RecentDownloaded}"
+                IsReadOnly="True"
+                AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="BeatmapSet Id" Width="75*" Binding="{Binding BeatmapSetId}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Download Source" Width="100*" Binding="{Binding DownloadProviderName}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Downloaded At" Width="75*" Binding="{Binding DownloadTime}"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

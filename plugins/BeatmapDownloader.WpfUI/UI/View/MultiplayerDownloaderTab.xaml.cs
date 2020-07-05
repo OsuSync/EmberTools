@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using BeatmapDownloader.Database.Database;
+using BeatmapDownloader.WpfUI.UI.ViewModel;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using System;
 using System.Collections.Generic;
@@ -28,10 +29,9 @@ namespace BeatmapDownloader.WpfUI.UI.View
             InitializeComponent();
         }
 
-        private BeatmapDownloaderDatabaseContext DownloadDb { get; }
         public ValueTask Initialize(ILifetimeScope scope)
         {
-
+            this.DataContext = scope.Resolve<DownloadHistoryViewModel>();
             return default;
         }
 
