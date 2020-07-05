@@ -52,15 +52,22 @@ namespace EmberMemory.Components.Collector
         private CancellationTokenSource tokenSource;
         public virtual ValueTask Handle(TMatchedEvent @event)
         {
-            tokenSource?.Cancel();
-            tokenSource?.Dispose();
+            try
+            {
+                tokenSource?.Cancel();
+                tokenSource?.Dispose();
+            } catch { }
             tokenSource = new CancellationTokenSource();
             return StartCollectorAsync(@event);
         }
 
         public virtual ValueTask Handle(TTerminatedEvent @event)
         {
-            using (tokenSource) tokenSource.Cancel();
+            try
+            {
+                using (tokenSource) tokenSource.Cancel();
+            }
+            catch { }
             return default;
         }
         protected abstract bool BuildCollectScope(CollectorBuilder builder, TMatchedEvent @event);

@@ -23,7 +23,6 @@ namespace EmberSqliteSynchronizer.Component
         private ILogger<DatabaseSynchronizer> Logger { get; }
         private readonly SemaphoreSlim SynchronizeLock = new SemaphoreSlim(1);
         private readonly CancellationTokenSource cancellationSource = new CancellationTokenSource();
-        private FileSystemWatcher _fsWatcher;
         private string _osuDbPath = string.Empty;
         public DatabaseSynchronizer(OsuDatabaseContext db, ILogger<DatabaseSynchronizer> logger)
         {
@@ -53,30 +52,6 @@ namespace EmberSqliteSynchronizer.Component
                 {
                     SynchronizeLock.Release();
                 }
-                _fsWatcher = new FileSystemWatcher(@event.GameDirectory)
-                {
-                    InternalBufferSize = 512,
-                    IncludeSubdirectories = true,
-                    EnableRaisingEvents = true,
-                };
-                _fsWatcher.Changed += async(_, args) =>
-                {
-                    if (args.Name == osuDbFile
-                    || (Path.GetDirectoryName(Path.GetDirectoryName(args.FullPath)) == @event.BeatmapDirectory
-                        && args.FullPath.EndsWith(".osu")))
-                    {
-                        await SynchronizeLock.WaitAsync();
-                        await Task.Delay(500);
-                        try
-                        {
-                            await MaintanceDatabase(dbPath, cancellationSource.Token);
-                        }
-                        finally
-                        {
-                            SynchronizeLock.Release();
-                        }
-                    }
-                };
             }
         }
 
@@ -256,7 +231,6 @@ namespace EmberSqliteSynchronizer.Component
             cancellationSource.Cancel();
             cancellationSource.Dispose();
             SynchronizeLock.Dispose();
-            _fsWatcher.Dispose();
         }
 
     }

@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberWpfCore", "EmberWpfCor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{B93D5B77-B8CA-4B7A-B5BE-ABD27EB57D27}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MultiplayerDownloader", "plugins\MultiplayerDownloader\MultiplayerDownloader.csproj", "{7BAED4BB-F3FF-4C96-A8E5-E1A1CC9F70EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatmapDownloader", "plugins\BeatmapDownloader\BeatmapDownloader.csproj", "{7BAED4BB-F3FF-4C96-A8E5-E1A1CC9F70EB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberSqlite", "share\EmberSqlite\EmberSqlite.csproj", "{F782E355-C279-4239-9D9E-5F1652E2619C}"
 EndProject
@@ -29,7 +29,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuSqliteDatabase", "share\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberSqliteSynchronizer", "plugins\EmberSqliteSynchronizer\EmberSqliteSynchronizer.csproj", "{7C01191C-AD6E-40B4-A3BF-DA210EF44D35}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberMemory", "share\EmberMemory\EmberMemory.csproj", "{108414BF-E078-48A1-864D-A92998AD9A38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberMemory", "share\EmberMemory\EmberMemory.csproj", "{108414BF-E078-48A1-864D-A92998AD9A38}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatmapDownloader.WpfUI", "plugins\BeatmapDownloader.WpfUI\BeatmapDownloader.WpfUI.csproj", "{FA04F594-996B-4A9D-A80F-7219C8F2C2DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatmapDownloader.Database", "plugins\BeatmapDownloader.Database\BeatmapDownloader.Database.csproj", "{0D9CB054-BA1A-441A-AD5D-AC75B295FBC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatmapDownloader.Abstract", "plugins\BeatmapDownloader.Abstract\BeatmapDownloader.Abstract.csproj", "{2A3B9BD0-A7B4-4CF2-8725-448606D2C0E7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +91,18 @@ Global
 		{108414BF-E078-48A1-864D-A92998AD9A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{108414BF-E078-48A1-864D-A92998AD9A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{108414BF-E078-48A1-864D-A92998AD9A38}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA04F594-996B-4A9D-A80F-7219C8F2C2DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA04F594-996B-4A9D-A80F-7219C8F2C2DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA04F594-996B-4A9D-A80F-7219C8F2C2DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA04F594-996B-4A9D-A80F-7219C8F2C2DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D9CB054-BA1A-441A-AD5D-AC75B295FBC0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D9CB054-BA1A-441A-AD5D-AC75B295FBC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D9CB054-BA1A-441A-AD5D-AC75B295FBC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D9CB054-BA1A-441A-AD5D-AC75B295FBC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A3B9BD0-A7B4-4CF2-8725-448606D2C0E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A3B9BD0-A7B4-4CF2-8725-448606D2C0E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A3B9BD0-A7B4-4CF2-8725-448606D2C0E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A3B9BD0-A7B4-4CF2-8725-448606D2C0E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -96,6 +114,9 @@ Global
 		{9DE8B7B9-6688-41CE-A525-F09E3BDA6A58} = {239B3BE6-770D-4BAD-AA11-FD91A2D62D02}
 		{7C01191C-AD6E-40B4-A3BF-DA210EF44D35} = {B93D5B77-B8CA-4B7A-B5BE-ABD27EB57D27}
 		{108414BF-E078-48A1-864D-A92998AD9A38} = {239B3BE6-770D-4BAD-AA11-FD91A2D62D02}
+		{FA04F594-996B-4A9D-A80F-7219C8F2C2DF} = {B93D5B77-B8CA-4B7A-B5BE-ABD27EB57D27}
+		{0D9CB054-BA1A-441A-AD5D-AC75B295FBC0} = {B93D5B77-B8CA-4B7A-B5BE-ABD27EB57D27}
+		{2A3B9BD0-A7B4-4CF2-8725-448606D2C0E7} = {B93D5B77-B8CA-4B7A-B5BE-ABD27EB57D27}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57B800AC-CFE3-4081-8EC4-9BD1C74869B0}
