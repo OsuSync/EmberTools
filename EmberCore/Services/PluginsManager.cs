@@ -149,7 +149,7 @@ namespace EmberCore.Services
             yield break;
         }
 
-        public async ValueTask Load(IPlugin plugin)
+        public ValueTask Load(IPlugin plugin)
         {
             var pluginDesciptorAttr = plugin.GetType().GetCustomAttribute<EmberPluginAttribute>();
             var pluginDesciptor = pluginDesciptorAttr.ToString();
@@ -179,6 +179,7 @@ namespace EmberCore.Services
                 Logger.LogWarning(e, $"Can't load {pluginDesciptor}");
             }
             PluginLoaded?.Invoke(PluginDescriptor.FromAttribute(pluginDesciptorAttr));
+            return default;
         }
 
         public async ValueTask Unload(IPlugin plugin)

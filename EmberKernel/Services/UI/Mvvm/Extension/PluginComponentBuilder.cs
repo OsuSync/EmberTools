@@ -4,6 +4,7 @@ using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Services.UI.Mvvm.Extension
 {
@@ -31,13 +32,13 @@ namespace EmberKernel.Services.UI.Mvvm.Extension
             Resolve(builder.ParentScope).RegisterComponent<TComponent>(category);
         }
 
-        public static void InitializeUIComponent<TComponent>(this ILifetimeScope scope) where TComponent : IViewComponent, new()
+        public static ValueTask InitializeUIComponent<TComponent>(this ILifetimeScope scope) where TComponent : IViewComponent, new()
         {
-            Resolve(scope).InitializeComponent(scope, typeof(TComponent));
+            return Resolve(scope).InitializeComponent(scope, typeof(TComponent));
         }
-        public static void UninitializeUIComponent<TComponent>(this ILifetimeScope scope) where TComponent : IViewComponent, new()
+        public static ValueTask UninitializeUIComponent<TComponent>(this ILifetimeScope scope) where TComponent : IViewComponent, new()
         {
-            Resolve(scope).UninitializeComponent(scope, typeof(TComponent));
+            return Resolve(scope).UninitializeComponent(scope, typeof(TComponent));
         }
     }
 }

@@ -21,7 +21,7 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
 
         bool HasSubscriptionForEvent<T>() where T : Event;
         bool HasSubscriptionForEvent(string eventName);
-        Type GetEventTypeByName(string eventName);
+        Type GetEventTypeByName(Type handler, string eventName);
         void Clear();
         IEnumerable<SubscriptionInfo> GetHandlersForEvent<T>() where T : Event;
         IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName);

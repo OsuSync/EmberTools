@@ -19,7 +19,7 @@ namespace EmberCore.KernelServices.UI.View
         private Dictionary<Type, Window> RunningWindows { get; } = new Dictionary<Type, Window>();
         private SemaphoreSlim InitSemaphore { get; } = new SemaphoreSlim(1);
         private readonly List<ICoreWpfPlugin> CoreWpfPlugins = new List<ICoreWpfPlugin>();
-        private TaskCompletionSource<bool> WaitComplete = new TaskCompletionSource<bool>();
+        private readonly TaskCompletionSource<bool> WaitComplete = new TaskCompletionSource<bool>();
 
         public EmberWpfUIService()
         {

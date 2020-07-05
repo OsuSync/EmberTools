@@ -19,16 +19,14 @@ namespace ExamplePlugin
             builder.ConfigureUIComponent<MyTab>();
         }
 
-        public override ValueTask Initialize(ILifetimeScope scope)
+        public override async ValueTask Initialize(ILifetimeScope scope)
         {
-            scope.InitializeUIComponent<MyTab>();
-            return default;
+            await scope.InitializeUIComponent<MyTab>();
         }
 
-        public override ValueTask Uninitialize(ILifetimeScope scope)
+        public override async ValueTask Uninitialize(ILifetimeScope scope)
         {
-            scope.UninitializeUIComponent<MyTab>();
-            return default;
+            await scope.UninitializeUIComponent<MyTab>();
         }
     }
 }
