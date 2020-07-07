@@ -38,7 +38,7 @@
       <Private>true</Private>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </ProjectReference>
-    <ProjectReference Include="..\share\OsuSqliteDatabase\OsuSqliteDatabase.csproj" />
+    <ProjectReference Include="..\share\osu\OsuSqliteDatabase\OsuSqliteDatabase.csproj" />
   </ItemGroup>
 
   <ItemGroup>
