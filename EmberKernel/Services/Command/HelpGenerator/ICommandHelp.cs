@@ -1,8 +1,6 @@
-﻿using EmberKernel.Services.Command.Components;
-using EmberKernel.Services.Command.Models;
+﻿using EmberKernel.Services.Command.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel.Services.Command.HelpGenerator
 {

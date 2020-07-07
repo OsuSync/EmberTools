@@ -2,8 +2,6 @@
 using BeatmapDownloader.Abstract.Services.DownloadProvider;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BeatmapDownloader.Extension

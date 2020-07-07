@@ -1,11 +1,7 @@
 ﻿using EmberCore.KernelServices.UI.ViewModel.Configuration;
 using EmberKernel.Services.UI.Mvvm.Dependency;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Text;
 
 namespace EmberWpfCore.Components.Configuration.ViewModel
 {

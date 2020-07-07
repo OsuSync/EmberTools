@@ -4,9 +4,6 @@ using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.Extension;
 using ExamplePlugin.ViewComponents;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ExamplePlugin

@@ -1,9 +1,6 @@
 ﻿using Autofac;
-using EmberKernel.Services.EventBus;
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace EmberMemory.Components.Collector
 {

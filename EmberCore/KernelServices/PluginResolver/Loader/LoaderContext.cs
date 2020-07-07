@@ -1,12 +1,9 @@
-﻿using Autofac.Util;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using System.Text;
 
 namespace EmberCore.KernelServices.PluginResolver.Loader
 {

@@ -1,23 +1,15 @@
-﻿using EmberKernel.Services.Command;
-using EmberCore.KernelServices.PluginResolver;
+﻿using EmberCore.KernelServices.PluginResolver;
+using EmberCore.KernelServices.UI.View;
 using EmberCore.Services;
+using EmberCore.Utils;
 using EmberKernel;
+using EmberKernel.Services.UI.Extension;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using EmberKernel.Services.UI.Extension;
-using EmberCore.KernelServices.UI.View;
-using Autofac;
-using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
-using System.Windows;
-using EmberCore.Utils;
 using Serilog;
-using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using Serilog.Formatting.Raw;
-using Serilog.Formatting.Compact;
+using System.IO;
+using System.Windows;
 
 namespace EmberCore
 {

@@ -1,17 +1,13 @@
 ﻿using BeatmapDownloader.Abstract.Models;
 using BeatmapDownloader.Database.Database;
 using BeatmapDownloader.Database.Model;
-using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus.Handlers;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using IComponent = EmberKernel.Plugins.Components.IComponent;
 

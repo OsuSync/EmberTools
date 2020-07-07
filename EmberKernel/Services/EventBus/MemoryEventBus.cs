@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Autofac;
+using EmberKernel.Services.EventBus.Handlers;
+using EmberKernel.Services.EventBus.SubscriptionManager;
+using System;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac;
-using EmberKernel.Services.EventBus.Handlers;
-using EmberKernel.Services.EventBus.SubscriptionManager;
-using Microsoft.Extensions.Logging;
 
 namespace EmberKernel.Services.EventBus
 {

@@ -1,11 +1,8 @@
 ﻿using Autofac;
+using BeatmapDownloader.Abstract.Services.DownloadProvider;
 using EmberKernel.Plugins.Components;
-using EmberKernel.Services.UI.Mvvm.Extension;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using BeatmapDownloader.Abstract.Services.DownloadProvider;
 
 namespace BeatmapDownloader.Extension
 {

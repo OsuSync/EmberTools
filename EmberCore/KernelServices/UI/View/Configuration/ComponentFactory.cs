@@ -1,12 +1,6 @@
 ﻿using EmberCore.KernelServices.UI.View.Configuration.Components;
-using EmberKernel.Plugins.Components;
-using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
-using EmberKernel.Services.UI.Mvvm.ViewModel;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace EmberCore.KernelServices.UI.View.Configuration
 {

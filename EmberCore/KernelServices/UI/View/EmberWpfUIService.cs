@@ -3,12 +3,9 @@ using EmberKernel;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
-using System.Windows.Threading;
 
 namespace EmberCore.KernelServices.UI.View
 {

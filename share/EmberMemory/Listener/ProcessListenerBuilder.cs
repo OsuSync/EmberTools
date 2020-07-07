@@ -1,8 +1,6 @@
 ﻿using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberMemory.Listener
 {

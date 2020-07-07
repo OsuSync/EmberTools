@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EmberKernel.Services
+﻿namespace EmberKernel.Services
 {
     internal class ContentRoot : IContentRoot
     {

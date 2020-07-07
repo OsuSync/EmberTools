@@ -1,11 +1,7 @@
 ﻿using Autofac;
-using Autofac.Builder;
 using EmberKernel.Plugins.Components;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel.Services.Configuration
 {

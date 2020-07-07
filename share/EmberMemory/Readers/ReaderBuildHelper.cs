@@ -1,8 +1,5 @@
 ﻿using Autofac;
 using EmberMemory.Components.Collector;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberMemory.Readers
 {

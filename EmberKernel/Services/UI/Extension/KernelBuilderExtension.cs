@@ -4,8 +4,6 @@ using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using EmberKernel.Services.UI.Mvvm.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel.Services.UI.Extension
 {

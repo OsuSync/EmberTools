@@ -1,27 +1,19 @@
+using EmberWeb.Data;
+using EmberWeb.Model;
+using EmberWeb.Services;
+using EmberWeb.Utils;
+using IdentityServer4.EntityFramework.DbContexts;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
-using IdentityServer4.EntityFramework.DbContexts;
-using System.Linq;
-using EmberWeb.Data;
-using Microsoft.AspNetCore.Identity;
 using System;
-using EmberWeb.Model;
-using EmberWeb.Services;
-using IdentityServer4.Services;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using EmberWeb.Utils;
+using System.Reflection;
 
 namespace EmberWeb
 {

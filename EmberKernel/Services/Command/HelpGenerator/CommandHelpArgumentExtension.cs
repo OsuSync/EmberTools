@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EmberKernel.Services.Command.Models
+﻿namespace EmberKernel.Services.Command.Models
 {
     public static class CommandHelpArgumentExtension
     {

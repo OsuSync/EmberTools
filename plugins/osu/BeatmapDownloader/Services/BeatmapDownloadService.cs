@@ -1,23 +1,21 @@
 ﻿using Autofac;
+using BeatmapDownloader.Abstract.Models;
+using BeatmapDownloader.Abstract.Services.DownloadProvider;
+using BeatmapDownloader.Database.Database;
+using BeatmapDownloader.Database.Model;
+using BeatmapDownloader.Models;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Configuration;
 using EmberKernel.Services.EventBus;
 using EmberKernel.Services.EventBus.Handlers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using BeatmapDownloader.Models;
 using OsuSqliteDatabase.Database;
 using OsuSqliteDatabase.Model;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
-using BeatmapDownloader.Abstract.Services.DownloadProvider;
-using BeatmapDownloader.Abstract.Models;
-using BeatmapDownloader.Database.Database;
-using BeatmapDownloader.Database.Model;
 
 namespace BeatmapDownloader.Services
 {

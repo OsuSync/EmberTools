@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EmberSqlite.Integration
+﻿namespace EmberSqlite.Integration
 {
     public class SqliteConfiguration
     {

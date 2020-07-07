@@ -1,10 +1,5 @@
 ﻿using Autofac;
-using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
-using EmberKernel.Services.UI.Mvvm.ViewModel.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel.Services.UI.Mvvm
 {

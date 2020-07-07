@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Autofac;
+using EmberKernel.Services.EventBus.Handlers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using Autofac;
-using EmberKernel.Services.EventBus.Handlers;
 
 namespace EmberKernel.Services.EventBus.SubscriptionManager
 {

@@ -1,16 +1,14 @@
 ﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using EmberKernel.Plugins;
+using EmberKernel.Services;
+using EmberKernel.Services.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using EmberKernel.Services;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using Autofac.Extensions.DependencyInjection;
 using System.IO;
-using EmberKernel.Services.Configuration;
-using System.Linq;
 
 namespace EmberKernel
 {

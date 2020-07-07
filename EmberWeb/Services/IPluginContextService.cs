@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using EmberWeb.Model;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using EmberWeb.Data;
-using EmberWeb.Model;
 
 namespace EmberWeb.Services
 {

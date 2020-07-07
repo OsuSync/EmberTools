@@ -1,8 +1,5 @@
 ﻿using EmberKernel.Services.UI.Mvvm.Dependency;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 
 namespace ExamplePlugin.ViewModel
 {

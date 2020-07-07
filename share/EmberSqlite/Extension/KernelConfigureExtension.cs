@@ -1,11 +1,6 @@
 ﻿using Autofac;
-using EmberKernel;
 using EmberSqlite.Integration;
-using Microsoft.Data.Sqlite;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace EmberKernel
 {

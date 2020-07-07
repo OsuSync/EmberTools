@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Autofac.Util;
 using EmberCore.KernelServices.PluginResolver;
 using EmberCore.KernelServices.UI.View;
@@ -15,6 +7,10 @@ using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Plugins.Models;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace EmberCore.Services
 {

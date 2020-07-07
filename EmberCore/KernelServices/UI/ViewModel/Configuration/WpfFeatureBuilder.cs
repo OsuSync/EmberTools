@@ -1,18 +1,12 @@
 ﻿using EmberCore.KernelServices.UI.View.Configuration.Components;
 using EmberKernel.Plugins;
 using EmberKernel.Services.UI.Mvvm.Dependency;
-using EmberKernel.Services.UI.Mvvm.Dependency.Configuration;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 
 namespace EmberCore.KernelServices.UI.ViewModel.Configuration
 {

@@ -1,8 +1,6 @@
 ﻿using BeatmapDownloader.Database.Database;
 using EmberSqlite.Integration;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using System;
 
 namespace BeatmapDownloader.Database
 {

@@ -4,11 +4,8 @@ using EmberKernel.Services.Configuration;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmberKernel.Services.UI.Mvvm.Dependency.Configuration
 {

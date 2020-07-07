@@ -1,9 +1,7 @@
 ﻿using EmberKernel.Plugins.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Windows.Input;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewModel.Plugins
 {

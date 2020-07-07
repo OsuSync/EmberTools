@@ -1,10 +1,8 @@
 ﻿using Autofac;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewComponent

@@ -2,10 +2,7 @@
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Configuration;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel.Plugins
 {

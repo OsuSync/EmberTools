@@ -3,9 +3,6 @@ using EmberMemory.Components.Collector;
 using EmberMemory.Readers;
 using EmberMemory.Readers.Windows;
 using EmberMemoryReader.Components.Osu.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberMemoryReader.Components.Osu
 {

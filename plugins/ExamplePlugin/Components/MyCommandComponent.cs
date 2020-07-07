@@ -1,20 +1,12 @@
-﻿using EmberKernel.Services.Command.Attributes;
-using EmberKernel.Services.Command.Components;
-using EmberKernel.Plugins;
+﻿using EmberKernel.Plugins;
 using EmberKernel.Plugins.Components;
-using EmberKernel.Services.EventBus;
+using EmberKernel.Services.Command.Attributes;
+using EmberKernel.Services.Command.Components;
+using EmberKernel.Services.Command.Models;
+using EmberKernel.Services.Configuration;
 using ExamplePlugin.Commands;
 using ExamplePlugin.Models;
-using ExamplePlugin.Models.EventPublisher;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using EmberKernel.Services.Command;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Configuration;
-using EmberKernel.Services.Configuration;
-using EmberKernel.Services.Command.Models;
 
 namespace ExamplePlugin.Components
 {

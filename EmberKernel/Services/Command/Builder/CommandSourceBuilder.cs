@@ -1,8 +1,6 @@
 ﻿using Autofac;
 using EmberKernel.Services.Command.Sources;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel.Services.Command.Builder
 {

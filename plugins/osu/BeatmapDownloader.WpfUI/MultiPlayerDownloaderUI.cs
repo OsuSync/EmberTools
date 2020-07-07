@@ -1,18 +1,15 @@
 ﻿using Autofac;
+using BeatmapDownloader.Abstract.Models;
+using BeatmapDownloader.Database.Database;
+using BeatmapDownloader.WpfUI.UI.View;
+using BeatmapDownloader.WpfUI.UI.ViewModel;
+using EmberKernel;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using BeatmapDownloader.Database.Database;
-using BeatmapDownloader.WpfUI.UI.ViewModel;
-using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
-using BeatmapDownloader.Abstract.Models;
-using BeatmapDownloader.WpfUI.UI.View;
 using EmberKernel.Services.UI.Mvvm.Extension;
-using EmberKernel;
+using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
+using System.Threading.Tasks;
 
 namespace BeatmapDownloader.WpfUI
 {

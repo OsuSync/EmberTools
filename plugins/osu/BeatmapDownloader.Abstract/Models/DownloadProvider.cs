@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BeatmapDownloader.Abstract.Models
+﻿namespace BeatmapDownloader.Abstract.Models
 {
     public class DownloadProvider
     {

@@ -1,9 +1,5 @@
 ﻿using EmberKernel;
 using EmberKernel.Plugins.Components;
-using EmberMemory.Components;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberMemory.Components.Collector
 {

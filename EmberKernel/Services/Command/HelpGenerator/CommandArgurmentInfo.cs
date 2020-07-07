@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EmberKernel.Services.Command.HelpGenerator
+﻿namespace EmberKernel.Services.Command.HelpGenerator
 {
     public struct CommandArgurmentInfo
     {

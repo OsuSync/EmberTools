@@ -1,11 +1,8 @@
 ﻿using EmberKernel.Plugins.Models;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Plugins;
 using EmberWpfCore.Components.PluginsManager.Commands;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows.Input;
 
 namespace EmberWpfCore.Components.PluginsManager.ViewModel

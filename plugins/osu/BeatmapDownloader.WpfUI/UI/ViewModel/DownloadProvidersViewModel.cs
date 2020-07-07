@@ -1,15 +1,12 @@
-﻿using EmberKernel.Plugins.Components;
+﻿using BeatmapDownloader.Abstract.Models;
+using BeatmapDownloader.Abstract.Services.DownloadProvider;
+using BeatmapDownloader.Abstract.Services.UI;
+using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
-using BeatmapDownloader.Abstract.Models;
-using BeatmapDownloader.Abstract.Services.DownloadProvider;
-using BeatmapDownloader.Abstract.Services.UI;
 
 namespace BeatmapDownloader.WpfUI.UI.ViewModel
 {

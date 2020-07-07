@@ -1,7 +1,5 @@
 ﻿using EmberKernel.Plugins.Components;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberMemory.Listener
 {

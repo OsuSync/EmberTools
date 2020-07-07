@@ -1,21 +1,14 @@
 ﻿using Autofac;
-using EmberKernel.Services.Command;
-using EmberKernel.Services.Command.Attributes;
-using EmberKernel.Services.Command.Components;
 using EmberKernel;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
-using ExamplePlugin.Commands;
+using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
 using ExamplePlugin.Components;
 using ExamplePlugin.EventHandlers;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using ExamplePlugin.Models.EventSubscription;
 using ExamplePlugin.Models;
-using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
+using ExamplePlugin.Models.EventSubscription;
+using System.Threading.Tasks;
 
 namespace ExamplePlugin
 {

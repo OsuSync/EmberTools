@@ -2,8 +2,6 @@
 using EmberMemory.Components.Collector;
 using EmberMemory.Readers;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberMemoryReader.Components.Osu.Data
 {

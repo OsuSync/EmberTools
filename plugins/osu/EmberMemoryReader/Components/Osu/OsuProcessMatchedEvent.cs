@@ -1,9 +1,4 @@
-﻿using EmberKernel.Services.EventBus;
-using EmberMemory.Components;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
+﻿using EmberMemory.Components;
 
 namespace EmberMemoryReader.Components.Osu
 {

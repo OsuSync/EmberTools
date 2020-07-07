@@ -1,10 +1,6 @@
-﻿using BeatmapDownloader.Abstract.Models;
-using BeatmapDownloader.Abstract.Services.DownloadProvider;
+﻿using BeatmapDownloader.Abstract.Services.DownloadProvider;
 using BeatmapDownloader.Abstract.Services.UI;
 using EmberKernel.Services.UI.Mvvm.Dependency;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BeatmapDownloader.Abstract.Models
 {

@@ -4,10 +4,7 @@ using EmberKernel.Services.UI.Mvvm.Dependency;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace EmberWpfCore.Components.Configuration.ViewModel
 {

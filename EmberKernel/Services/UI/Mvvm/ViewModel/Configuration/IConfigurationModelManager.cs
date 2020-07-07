@@ -1,11 +1,9 @@
 ﻿using EmberKernel.Plugins;
 using EmberKernel.Services.UI.Mvvm.Dependency;
 using EmberKernel.Services.UI.Mvvm.Dependency.Configuration;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Text;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration
 {

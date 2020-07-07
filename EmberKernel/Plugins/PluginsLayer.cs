@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using EmberKernel.Plugins.Models;
 using EmberKernel.Services.EventBus;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Plugins;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Plugins
 {

@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using EmberKernel.Plugins;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EmberKernel

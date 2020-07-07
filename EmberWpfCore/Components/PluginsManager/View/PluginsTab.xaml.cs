@@ -1,11 +1,8 @@
 ﻿using Autofac;
-using EmberKernel.Plugins.Models;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Plugins;
 using EmberWpfCore.Components.PluginsManager.ViewModel;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 

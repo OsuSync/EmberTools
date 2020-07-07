@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace EmberKernel.Services.Command.Sources
+﻿namespace EmberKernel.Services.Command.Sources
 {
     public interface IMultiDispatchSource : ICommandSource
     {

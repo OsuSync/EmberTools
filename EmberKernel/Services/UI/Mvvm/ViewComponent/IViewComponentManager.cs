@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewComponent

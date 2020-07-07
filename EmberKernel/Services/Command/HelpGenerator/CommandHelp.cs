@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace EmberKernel.Services.Command.HelpGenerator
 {

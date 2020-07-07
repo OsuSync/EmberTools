@@ -1,8 +1,6 @@
 ﻿using Autofac;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel.Services.Configuration
 {

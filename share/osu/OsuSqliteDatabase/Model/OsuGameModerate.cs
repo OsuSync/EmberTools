@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace OsuSqliteDatabase.Model
+﻿namespace OsuSqliteDatabase.Model
 {
     public enum OsuGameModerator
     {

@@ -6,7 +6,6 @@ using EmberKernel.Plugins.Components;
 using EmberSqliteSynchronizer.Component;
 using EmberSqliteSynchronizer.Models;
 using OsuSqliteDatabase.Database;
-using System;
 using System.Threading.Tasks;
 
 namespace EmberSqliteSynchronizer

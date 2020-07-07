@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using EmberKernel.Services.Command.Attributes;
 using EmberKernel.Services.Command.Builder;
 using EmberKernel.Services.Command.Components;
+using EmberKernel.Services.Command.HelpGenerator;
 using EmberKernel.Services.Command.Models;
-using EmberKernel.Services.Command.Parsers;
 using EmberKernel.Services.Command.Sources;
-using EmberKernel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Windows.Input;
-using EmberKernel.Services.Command.HelpGenerator;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Command
 {

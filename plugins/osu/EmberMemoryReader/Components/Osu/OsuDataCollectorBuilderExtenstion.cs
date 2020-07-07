@@ -1,12 +1,7 @@
 ﻿using Autofac;
-using EmberKernel;
-using EmberKernel.Plugins.Components;
-using EmberMemory.Components;
 using EmberMemory.Components.Collector;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace EmberMemoryReader.Components.Osu
 {

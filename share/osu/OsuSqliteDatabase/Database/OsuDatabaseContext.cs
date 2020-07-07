@@ -1,9 +1,6 @@
 ﻿using EmberSqlite.Integration;
 using Microsoft.EntityFrameworkCore;
 using OsuSqliteDatabase.Model;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace OsuSqliteDatabase.Database
 {

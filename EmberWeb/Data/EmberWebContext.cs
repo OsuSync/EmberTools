@@ -1,10 +1,5 @@
-﻿using EmberWeb.Data;
-using EmberWeb.Model;
+﻿using EmberWeb.Model;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmberWeb.Data
 {

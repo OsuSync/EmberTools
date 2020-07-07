@@ -1,10 +1,4 @@
-﻿using Autofac;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EmberKernel.Plugins
+﻿namespace EmberKernel.Plugins
 {
     public interface IPluginsLayer : IScopeBuilder
     {

@@ -1,5 +1,4 @@
 ﻿using EmberKernel.Services.UI.Mvvm.Dependency;
-using EmberKernel.Services.UI.Mvvm.ViewModel;
 
 namespace ExamplePlugin.Models
 {

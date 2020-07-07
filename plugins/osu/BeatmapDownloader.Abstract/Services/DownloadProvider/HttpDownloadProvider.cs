@@ -1,11 +1,6 @@
 ﻿using Autofac;
 using BeatmapDownloader.Abstract.Services.UI;
-using EmberKernel.Plugins.Components;
 using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

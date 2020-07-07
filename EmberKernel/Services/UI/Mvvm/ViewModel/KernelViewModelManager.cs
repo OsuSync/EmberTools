@@ -1,14 +1,9 @@
 ﻿using Autofac;
-using EmberKernel.Services.UI.Mvvm.Dependency;
-using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewModel
 {

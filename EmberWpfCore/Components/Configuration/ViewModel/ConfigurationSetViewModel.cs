@@ -1,13 +1,11 @@
-﻿using EmberKernel.Services.UI.Mvvm.Dependency;
+﻿using EmberKernel;
+using EmberKernel.Services.UI.Mvvm.Dependency;
+using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Reflection;
-using System.Text;
-using EmberKernel;
-using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 
 namespace EmberWpfCore.Components.Configuration.ViewModel
 {

@@ -3,15 +3,11 @@ using EmberCore.KernelServices.UI.View;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
-using EmberKernel.Services.UI;
 using EmberKernel.Services.UI.Mvvm.Extension;
 using EmberWpfCore.Components.Configuration.View;
 using EmberWpfCore.Components.PluginsManager.View;
 using EmberWpfCore.View;
 using EmberWpfCore.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 

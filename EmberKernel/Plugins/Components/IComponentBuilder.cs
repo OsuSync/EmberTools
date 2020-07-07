@@ -1,9 +1,6 @@
 ﻿using Autofac;
 using Autofac.Builder;
-using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel.Plugins.Components
 {
