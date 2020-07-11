@@ -2,22 +2,19 @@
 using EmberKernel.Services.UI.Mvvm.Dependency;
 using EmberKernel.Services.UI.Mvvm.Dependency.Configuration;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration
 {
     public class ConfigurationModelManager : ObservableCollection<object>, INotifyPropertyChanged, IConfigurationModelManager, IDisposable
     {
         public new event PropertyChangedEventHandler PropertyChanged;
-        private IViewModelManager manager;
+        private IViewModelManager Manager { get; }
         public ConfigurationModelManager(IViewModelManager manager)
         {
-            this.manager = manager;
-            this.manager.Register(this);
+            this.Manager = manager;
+            this.Manager.Register(this);
             base.PropertyChanged += DependencyObject_PropertyChanged;
         }
 
@@ -59,7 +56,7 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel.Configuration
 
         public void Dispose()
         {
-            manager.Unregister<ConfigurationModelManager>();
+            Manager.Unregister<ConfigurationModelManager>();
         }
     }
 }
