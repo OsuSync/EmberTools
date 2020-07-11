@@ -9,7 +9,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace EmberWpfCore.Components.Configuration.ViewModel
 {
@@ -17,7 +16,7 @@ namespace EmberWpfCore.Components.Configuration.ViewModel
     {
         private IConfigurationModelManager ConfigurationModelManager { get; }
         private IWindowManager WindowManager { get; }
-        private Dictionary<Type, ConfigurationSetViewModel> ViewModels = new Dictionary<Type, ConfigurationSetViewModel>();
+        private readonly Dictionary<Type, ConfigurationSetViewModel> ViewModels = new Dictionary<Type, ConfigurationSetViewModel>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 

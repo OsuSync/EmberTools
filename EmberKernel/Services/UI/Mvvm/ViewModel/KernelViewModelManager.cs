@@ -1,14 +1,7 @@
-﻿using Autofac;
-using EmberKernel.Services.UI.Mvvm.Dependency;
-using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmberKernel.Services.UI.Mvvm.ViewModel
 {
@@ -16,19 +9,11 @@ namespace EmberKernel.Services.UI.Mvvm.ViewModel
     {
         private readonly Dictionary<string, INotifyPropertyChanged> instanceBinding = new Dictionary<string, INotifyPropertyChanged>();
         private readonly Dictionary<Type, string> typeBinding = new Dictionary<Type, string>();
-        private readonly ILifetimeScope Scope;
-        private readonly ILogger<IViewModelManager> Logger;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChangeEvent(object sender, PropertyChangedEventArgs args)
         {
             PropertyChanged?.Invoke(sender, args);
-        }
-
-        public KernelViewModelManager(ILifetimeScope scope, ILogger<IViewModelManager> logger)
-        {
-            this.Scope = scope;
-            this.Logger = logger;
         }
 
         private string GetFullName(Type type)

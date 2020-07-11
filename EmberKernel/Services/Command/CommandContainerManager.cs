@@ -9,8 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Command
@@ -146,7 +144,7 @@ namespace EmberKernel.Services.Command
             }
 
             handlerInfo = commandHandlers[currentArgument.Command];
-            object ret = null;
+            object ret;
             if (handlerInfo.CommandHandler.GetParameters().Length == 0)
             {
                 ret = handlerInfo.CommandHandler.Invoke(CommandContainer, null);

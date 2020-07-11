@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using EmberKernel.Services.Command.Attributes;
 using EmberKernel.Services.Command.Builder;
 using EmberKernel.Services.Command.Components;
+using EmberKernel.Services.Command.HelpGenerator;
 using EmberKernel.Services.Command.Models;
-using EmberKernel.Services.Command.Parsers;
 using EmberKernel.Services.Command.Sources;
-using EmberKernel;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using System.Windows.Input;
-using EmberKernel.Services.Command.HelpGenerator;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Command
 {
@@ -68,7 +62,7 @@ namespace EmberKernel.Services.Command
             GlobalCommandAlias.Add(alias, (containerName, handlerAttribute.Command));
         }
 
-        private string _getCommandContainerNamespace(Type type)
+        private string GetCommandContainerNamespace(Type type)
         {
             var namespaceAttr = type.GetCustomAttribute<CommandContainerNamespaceAttribute>();
             if (namespaceAttr != null)
@@ -81,7 +75,7 @@ namespace EmberKernel.Services.Command
         {
             // get command component namespace
             var type = commandComponent.GetType();
-            var @namespace = _getCommandContainerNamespace(type);
+            var @namespace = GetCommandContainerNamespace(type);
 
             // create lifecycle
             var containerScope = CurrentCommandScope.BeginLifetimeScope((builder) =>
@@ -128,7 +122,7 @@ namespace EmberKernel.Services.Command
         public void UnregisterCommandContainer(ICommandContainer commandComponent)
         {
             var type = commandComponent.GetType();
-            var @namespace = _getCommandContainerNamespace(type);
+            var @namespace = GetCommandContainerNamespace(type);
             // remove registered alias
             CommandNamespaces.Remove(@namespace, out var scope);
             if (CommandNamespaceAlias.TryGetValue(@namespace, out var aliasList))
@@ -204,10 +198,9 @@ namespace EmberKernel.Services.Command
             await commandSource.Stop(stopCancellationSource.Token);
         }
 
-        private ILifetimeScope _getScopeByNamespace(string @namespace)
+        private ILifetimeScope GetScopeByNamespace(string @namespace)
         {
-            ILifetimeScope commandScope = null;
-            if (!CommandNamespaces.TryGetValue(@namespace, out commandScope))
+            if (!CommandNamespaces.TryGetValue(@namespace, out ILifetimeScope commandScope))
                 if (!CommandContainerAlias.TryGetValue(@namespace, out commandScope)) return null;
 
             return commandScope;
@@ -215,7 +208,7 @@ namespace EmberKernel.Services.Command
 
         private void DispatchCommand(CommandArgument argument)
         {
-            ILifetimeScope commandScope = _getScopeByNamespace(argument.Namespace);
+            ILifetimeScope commandScope = GetScopeByNamespace(argument.Namespace);
             if (commandScope == null)
             {
                 if (GlobalCommandAlias.TryGetValue(argument.Namespace, out var command))
