@@ -2,8 +2,6 @@
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -22,11 +20,6 @@ namespace EmberCore.KernelServices.UI.View
         public static void ConfigureWpfWindow<T>(this IComponentBuilder builder) where T : Window, IHostedWindow, new()
         {
             Resolve(builder.ParentScope).Register<T>();
-        }
-
-        public static void ConfigureWpfApplication(Action<Application> configure)
-        {
-
         }
 
         public static ValueTask InitializeWpfWindow<T>(this ILifetimeScope scope) where T : Window, IHostedWindow, new()

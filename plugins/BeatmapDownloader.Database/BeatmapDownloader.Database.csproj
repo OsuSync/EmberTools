@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -6,6 +6,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +22,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-	<Exec Command="move $(OutDir)\$(TargetFileName) $(OutDir)\$(TargetName).dll&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)&#xD;&#xA;copy $(OutDir)\*  $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)" />
+	<Exec Command="move $(OutDir)\$(TargetFileName) $(OutDir)\$(TargetName).dll&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)&#xD;&#xA;copy $(OutDir)\*  $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)" ContinueOnError="true" />
   </Target>
 
 </Project>

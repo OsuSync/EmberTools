@@ -1,10 +1,6 @@
-﻿using Autofac;
-using EmberKernel.Services.EventBus;
+﻿using EmberKernel.Services.EventBus;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,7 +13,7 @@ namespace EmberMemory.Components.Collector
         private ILogger<ICollectorContainer<T>> Logger { get; }
         private bool EventCanCompare { get; }
         private int _retryCount;
-        private Func<object, object, bool> EventComparer;
+        private readonly Func<object, object, bool> EventComparer;
         private object _latestEvent;
         public CollectorIntervalContainer(ILogger<ICollectorContainer<T>> logger, T collector, IEventBus eventBus)
         {

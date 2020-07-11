@@ -1,17 +1,13 @@
 ﻿using BeatmapDownloader.Abstract.Models;
+using BeatmapDownloader.Abstract.Models.Events;
 using BeatmapDownloader.Database.Database;
 using BeatmapDownloader.Database.Model;
-using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus.Handlers;
-using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using IComponent = EmberKernel.Plugins.Components.IComponent;
 
@@ -19,17 +15,18 @@ namespace BeatmapDownloader.WpfUI.UI.ViewModel
 {
     public class DownloadHistoryViewModel : IComponent,
         INotifyPropertyChanged,
-        IEventHandler<BeatmapDownloaded>,
-        IEventHandler<DownloadingProcessChanged>
+        IEventHandler<BeatmapDownloadTaskStarted>,
+        IEventHandler<BeatmapDownloadTaskProgressUpdated>,
+        IEventHandler<BeatmapDownloadTaskCompleted>
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private BeatmapDownloaderDatabaseContext Db { get; }
-        private IWindowManager WindowManager { get; }
-        public DownloadHistoryViewModel(BeatmapDownloaderDatabaseContext db, IWindowManager windowManager, IOptions<MpDownloaderConfiguration> config)
+        public DownloadHistoryViewModel(
+            BeatmapDownloaderDatabaseContext db,
+            IOptions<BeatmapDownloaderConfiguration> config)
         {
             Db = db;
-            WindowManager = windowManager;
             RecentDownloaded = Db
             .DownloadedBeatmapSets
             .OrderByDescending(d => d.Id)
@@ -40,48 +37,59 @@ namespace BeatmapDownloader.WpfUI.UI.ViewModel
 
         public List<DownloadBeatmapSet> RecentDownloaded { get; private set; }
 
-        public async ValueTask Handle(BeatmapDownloaded @event)
+        private bool DownloadFlag { get; set; } = false;
+        public string CurrentStatus { get; private set; } = "Idle";
+        public int Percentage { get; set; } = 0;
+        public string Source { get; set; }
+
+        private string GetCurrentStatus(BeatmapDownloadTaskProgressUpdated _)
+        {
+            if (DownloadFlag)
+                return "Downloading...";
+            else return "Idle";
+        }
+
+        public ValueTask Handle(BeatmapDownloadTaskStarted @event)
+        {
+            DownloadFlag = true;
+            CurrentStatus = "Connecting";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentStatus)));
+            return default;
+        }
+
+        public ValueTask Handle(BeatmapDownloadTaskProgressUpdated @event)
+        {
+            if (Source != @event.Task.DownloadProviderName)
+            {
+                Source = @event.Task.DownloadProviderName;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Source)));
+            }
+            var status = GetCurrentStatus(@event);
+            if (CurrentStatus != status)
+            {
+                CurrentStatus = status;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentStatus)));
+            }
+            Percentage = @event.PercentCompleted;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Percentage)));
+            return default;
+        }
+
+        public async ValueTask Handle(BeatmapDownloadTaskCompleted @event)
         {
             RecentDownloaded = await Db
             .DownloadedBeatmapSets
             .OrderByDescending(d => d.Id)
             .ToListAsync();
 
-            await WindowManager.BeginUIThreadScope(() =>
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecentDownloaded)));
-            });
+            DownloadFlag = false;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(RecentDownloaded)));
 
-        }
+            CurrentStatus = "Completed";
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentStatus)));
 
-        public string CurrentStatus { get; private set; } = "Idle";
-        public int Percentage { get; set; } = 0;
-        public string Source { get; set; }
-
-        private string _getCurrentStatus(DownloadingProcessChanged @event)
-        {
-            if (@event.Idle) return "Idle";
-            if (@event.SearchingBeatmap) return "Searching...";
-            if (!@event.IsCompleted) return "Downloading...";
-            return "Extracting...";
-        }
-
-        public ValueTask Handle(DownloadingProcessChanged @event)
-        {
-            if (Source != @event.ProviderName)
-            {
-                Source = @event.ProviderName;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Source)));
-            }
-            var status = _getCurrentStatus(@event);
-            if (CurrentStatus != status)
-            {
-                CurrentStatus = status;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentStatus)));
-            }
-            Percentage = @event.Percentage;
+            Percentage = 0;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Percentage)));
-            return default;
         }
 
         public void Dispose()

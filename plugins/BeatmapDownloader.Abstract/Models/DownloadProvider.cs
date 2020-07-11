@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BeatmapDownloader.Abstract.Models
 {
@@ -25,7 +23,7 @@ namespace BeatmapDownloader.Abstract.Models
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode();
+            return HashCode.Combine(Id);
         }
     }
 }

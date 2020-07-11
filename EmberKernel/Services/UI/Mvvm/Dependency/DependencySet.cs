@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
 
 namespace EmberKernel.Services.UI.Mvvm.Dependency
 {
@@ -31,7 +30,7 @@ namespace EmberKernel.Services.UI.Mvvm.Dependency
             PropertyChanged?.Invoke(sender, args);
         }
 
-        private Type _holdType;
+        private readonly Type _holdType;
         public DependencySet(Type holdType)
         {
             _holdType = holdType;

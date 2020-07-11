@@ -40,7 +40,8 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="BeatmapSet Id" Width="75*" Binding="{Binding BeatmapSetId}"></DataGridTextColumn>
                 <DataGridTextColumn Header="Download Source" Width="100*" Binding="{Binding DownloadProviderName}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Downloaded At" Width="75*" Binding="{Binding DownloadTime}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Started At" Width="75*" Binding="{Binding StartedAt}"></DataGridTextColumn>
+                <DataGridTextColumn Header="Completed At" Width="75*" Binding="{Binding CompletedAt}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
