@@ -137,13 +137,11 @@ namespace EmberKernel.Services.Command
                 return;
             }
 
-            var handlerInfo = commandHandlers[currentArgument.Command];
-            if (handlerInfo == null)
+            if (!commandHandlers.TryGetValue(currentArgument.Command, out var handlerInfo) || handlerInfo == null)
             {
                 Logger.LogWarning($"Unknown command {argument.Command}");
+                return;
             }
-
-            handlerInfo = commandHandlers[currentArgument.Command];
             object ret;
             if (handlerInfo.CommandHandler.GetParameters().Length == 0)
             {
