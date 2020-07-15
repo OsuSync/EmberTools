@@ -15,6 +15,26 @@ namespace EmberCore
 {
     class Program
     {
+        private static string GetLoggerFilePath(IConfigurationSection config)
+        {
+            var loggerFolder = config["LogFolder"] ?? "logs";
+            var loggerPath = Path.Combine(Directory.GetCurrentDirectory(), loggerFolder);
+            if (!Directory.Exists(loggerPath)) Directory.CreateDirectory(loggerPath);
+            var loggerFileName = config["LogFilePattern"] ?? "logs_.txt";
+            return Path.Combine(loggerPath, loggerFileName);
+        }
+
+        private static string GetLoggerConsoleLogFormat(IConfigurationSection config)
+        {
+            return config["ConsoleLogFormat"]
+                ?? "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+        }
+        private static string GetFileLogFormat(IConfigurationSection config)
+        {
+            return config["FileLogFormat"]
+                ?? "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
+        }
+
         public static void Main()
         {
             new KernelBuilder()
@@ -29,20 +49,19 @@ namespace EmberCore
                 .UseConfigurationModel<CoreAppSetting>()
                 .UseLogger((context, logger) =>
                 {
-                    var configSection = context.Configuration.GetSection("Logging");
-                    var loggerFolder = configSection["LogFolder"] ?? "logs";
-                    var loggerPath = Path.Combine(Directory.GetCurrentDirectory(), loggerFolder);
-                    if (!Directory.Exists(loggerPath)) Directory.CreateDirectory(loggerPath);
-                    var loggerFileName = configSection["LogFilePattern"] ?? "logs_.txt";
-                    var loggerFile = Path.Combine(loggerPath, loggerFileName);
+                    var config = context.Configuration.GetSection("Logging");
+                    var loggerFile = GetLoggerFilePath(config);
                     logger
-                    .AddConfiguration(configSection)
+                    .AddConfiguration(config)
                     .AddSerilog((builder) => builder
                         .Enrich.FromLogContext()
                         .WriteTo.Console(
                             theme: SystemConsoleTheme.Colored,
-                            outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
-                        .WriteTo.File(loggerFile, rollingInterval: RollingInterval.Day))
+                            outputTemplate: GetLoggerConsoleLogFormat(config))
+                        .WriteTo.File(
+                            path: loggerFile,
+                            rollingInterval: RollingInterval.Day,
+                            outputTemplate: GetFileLogFormat(config)))
                     .AddDebug();
                 })
                 .UseEventBus()
@@ -52,7 +71,7 @@ namespace EmberCore
                 .UseWindowManager<EmberWpfUIService, Window>()
                 .UseMvvmInterface((mvvm) => mvvm
                     .UseConfigurationModel())
-                .UseEFSqlite(Path.Combine(Directory.GetCurrentDirectory(), "ember.sqlite"))
+                .UseEFSqlite()
                 .Build()
                 .Run();
         }
