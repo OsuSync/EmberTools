@@ -10,8 +10,11 @@ using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Configuration;
 using EmberKernel.Services.EventBus;
 using EmberKernel.Services.EventBus.Handlers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.Logging;
+using OsuSqliteDatabase.Database;
+using OsuSqliteDatabase.Model;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -27,17 +30,20 @@ namespace BeatmapDownloader.Services
         private ILogger<BeatmapDownloadService> Logger { get; }
         private IEventBus EventBus { get; }
         private BeatmapDownloaderDatabaseContext DownloadDb { get; }
+        private OsuDatabaseContext OsuDb { get; }
         private string OsuGamePath { get; set; } = string.Empty;
         private IReadOnlyPluginOptions<BeatmapDownloaderConfiguration> OptionFactory { get; }
         public BeatmapDownloadService(ILifetimeScope scope,
             ILogger<BeatmapDownloadService> logger,
             BeatmapDownloaderDatabaseContext downloadDb,
+            OsuDatabaseContext osuDb,
             IEventBus eventBus,
             IReadOnlyPluginOptions<BeatmapDownloaderConfiguration> options)
         {
             Scope = scope;
             Logger = logger;
             DownloadDb = downloadDb;
+            OsuDb = osuDb;
             OptionFactory = options;
             EventBus = eventBus;
         }
@@ -113,6 +119,14 @@ namespace BeatmapDownloader.Services
             entity.Entity.FullPath = eventTask.FullPath = targetFile;
             DownloadDb.Update(entity.Entity);
             await DownloadDb.SaveChangesAsync();
+
+            await OsuDb.OsuDatabaseBeatmap.AddAsync(new OsuDatabaseBeatmap()
+            {
+                OsuDatabaseId = (await OsuDb.OsuDatabases.FirstAsync()).Id,
+                BeatmapId = @event.BeatmapId,
+                BeatmapSetId = @event.BeatmapSetId,
+            });
+            await OsuDb.SaveChangesAsync();
 
             // download completed event
             EventBus.Publish(new BeatmapDownloadTaskCompleted()
