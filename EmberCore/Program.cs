@@ -1,28 +1,40 @@
-﻿using EmberKernel.Services.Command;
-using EmberCore.KernelServices.PluginResolver;
+﻿using EmberCore.KernelServices.PluginResolver;
+using EmberCore.KernelServices.UI.View;
 using EmberCore.Services;
+using EmberCore.Utils;
 using EmberKernel;
+using EmberKernel.Services.UI.Extension;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Threading.Tasks;
-using EmberKernel.Services.UI.Extension;
-using EmberCore.KernelServices.UI.View;
-using Autofac;
-using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
-using System.Windows;
-using EmberCore.Utils;
 using Serilog;
-using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
-using Serilog.Formatting.Raw;
-using Serilog.Formatting.Compact;
+using System.IO;
+using System.Windows;
 
 namespace EmberCore
 {
     class Program
     {
+        private static string GetLoggerFilePath(IConfigurationSection config)
+        {
+            var loggerFolder = config["LogFolder"] ?? "logs";
+            var loggerPath = Path.Combine(Directory.GetCurrentDirectory(), loggerFolder);
+            if (!Directory.Exists(loggerPath)) Directory.CreateDirectory(loggerPath);
+            var loggerFileName = config["LogFilePattern"] ?? "logs_.txt";
+            return Path.Combine(loggerPath, loggerFileName);
+        }
+
+        private static string GetLoggerConsoleLogFormat(IConfigurationSection config)
+        {
+            return config["ConsoleLogFormat"]
+                ?? "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}";
+        }
+        private static string GetFileLogFormat(IConfigurationSection config)
+        {
+            return config["FileLogFormat"]
+                ?? "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}";
+        }
+
         public static void Main()
         {
             new KernelBuilder()
@@ -37,30 +49,29 @@ namespace EmberCore
                 .UseConfigurationModel<CoreAppSetting>()
                 .UseLogger((context, logger) =>
                 {
-                    var configSection = context.Configuration.GetSection("Logging");
-                    var loggerFolder = configSection["LogFolder"] ?? "logs";
-                    var loggerPath = Path.Combine(Directory.GetCurrentDirectory(), loggerFolder);
-                    if (!Directory.Exists(loggerPath)) Directory.CreateDirectory(loggerPath);
-                    var loggerFileName = configSection["LogFilePattern"] ?? "logs_.txt";
-                    var loggerFile = Path.Combine(loggerPath, loggerFileName);
+                    var config = context.Configuration.GetSection("Logging");
+                    var loggerFile = GetLoggerFilePath(config);
                     logger
-                    .AddConfiguration(configSection)
+                    .AddConfiguration(config)
                     .AddSerilog((builder) => builder
                         .Enrich.FromLogContext()
                         .WriteTo.Console(
                             theme: SystemConsoleTheme.Colored,
-                            outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}")
-                        .WriteTo.File(loggerFile, rollingInterval: RollingInterval.Day))
+                            outputTemplate: GetLoggerConsoleLogFormat(config))
+                        .WriteTo.File(
+                            path: loggerFile,
+                            rollingInterval: RollingInterval.Day,
+                            outputTemplate: GetFileLogFormat(config)))
                     .AddDebug();
                 })
                 .UseEventBus()
                 .UseCommandService()
-                .UseKernalService<CorePluginResolver>()
+                .UseKernelService<CorePluginResolver>()
                 .UsePlugins<PluginsManager>()
                 .UseWindowManager<EmberWpfUIService, Window>()
                 .UseMvvmInterface((mvvm) => mvvm
                     .UseConfigurationModel())
-                .UseEFSqlite(Path.Combine(Directory.GetCurrentDirectory(), "ember.sqlite"))
+                .UseEFSqlite()
                 .Build()
                 .Run();
         }

@@ -2,9 +2,6 @@
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Command;
 using EmberKernel.Services.Command.Components;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace EmberKernel
 {
@@ -26,11 +23,6 @@ namespace EmberKernel
         {
             var builder = _builder as ComponentBuilder;
             builder.Container.RegisterType<T>().SingleInstance();
-        }
-
-        public static void ConfugreCommandHelpGenerator<T>(this IComponentBuilder _builder) where T : IComponent
-        {
-            var builder = _builder as ComponentBuilder;
         }
     }
 }

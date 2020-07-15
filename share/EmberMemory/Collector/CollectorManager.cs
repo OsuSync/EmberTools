@@ -1,9 +1,6 @@
 ﻿using Autofac;
-using EmberKernel.Services.EventBus;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,11 +11,9 @@ namespace EmberMemory.Components.Collector
         public ILifetimeScope CurrentScope { get; set; }
         public ILifetimeScope CollectorReadScope { get; set; }
         private HashSet<Type> RegisteredCollector { get; }
-        private ILogger<CollectorManager> Logger { get; }
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
-        public CollectorManager(ILifetimeScope scope, ILogger<CollectorManager> logger)
+        public CollectorManager(ILifetimeScope scope)
         {
-            Logger = logger;
             CurrentScope = scope;
             RegisteredCollector = scope.ResolveNamed<HashSet<Type>>(CollectorManagerBuilder.RegisteredTypesType);
         }

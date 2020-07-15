@@ -3,21 +3,10 @@ using EmberKernel.Services.UI.Mvvm.Dependency;
 using EmberKernel.Services.UI.Mvvm.ViewComponent;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
 using ExamplePlugin.ViewModel;
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace ExamplePlugin.ViewComponents
 {
@@ -35,7 +24,6 @@ namespace ExamplePlugin.ViewComponents
         }
 
         ConfigurationViewModel ViewMode { get; set; }
-        IConfigurationModelManager ModelManager { get; set; }
         public ValueTask Initialize(ILifetimeScope scope)
         {
             var manager = scope.Resolve<IConfigurationModelManager>();

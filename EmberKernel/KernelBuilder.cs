@@ -1,16 +1,14 @@
 ﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using EmberKernel.Plugins;
+using EmberKernel.Services;
+using EmberKernel.Services.Configuration;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using EmberKernel.Services;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using Autofac.Extensions.DependencyInjection;
 using System.IO;
-using EmberKernel.Services.Configuration;
-using System.Linq;
 
 namespace EmberKernel
 {
@@ -51,14 +49,14 @@ namespace EmberKernel
             return this;
         }
 
-        public KernelBuilder UseKernalService<TKernelService>() where TKernelService : IKernelService
+        public KernelBuilder UseKernelService<TKernelService>() where TKernelService : IKernelService
         {
             buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().AsSelf().As<TKernelService>().SingleInstance());
             return this;
         }
 
 
-        public KernelBuilder UseKernalService<TKernelService, TIKernelService>() where TKernelService : IKernelService, TIKernelService
+        public KernelBuilder UseKernelService<TKernelService, TIKernelService>() where TKernelService : IKernelService, TIKernelService
         {
             buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().AsSelf().As<TIKernelService>().SingleInstance());
             return this;

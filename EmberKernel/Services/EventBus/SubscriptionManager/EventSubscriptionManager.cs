@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Autofac;
+using EmberKernel.Services.EventBus.Handlers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using Autofac;
-using EmberKernel.Services.EventBus.Handlers;
 
 namespace EmberKernel.Services.EventBus.SubscriptionManager
 {
@@ -26,7 +24,7 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
         public bool IsEmpty => _handlers.Count == 0;
         public void Clear() => _handlers.Clear();
 
-        private string _getFullEventName(string @namespace, string eventName)
+        private string GetFullEventName(string @namespace, string eventName)
         {
             return $"{@namespace}:{eventName}";
         }
@@ -80,14 +78,14 @@ namespace EmberKernel.Services.EventBus.SubscriptionManager
             return GetHandlersForEvent(GetEventKey<T>());
         }
         public IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName) => _handlers[eventName];
-        public IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName, string @namespace) => _handlers[_getFullEventName(@namespace, eventName)];
+        public IEnumerable<SubscriptionInfo> GetHandlersForEvent(string eventName, string @namespace) => _handlers[GetFullEventName(@namespace, eventName)];
 
         public bool HasSubscriptionForEvent<T>() where T : Event
         {
             return HasSubscriptionForEvent(GetEventKey<T>());
         }
         public bool HasSubscriptionForEvent(string eventName) => _handlers.ContainsKey(eventName);
-        public bool HasSubscriptionForEvent(string eventName, string @namespace) => _handlers.ContainsKey(_getFullEventName(@namespace, eventName));
+        public bool HasSubscriptionForEvent(string eventName, string @namespace) => _handlers.ContainsKey(GetFullEventName(@namespace, eventName));
 
 
         private SubscriptionInfo FindSubscriptionToRemove(string fullEventName, Type handlerType)

@@ -9,7 +9,7 @@ namespace EmberKernel
     {
         public static KernelBuilder UseCommandService(this KernelBuilder builder)
         {
-            builder.UseKernalService<CommandService, ICommandService>();
+            builder.UseKernelService<CommandService, ICommandService>();
             return builder;
         }
     }
