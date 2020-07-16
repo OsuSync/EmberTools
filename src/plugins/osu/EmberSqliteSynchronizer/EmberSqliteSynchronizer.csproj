@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EmberKernel\EmberKernel.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\share\EmberSqlite\EmberSqlite.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\share\osu\OsuSqliteDatabase\OsuSqliteDatabase.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="move $(OutDir)\$(TargetFileName) $(OutDir)\$(TargetName).dll&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)&#xD;&#xA;copy $(OutDir)\*  $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)" />
+  </Target>
+
+</Project>
