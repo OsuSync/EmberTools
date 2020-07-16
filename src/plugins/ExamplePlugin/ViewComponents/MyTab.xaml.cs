@@ -14,6 +14,7 @@ namespace ExamplePlugin.ViewComponents
     /// Interaction logic for MyTab.xaml
     /// </summary>
     [ViewComponentNamespace(@namespace: "CoreWpfTab")]
+    [ViewComponentName(name: "Example Custom Tab")]
     public partial class MyTab : UserControl, IViewComponent
     {
         public static IConfigurationModelManager ConfigurationManager { get; set; }
