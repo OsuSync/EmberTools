@@ -27,7 +27,12 @@ namespace EmberWpfCore
 
         public void BuildApplication(Application application)
         {
-            // do load resource stuff here
+            var dict = new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/EmberWpfCore;component/shared.xaml", UriKind.Absolute)
+            };
+
+            application.Resources.MergedDictionaries.Add(dict);
         }
 
         public override void BuildComponents(IComponentBuilder builder)

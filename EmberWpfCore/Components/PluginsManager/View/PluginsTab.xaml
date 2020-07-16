@@ -4,15 +4,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:userControls="clr-namespace:EmberWpfCore.UserControls"
+    xmlns:viewModel="clr-namespace:EmberWpfCore.Components.PluginsManager.ViewModel"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <!--<d:Object.DataContext>
+        <viewModel:PluginsTabViewModel />
+    </d:Object.DataContext>-->
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <ListBox
+        <!--<ListBox
             Grid.Column="0"
             Width="200"
             ItemsSource="{Binding PluginsViewModel, Mode=OneWay}"
@@ -34,6 +43,91 @@
                 Command="{Binding DisablePluginCommand}"
                 CommandParameter="{Binding SelectedPlugin, Mode=OneWay}"
                 Content="Disable" />
+        </StackPanel>-->
+        <Label
+            Margin="5,10,0,0"
+            Content="Installed"
+            FontSize="18"
+            FontWeight="Light" />
+        <ListBox
+            x:Name="List1"
+            Grid.Row="1"
+            Padding="0,-3"
+            Background="Transparent"
+            BorderThickness="0"
+            ItemsSource="{Binding PluginsViewModel, Mode=OneWay}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.Resources>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="3" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                <Border Background="{TemplateBinding Background}">
+                                    <ContentPresenter />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#efefef" />
+                                    </Trigger>
+                                    <MultiTrigger>
+                                        <MultiTrigger.Conditions>
+                                            <Condition Property="IsMouseOver" Value="True" />
+                                            <Condition Property="IsSelected" Value="False" />
+                                        </MultiTrigger.Conditions>
+                                        <MultiTrigger.Setters>
+                                            <Setter Property="Background" Value="#efefef" />
+                                        </MultiTrigger.Setters>
+                                    </MultiTrigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                    <!--<Style.Triggers>
+                        <Trigger Property="IsSelected" Value="true">
+                            <Setter Property="Background" Value="#efefef" />
+                        </Trigger>
+                    </Style.Triggers>-->
+                </Style>
+            </ListBox.Resources>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <userControls:PluginOverallControl Width="230" Margin="5" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel
+            Grid.RowSpan="2"
+            Grid.Column="1"
+            Width="160"
+            Margin="30,0,10,0"
+            TextBlock.FontSize="13">
+            <TextBlock
+                Margin="0,20,0,10"
+                HorizontalAlignment="Left"
+                Text="Installed plug-ins" />
+            <TextBlock
+                HorizontalAlignment="Left"
+                Foreground="#9f9f9f"
+                Text="Install plug-ins to retrieve data from games, start synchronize, reply message in game, and more."
+                TextWrapping="Wrap" />
+            <TextBlock
+                Margin="0,15,0,0"
+                HorizontalAlignment="Left"
+                Foreground="#9f9f9f"
+                Text="We recommend install plug-ins using Ember Market."
+                TextWrapping="Wrap" />
+            <TextBlock Margin="0,20,0,10" Text="Get update" />
+            <TextBlock Foreground="#3060ef" Text="Check Plug-ins Update" />
+            <TextBlock
+                Margin="0,20,0,10"
+                Foreground="#3060ef"
+                Text="Auto update setting" />
         </StackPanel>
     </Grid>
 </UserControl>

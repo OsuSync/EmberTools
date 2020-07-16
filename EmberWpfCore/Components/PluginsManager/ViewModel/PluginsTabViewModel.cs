@@ -24,6 +24,10 @@ namespace EmberWpfCore.Components.PluginsManager.ViewModel
         public ICommand DisablePluginCommand => disablePluginCommand;
         public ICommand EnablePluginCommand => enablePluginCommand;
 
+        public PluginsTabViewModel()
+        {
+            
+        }
         public PluginsTabViewModel(IPluginManagerViewModel pluginManagerViewModel)
         {
             PluginsViewModel = pluginManagerViewModel;
