@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Statistic\Pattern\**" />
+    <EmbeddedResource Remove="Services\Statistic\Pattern\**" />
+    <None Remove="Services\Statistic\Pattern\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Autofac" Version="5.2.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.5" />
@@ -17,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Statistic\Pattern\Lexical\" />
-    <Folder Include="Services\Statistic\Pattern\Parser\" />
+    <Folder Include="Services\Statistic\DataSource\SourceManager\" />
   </ItemGroup>
 
 </Project>
