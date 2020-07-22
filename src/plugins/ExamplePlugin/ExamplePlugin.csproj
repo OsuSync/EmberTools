@@ -21,6 +21,7 @@
       <Private>false</Private>
       <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
     </ProjectReference>
+    <ProjectReference Include="..\osu\EmberMemoryReader.Abstract\EmberMemoryReader.Abstract.csproj" />
   </ItemGroup>
 
   <ItemGroup>

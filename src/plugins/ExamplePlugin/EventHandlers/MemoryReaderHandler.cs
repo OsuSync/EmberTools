@@ -1,11 +1,8 @@
 ﻿using EmberKernel.Services.Configuration;
 using EmberKernel.Services.EventBus.Handlers;
+using EmberMemoryReader.Abstract.Data;
 using ExamplePlugin.Models;
-using ExamplePlugin.Models.EventSubscription;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ExamplePlugin.EventHandlers
@@ -14,7 +11,8 @@ namespace ExamplePlugin.EventHandlers
         IEventHandler<GameStatusInfo>,
         IEventHandler<BeatmapInfo>,
         IEventHandler<PlayingInfo>,
-        IEventHandler<MultiplayerBeatmapIdInfo>
+        IEventHandler<MultiplayerBeatmapIdInfo>,
+        IEventHandler<GameModeInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
         private readonly IPluginOptions<MyPlugin, MyPluginConfiguration> _pluginOptions;
@@ -70,6 +68,15 @@ namespace ExamplePlugin.EventHandlers
             if (@event.HasValue)
             {
                 _logger.LogInformation($"[Event] Multiplayer Lobby BeatmapId ={@event.BeatmapId}");
+            }
+            return default;
+        }
+
+        public ValueTask Handle(GameModeInfo @event)
+        {
+            if (@event.HasValue)
+            {
+                _logger.LogInformation($"[Event] Current GameMode = {@event.Mode}");
             }
             return default;
         }

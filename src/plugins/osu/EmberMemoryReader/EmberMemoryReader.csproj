@@ -25,6 +25,7 @@
     <ProjectReference Include="..\..\..\share\osu\OsuUtils\OsuUtils.csproj">
       <Private>true</Private>
     </ProjectReference>
+    <ProjectReference Include="..\EmberMemoryReader.Abstract\EmberMemoryReader.Abstract.csproj" />
   </ItemGroup>
 
   <ItemGroup>

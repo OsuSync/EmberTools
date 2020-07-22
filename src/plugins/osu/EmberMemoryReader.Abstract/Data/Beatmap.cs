@@ -1,12 +1,10 @@
 ﻿using EmberKernel.Services.EventBus;
 using EmberMemory.Components.Collector;
 using EmberMemory.Readers;
+using EmberMemoryReader.Abstract.Events;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
-namespace EmberMemoryReader.Components.Osu.Data
+namespace EmberMemoryReader.Abstract.Data
 {
     public class Beatmap : IComparableCollector<BeatmapInfo>
     {

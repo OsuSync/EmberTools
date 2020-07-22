@@ -2,10 +2,8 @@
 using EmberMemory.Components.Collector;
 using EmberMemory.Readers;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace EmberMemoryReader.Components.Osu.Data
+namespace EmberMemoryReader.Abstract.Data
 {
     public class Playing : IComparableCollector<PlayingInfo>
     {
