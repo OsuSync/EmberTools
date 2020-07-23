@@ -6,7 +6,6 @@ namespace EmberKernel.Services.Statistic.DataSource.Variables
 {
     public struct Variable
     {
-        public string Namespace { get; set; }
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -47,19 +46,14 @@ namespace EmberKernel.Services.Statistic.DataSource.Variables
         public static Variable CreateFrom(PropertyInfo property)
         {
             var rawVariable = CreateFrom(property.PropertyType);
-            rawVariable.Id = property.Name;
-            rawVariable.Namespace = property.DeclaringType.Namespace;
+            rawVariable.Id = $"{property.DeclaringType.Namespace}{property.Name}";
             if (property.GetCustomAttribute<DataSourceVariableAttribute>() is DataSourceVariableAttribute attr)
             {
                 rawVariable.Name = attr.Name;
                 rawVariable.Description = attr.Description;
-                if (attr.Namespace != null)
-                {
-                    rawVariable.Namespace = attr.Namespace;
-                }
                 if (attr.Id != null)
                 {
-                    rawVariable.Id = attr.Id;
+                    rawVariable.Id = $"{rawVariable.Id}{attr.Id}";
                 }
             }
             else

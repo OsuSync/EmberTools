@@ -13,5 +13,15 @@
         {
             return new NumberValue(value);
         }
+
+        public bool Equals(IValue<double> x, IValue<double> y)
+        {
+            return x.Value == y.Value;
+        }
+
+        public int GetHashCode(IValue<double> obj)
+        {
+            return obj.Value.GetHashCode();
+        }
     }
 }
