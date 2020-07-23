@@ -12,7 +12,8 @@ namespace ExamplePlugin.EventHandlers
         IEventHandler<BeatmapInfo>,
         IEventHandler<PlayingInfo>,
         IEventHandler<MultiplayerBeatmapIdInfo>,
-        IEventHandler<GameModeInfo>
+        IEventHandler<GameModeInfo>,
+        IEventHandler<GlobalGameModeratorInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
         private readonly IPluginOptions<MyPlugin, MyPluginConfiguration> _pluginOptions;
@@ -78,6 +79,12 @@ namespace ExamplePlugin.EventHandlers
             {
                 _logger.LogInformation($"[Event] Current GameMode = {@event.Mode}");
             }
+            return default;
+        }
+
+        public ValueTask Handle(GlobalGameModeratorInfo @event)
+        {
+            _logger.LogInformation($"[Event] Current Moderator = {@event.GlobalRawModerator}");
             return default;
         }
     }

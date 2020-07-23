@@ -21,6 +21,7 @@ namespace EmberMemoryReader.Components.Osu
                 .Collect<Beatmap>()
                 .Collect<GameMode>()
                 .Collect<GameStatus>()
+                .Collect<GlobalGameModerator>()
                 .Collect<Playing>()
                 .Collect<MultiplayerBeatmapId>()
             )

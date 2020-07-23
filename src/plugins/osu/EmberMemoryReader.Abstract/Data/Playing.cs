@@ -19,16 +19,12 @@ namespace EmberMemoryReader.Abstract.Data
         private static readonly string TimePattern = "\x5e\x5f\x5d\xc3\xa1\x0\x0\x0\x0\x89\x0\x04";
         private static readonly string TimeMask = "xxxxx????x?x";
 
-        private static readonly string GlobalModsPattern = "\x8B\xF1\xA1\x00\x00\x00\x00\x25\x00\x00\x40\x00\x85\xC0";
-        private static readonly string GlobalModsMask = "xxx????xxxxxxx";
-
 
         public int ReadInterval { get; set; } = 120;
         public int RetryLimit { get; set; } = int.MaxValue;
 
         private IntPtr AccuracyAddress;
         private IntPtr TimeAddress;
-        private IntPtr ModAddress;
 
         private DirectMemoryReader Reader { get; }
         public Playing(DirectMemoryReader reader)
@@ -39,9 +35,6 @@ namespace EmberMemoryReader.Abstract.Data
         public bool TryInitialize()
         {
             Reader.Reload();
-            Reader.TryFindPattern(GlobalModsPattern.ToBytes(), GlobalModsMask, 3, out ModAddress);
-            if (!Reader.TryReadIntPtr(ModAddress, out ModAddress)) return false;
-
             Reader.TryFindPattern(AccuracyPattern.ToBytes(), AccuracyMask, 1, out AccuracyAddress);
             if (!Reader.TryReadIntPtr(AccuracyAddress, out AccuracyAddress))
             {
@@ -81,10 +74,6 @@ namespace EmberMemoryReader.Abstract.Data
             {
                 info.RawModInfo = mods ^ modSalt;
             }
-            if (Reader.TryReadInt(ModAddress, out var listeningMods))
-            {
-                info.RawListeningModInfo = listeningMods;
-            }
             if (Reader.TryReadString(scoreAddress + 0x28, out var playerName))
             {
                 info.CurrentPlayerName = playerName;
@@ -93,31 +82,31 @@ namespace EmberMemoryReader.Abstract.Data
             //{
             //    info.RawUnstableRate = rawUnstableList;
             //}
-            if (Reader.TryReadShort(scoreAddress + 0x8c, out var katu))
+            if (Reader.TryReadShort(scoreAddress + 0x90, out var katu))
             {
                 info.GameStatistic.Katu = katu;
             }
-            if (Reader.TryReadShort(scoreAddress + 0x8a, out var geki))
+            if (Reader.TryReadShort(scoreAddress + 0x8e, out var geki))
             {
                 info.GameStatistic.Geki = geki;
             }
-            if (Reader.TryReadShort(scoreAddress + 0x88, out var bad))
+            if (Reader.TryReadShort(scoreAddress + 0x8c, out var bad))
             {
                 info.GameStatistic.Bad = bad;
             }
-            if (Reader.TryReadShort(scoreAddress + 0x84, out var good))
+            if (Reader.TryReadShort(scoreAddress + 0x88, out var good))
             {
                 info.GameStatistic.Good = good;
             }
-            if (Reader.TryReadShort(scoreAddress + 0x86, out var best))
+            if (Reader.TryReadShort(scoreAddress + 0x8a, out var best))
             {
                 info.GameStatistic.Best = best;
             }
-            if (Reader.TryReadShort(scoreAddress + 0x8e, out var missing))
+            if (Reader.TryReadShort(scoreAddress + 0x92, out var missing))
             {
                 info.GameStatistic.Missing = missing;
             }
-            if (Reader.TryReadShort(scoreAddress + 0x90, out var combo))
+            if (Reader.TryReadShort(scoreAddress + 0x94, out var combo))
             {
                 info.GameStatistic.Combo = combo;
             }
