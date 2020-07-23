@@ -4,14 +4,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace EmberKernel.Services.Statistic.DataSource
+namespace EmberKernel.Services.Statistic
 {
     public interface IDataSource : INotifyPropertyChanged
     {
-        event Action<string> OnDataChanged;
         event Action<IEnumerable<string>> OnMultiDataChanged;
         IEnumerable<Variable> Variables { get; }
         Variable GetVariable(string name);
+        IEnumerable<Variable> GetVariables(IEnumerable<string> names);
         void Register(Variable variable, IValue fallback);
         void Unregister(Variable variable);
         void Publish(Variable variable);

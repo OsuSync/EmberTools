@@ -10,11 +10,15 @@ namespace EmberKernel.Services.Statistic.DataSource
     {
         public IEnumerable<Variable> Variables => throw new NotImplementedException();
 
-        public event Action<string> OnDataChanged;
         public event Action<IEnumerable<string>> OnMultiDataChanged;
         public event PropertyChangedEventHandler PropertyChanged;
 
         public Variable GetVariable(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Variable> GetVariables(IEnumerable<string> names)
         {
             throw new NotImplementedException();
         }
