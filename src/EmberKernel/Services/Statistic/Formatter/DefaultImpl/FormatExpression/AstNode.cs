@@ -43,6 +43,16 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
         }
     }
 
+    public class AstStringNode : IAstNode
+    {
+        public string String { get; }
+
+        public AstStringNode(string str)
+        {
+            String = str.Trim('"');
+        }
+    }
+
     public class AstNumberNode : IAstNode
     {
         public double Number { get; }

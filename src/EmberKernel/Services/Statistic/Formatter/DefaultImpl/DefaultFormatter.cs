@@ -1,6 +1,4 @@
 ﻿using Autofac;
-using EmberKernel.Services.EventBus;
-using EmberKernel.Services.Statistic.DataSource;
 using EmberKernel.Services.Statistic.Format;
 using EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression;
 using Microsoft.Extensions.Logging;
@@ -17,14 +15,13 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         private readonly ILogger<DefaultFormatter> logger;
         protected static readonly ExpressionContext converter = new ExpressionContext();
         protected static readonly ExpressionParser parser = new ExpressionParser();
-        private static readonly Regex calcRegex = new Regex(@"\$\{(((?:\w|\s|_|\.|,|\(|\)|\^|\+|\-|\*|\/|\%|\<|\>|\=|\!|\||\&)*)(?:@(\d+))?)\}");
+        private static readonly Regex calcRegex = new Regex(@"\$\{(((?:\w|\s|_|\.|,|\(|\)|\""|\^|\+|\-|\*|\/|\%|\<|\>|\=|\!|\||\&)*)(?:@(\d+))?)\}");
 
         private Dictionary<string, RegisterFormat> registeredFormats = new Dictionary<string, RegisterFormat>();
 
-        public DefaultFormatter(ILogger<DefaultFormatter> logger, EmberDataSource dataSource)
+        public DefaultFormatter(ILogger<DefaultFormatter> logger, IDataSource dataSource)
         {
             this.logger = logger;
-
             dataSource.OnMultiDataChanged += onDataUpdate;
         }
 
@@ -39,7 +36,9 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
             }
         }
 
-        private RegisterFormat Build<T>(string format) where T:IFormatContainer
+        public RegisterFormat Build<T>(string format) where T : IFormatContainer => Build(format,typeof(T));
+
+        public RegisterFormat Build(string format,Type FormatContainerType)
         {
             var formatArray = new List<Func<string>>();
             var mayRequestVariables = new HashSet<string>();
@@ -66,10 +65,16 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 foreach (var variable in parser.AnalyseMayRequestVariables(astNode))
                     mayRequestVariables.Add(variable);
 
-                if(int.TryParse(match.Groups[3].Value, out var roundLength))
-                    formatArray.Add(() => exprFunc().ToString("F" + roundLength));
-                else
-                    formatArray.Add(() => exprFunc().ToString());
+                var roundLength = int.TryParse(match.Groups[3].Value, out var d) ? d : -1;
+
+                formatArray.Add(() => {
+                    var val = exprFunc();
+
+                    if (val.ValueType == ValueBase.Type.String || roundLength < 0)
+                        return val.ValueToString();
+
+                    return ((NumberValue)val).Value.ToString("F" + roundLength);
+                });
 
                 format = format.Substring(match.Length);
             }
@@ -89,11 +94,12 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 return sb.ToString();
             });
 
-            return new RegisterFormat<T>()
+            return new RegisterFormat()
             {
                 FormatFunction = formatFunc,
                 RequestVariables = mayRequestVariables,
-                RawFormatContent = rawFormatContent
+                RawFormatContent = rawFormatContent,
+                ContainerType = FormatContainerType
             };
         }
 

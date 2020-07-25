@@ -375,14 +375,17 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
         {
             int oldPos = _pos;
             Token token = GetToken();
-            if (token.Type == TokenType.Id)
+
+            IAstNode node = token.Type switch
             {
-                return new AstVariableNode(token.Data);
-            }
-            else if (token.Type == TokenType.Number)
-            {
-                return new AstNumberNode(token.Number);
-            }
+                TokenType.Id => new AstVariableNode(token.Data),
+                TokenType.Number => new AstNumberNode(token.Number),
+                TokenType.String => new AstStringNode(token.Data),
+                _=> throw new ExpressionException("Bad generator : F -> " + token.Type)
+            };
+
+            if (node != null)
+                return node;
 
             _pos = oldPos;
             return null;

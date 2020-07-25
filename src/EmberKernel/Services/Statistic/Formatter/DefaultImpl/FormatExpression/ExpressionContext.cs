@@ -12,44 +12,44 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
     {
         private Random _random=new Random();
 
-        public ConcurrentDictionary<string, double> Constants { get; } = new ConcurrentDictionary<string, double>();
-        public ConcurrentDictionary<string, double> Variables { get; } = new ConcurrentDictionary<string, double>();
-        public ConcurrentDictionary<string, Func<List<double>, double>> Functions = new ConcurrentDictionary<string, Func<List<double>, double>>();
+        public ConcurrentDictionary<string, ValueBase> Constants { get; } = new ConcurrentDictionary<string, ValueBase>();
+        public ConcurrentDictionary<string, ValueBase> Variables { get; } = new ConcurrentDictionary<string, ValueBase>();
+        public ConcurrentDictionary<string, Func<List<ValueBase>, ValueBase>> Functions = new ConcurrentDictionary<string, Func<List<ValueBase>, ValueBase>>();
 
         public ExpressionContext()
         {
-            Constants["pi"] = Math.PI;
-            Constants["e"] = Math.E;
-            Constants["inf"] = double.PositiveInfinity;
+            Constants["pi"] = ValueBase.Create(Math.PI);
+            Constants["e"] = ValueBase.Create(Math.E);
+            Constants["inf"] = ValueBase.Create(double.PositiveInfinity);
 
-            Functions["sin"] = (args) => Math.Sin(args[0]);
-            Functions["cos"] = (args) => Math.Cos(args[0]);
-            Functions["tan"] = (args) => Math.Tan(args[0]);
-            Functions["asin"] = (args) => Math.Asin(args[0]);
-            Functions["acos"] = (args) => Math.Acos(args[0]);
-            Functions["atan"] = (args) => Math.Atan(args[0]);
-            Functions["pow"] = (args) => Math.Pow(args[0], args[1]);
-            Functions["sqrt"] = (args) => Math.Sqrt(args[0]);
-            Functions["abs"] = (args) => Math.Abs(args[0]);
-            Functions["max"] = (args) => Math.Max(args[0], args[1]);
-            Functions["min"] = (args) => Math.Min(args[0], args[1]);
-            Functions["exp"] = (args) => Math.Exp(args[0]);
-            Functions["log"] = (args) => Math.Log(args[0]);
-            Functions["log10"] = (args) => Math.Log10(args[0]);
-            Functions["floor"] = (args) => Math.Floor(args[0]);
-            Functions["ceil"] = (args) => Math.Ceiling(args[0]);
-            Functions["round"] = (args) => Math.Round(args[0], (int)args[1], MidpointRounding.AwayFromZero);
-            Functions["sign"] = (args) => Math.Sign(args[0]);
-            Functions["truncate"] = (args) => Math.Truncate(args[0]);
-            Functions["clamp"] = (args) => Math.Max(Math.Min(args[0], args[2]), args[1]);
-            Functions["lerp"] = (args) => (1 - args[2]) * args[0] + args[2] * args[1];
+            Functions["sin"] = (args) => ValueBase.Create(Math.Sin(args[0]));
+            Functions["cos"] = (args) => ValueBase.Create(Math.Cos(args[0]));
+            Functions["tan"] = (args) => ValueBase.Create(Math.Tan(args[0]));
+            Functions["asin"] = (args) => ValueBase.Create(Math.Asin(args[0]));
+            Functions["acos"] = (args) => ValueBase.Create(Math.Acos(args[0]));
+            Functions["atan"] = (args) => ValueBase.Create(Math.Atan(args[0]));
+            Functions["pow"] = (args) => ValueBase.Create(Math.Pow(args[0], args[1]));
+            Functions["sqrt"] = (args) => ValueBase.Create(Math.Sqrt(args[0]));
+            Functions["abs"] = (args) => ValueBase.Create(Math.Abs(args[0]));
+            Functions["max"] = (args) => ValueBase.Create(Math.Max(args[0], args[1]));
+            Functions["min"] = (args) => ValueBase.Create(Math.Min(args[0], args[1]));
+            Functions["exp"] = (args) => ValueBase.Create(Math.Exp(args[0]));
+            Functions["log"] = (args) => ValueBase.Create(Math.Log(args[0]));
+            Functions["log10"] = (args) => ValueBase.Create(Math.Log10(args[0]));
+            Functions["floor"] = (args) => ValueBase.Create(Math.Floor(args[0]));
+            Functions["ceil"] = (args) => ValueBase.Create(Math.Ceiling(args[0]));
+            Functions["round"] = (args) => ValueBase.Create(Math.Round(args[0], (int)args[1], MidpointRounding.AwayFromZero));
+            Functions["sign"] = (args) => ValueBase.Create(Math.Sign(args[0]));
+            Functions["truncate"] = (args) => ValueBase.Create(Math.Truncate(args[0]));
+            Functions["clamp"] = (args) => ValueBase.Create(Math.Max(Math.Min(args[0], args[2]), args[1]));
+            Functions["lerp"] = (args) => ValueBase.Create((1 - args[2]) * args[0] + args[2] * args[1]);
             Functions["random"] = (args) =>
-                args.Count >= 2 ? args[0] + _random.NextDouble() * (args[1] - args[0]) : _random.NextDouble();
+                ValueBase.Create(args.Count >= 2 ? args[0] + _random.NextDouble() * (args[1] - args[0]) : _random.NextDouble());
             Functions["getTime"] = (args) =>
-                DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds;
-            Functions["mod"] = (args) => args[0] % args[1];
-            Functions["isnan"] = (args) => double.IsNaN(args[0]) ? 1 : 0;
-            Functions["isinf"] = (args) => double.IsInfinity(args[0]) ? 1 : 0;
+                ValueBase.Create(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0)).TotalMilliseconds);
+            Functions["mod"] = (args) => ValueBase.Create(args[0] % args[1]);
+            Functions["isnan"] = (args) => ValueBase.Create(double.IsNaN(args[0]) ? 1 : 0);
+            Functions["isinf"] = (args) => ValueBase.Create(double.IsInfinity(args[0]) ? 1 : 0);
         }
     
         private static bool IsNotZero(double a)
@@ -124,7 +124,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
                             string varName = varNode?.Id ?? throw new ExpressionException($"The \"{funcNode.Id}()\"  first parameter is the variable name.");
 
                             double varVal = ExecAst(funcNode.Args[1]);
-                            Variables[varName] = varVal;
+                            Variables[varName] = ValueBase.Create(varVal);
                             return 0;
                         }
                         else if (funcNode.Id == "if")
@@ -155,7 +155,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
                         {
                             if (Functions.TryGetValue(funcNode.Id, out var func))
                             {
-                                return func(funcNode.Args.Select(x=>ExecAst(x)).ToList()) is double d ? d : double.NaN;
+                                return func(funcNode.Args.Select(x=>ValueBase.Create(ExecAst(x))).OfType<ValueBase>().ToList());
                             }
                             else
                             {
@@ -172,56 +172,100 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
             return double.NaN;
         }
 
-        public Func<double> ConvertAstToComplexLambda(IAstNode root,Func<string, double> variableRequireFunc,Func<string,List<double>, double> funcRequireFunc)
+        public Func<ValueBase> ConvertAstToComplexLambda(IAstNode root,Func<string, ValueBase> variableRequireFunc,Func<string,List<ValueBase>, ValueBase> funcRequireFunc)
         {
             switch (root)
             {
+                case AstStringNode stringNode:
+                    return () => ValueBase.Create(stringNode.String);
                 case AstNumberNode numberNode:
-                    return () => numberNode.Number;
+                    return () => ValueBase.Create(numberNode.Number);
                 case AstVariableNode varNode:
                     if (Constants.TryGetValue(varNode.Id, out var val))
                         return () => variableRequireFunc(varNode.Id);
                     else if (Variables.TryGetValue(varNode.Id, out val))
                         return () => variableRequireFunc(varNode.Id);
                     else
-                        return () => 0;
+                        return () => NumberValue.Zero;
 
                 case AstOpNode opNode:
                     var leftValue = ConvertAstToComplexLambda(opNode.LNode, variableRequireFunc, funcRequireFunc);
                     var rightValue = ConvertAstToComplexLambda(opNode.RNode, variableRequireFunc, funcRequireFunc);
 
+                    ValueBase NumberOpCheck(Func<double,double,double> func)
+                    {
+                        var a = leftValue();
+                        if (a.ValueType != ValueBase.Type.Number)
+                            throw new ExpressionException("Invaild Number Operations.");
+                        var b = rightValue();
+                        if (b.ValueType != ValueBase.Type.Number)
+                            throw new ExpressionException("Invaild Number Operations.");
+
+                        return ValueBase.Create(func(a, b));
+                    }
+
+                    ValueBase BoolOpCheck(Func<double, double, bool> func)
+                    {
+                        var a = leftValue();
+                        if (a.ValueType != ValueBase.Type.Number)
+                            throw new ExpressionException("Invaild Number Operations.");
+                        var b = rightValue();
+                        if (b.ValueType != ValueBase.Type.Number)
+                            throw new ExpressionException("Invaild Number Operations.");
+
+                        return func(a, b) ? NumberValue.One : NumberValue.Zero;
+                    }
+
+                    ValueBase NumberOpCheck2(Func<double, double> func)
+                    {
+                        var a = leftValue();
+                        if (a.ValueType != ValueBase.Type.Number)
+                            throw new ExpressionException("Invaild Number Operations.");
+                        
+                        return ValueBase.Create(func(a));
+                    }
+
                     switch (opNode.Op)
                     {
                         case "+":
-                            return () => leftValue() + rightValue();
+                            return () =>
+                            {
+                                var a = leftValue();
+                                var b = rightValue();
+
+                                if (a.ValueType == ValueBase.Type.String || b.ValueType == ValueBase.Type.String)
+                                    return ValueBase.Create(a.ValueToString() + b.ValueToString());
+
+                                return ValueBase.Create(((NumberValue)a).Value + ((NumberValue)b).Value);
+                            };
                         case "-":
-                            return () => leftValue() - rightValue();
+                            return () => NumberOpCheck((a,b) => a - b);
                         case "*":
-                            return () => leftValue() * rightValue();
+                            return () => NumberOpCheck((a, b) => a * b);
                         case "/":
-                            return () => leftValue() / rightValue();
+                            return () => NumberOpCheck((a, b) => a / b);
                         case "%":
-                            return () => leftValue() % rightValue();
+                            return () => NumberOpCheck((a, b) => a % b);
                         case "^":
-                            return () => Math.Pow(leftValue() , rightValue());
+                            return () => NumberOpCheck((a, b) => Math.Pow(a, b));
                         case ">":
-                            return () => leftValue() > rightValue() ? 1 : 0;
+                            return () => BoolOpCheck((a, b) => a > b);
                         case "<":
-                            return () => leftValue() < rightValue() ? 1 : 0;
+                            return () => BoolOpCheck((a, b) => a < b);
                         case ">=":
-                            return () => leftValue() >= rightValue() ? 1 : 0;
+                            return () => BoolOpCheck((a, b) => a >= b);
                         case "<=":
-                            return () => leftValue() <= rightValue() ? 1 : 0;
+                            return () => BoolOpCheck((a, b) => a <= b);
                         case "==":
-                            return () => leftValue() == rightValue() ? 1 : 0;
+                            return () => BoolOpCheck((a, b) => a == b);
                         case "!=":
-                            return () => leftValue() != rightValue() ? 1 : 0;
+                            return () => BoolOpCheck((a, b) => a != b);
                         case "!":
-                            return () => IsNotZero(leftValue()) ? 1 : 0;
+                            return () => NumberOpCheck2(a => IsNotZero(a) ? NumberValue.One : NumberValue.Zero);
                         case "&&":
-                            return () => IsNotZero(leftValue()) && IsNotZero(rightValue()) ? 1 : 0;
+                            return () => BoolOpCheck((a, b)=>IsNotZero(a));
                         case "||":
-                            return () => IsNotZero(leftValue()) || IsNotZero(rightValue()) ? 1 : 0;
+                            return () => BoolOpCheck((a, b) => IsNotZero(a));
                     }
                     break;
 
@@ -235,7 +279,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
 
                             var varVal = ConvertAstToComplexLambda(funcNode.Args[1],variableRequireFunc, funcRequireFunc)();
                             Variables[varName] = varVal;
-                            return () => 0;
+                            return () => NumberValue.Zero;
                         }
                         else if (funcNode.Id == "if")
                         {
@@ -243,9 +287,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
                             var falseResult = ConvertAstToComplexLambda(funcNode.Args[2], variableRequireFunc, funcRequireFunc);
                             var trueResult = ConvertAstToComplexLambda(funcNode.Args[1], variableRequireFunc, funcRequireFunc);
 
-                            var condResult = condExpr();
-
-                            return () => (condResult is double d ? (d <= 1e-5) : (bool.Parse(condResult.ToString()))) ? falseResult() : trueResult();
+                            return () => condExpr() <= 1e-5 ? falseResult() : trueResult();
                         }
                         else if (funcNode.Id == "smooth")
                         {
@@ -269,13 +311,13 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
                     }
             }
 
-            return () => double.NaN;
+            return () => NumberValue.Nan;
         }
 
-        public Func<double> ConvertAstToComplexLambdaWithDefault(IAstNode root)
+        public Func<ValueBase> ConvertAstToComplexLambdaWithDefault(IAstNode root)
             => ConvertAstToComplexLambda(
                 root,
-                var => Variables.TryGetValue(var, out var val) ? val : double.NaN,
-                (funcName, args) => Functions.TryGetValue(funcName, out var func) ? func(args) : double.NaN);
+                var => Variables.TryGetValue(var, out var val) ? val : NumberValue.Nan,
+                (funcName, args) => Functions.TryGetValue(funcName, out var func) ? func(args) : NumberValue.Nan);
     }
 }

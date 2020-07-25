@@ -54,6 +54,22 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
                 return new Token(TokenType.Op, ch.ToString());
             }
 
+            if (ch == '"')
+            {
+                var prev = ch;
+                do
+                {
+                    sb.Append(ch);
+
+                    pos++;
+                    prev = ch;
+                    ch = chars.GetChar(pos);
+                } while (ch != '"' && prev != '\\');
+                sb.Append(ch);
+                pos++;
+                return new Token(TokenType.String, sb.ToString());
+            }
+
             if (ch >= '0' && ch <= '9' || ch == '.')
             {
                 bool dotExist = false;
@@ -90,12 +106,13 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
         Op,
         Id,
         Number,
+        String,
         EOF,
         Unknown
     }
 
     class Token
-    {
+    { 
         public TokenType Type { get; }
         public string Data { get; }
         public double Number { get; }
