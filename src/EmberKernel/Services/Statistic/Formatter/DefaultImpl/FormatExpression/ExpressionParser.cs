@@ -54,6 +54,36 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
             _pos = 0;
         }
 
+        public List<string> AnalyseMayRequestVariables(IAstNode root)
+        {
+            var result = new List<string>();
+            var waitProcList = new Queue<IAstNode>();
+            waitProcList.Enqueue(root);
+
+            while (waitProcList.TryDequeue(out var cur))
+            {
+                switch (cur)
+                {
+                    case AstVariableNode variable:
+                        result.Add(variable.Id);
+                        break;
+                    case AstOpNode op:
+                        waitProcList.Enqueue(op.LNode);
+                        waitProcList.Enqueue(op.RNode);
+                        break;
+                    case AstFunctionNode function:
+                        foreach (var sub in function.Args)
+                            waitProcList.Enqueue(sub);
+                        break;
+                    case AstNumberNode _:
+                    default:
+                        break;
+                }
+            }
+
+            return result;
+        }
+
         public IAstNode Parse(string expr)
         {
             _pos = 0;

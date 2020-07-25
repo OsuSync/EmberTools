@@ -1,0 +1,161 @@
+﻿using Autofac;
+using EmberKernel.Services.EventBus;
+using EmberKernel.Services.Statistic.DataSource;
+using EmberKernel.Services.Statistic.Format;
+using EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+
+namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
+{
+    public class DefaultFormatter : IFormatter
+    {
+        private readonly ILogger<DefaultFormatter> logger;
+        protected static readonly ExpressionContext converter = new ExpressionContext();
+        protected static readonly ExpressionParser parser = new ExpressionParser();
+        private static readonly Regex calcRegex = new Regex(@"\$\{(((?:\w|\s|_|\.|,|\(|\)|\^|\+|\-|\*|\/|\%|\<|\>|\=|\!|\||\&)*)(?:@(\d+))?)\}");
+
+        private Dictionary<string, RegisterFormat> registeredFormats = new Dictionary<string, RegisterFormat>();
+
+        public DefaultFormatter(ILogger<DefaultFormatter> logger, EmberDataSource dataSource)
+        {
+            this.logger = logger;
+
+            dataSource.OnMultiDataChanged += onDataUpdate;
+        }
+
+        private void onDataUpdate(IEnumerable<string> changedPropertyNames)
+        {
+            var notifyFormats = registeredFormats.Where(x => x.Value.RequestVariables.Intersect(changedPropertyNames).Any());
+
+            foreach (var format in notifyFormats)
+            {
+                logger.LogDebug($"notify variables updated for format({format.Value.Id})");
+                //todo 通知更新
+            }
+        }
+
+        private RegisterFormat Build<T>(string format) where T:IFormatContainer
+        {
+            var formatArray = new List<Func<string>>();
+            var mayRequestVariables = new HashSet<string>();
+            var rawFormatContent = format;
+
+            while (true)
+            {
+                var match = calcRegex.Match(format);
+
+                if (!match.Success)
+                    break;
+
+                if (match.Index != 0)
+                {
+                    var part = format.Substring(0, match.Index);
+                    formatArray.Add(() => part);
+                    format = format.Substring(match.Index);
+                }
+
+                var expr = match.Groups[2].Value;
+                var astNode = parser.Parse(expr);
+                var exprFunc = converter.ConvertAstToComplexLambdaWithDefault(astNode);
+
+                foreach (var variable in parser.AnalyseMayRequestVariables(astNode))
+                    mayRequestVariables.Add(variable);
+
+                if(int.TryParse(match.Groups[3].Value, out var roundLength))
+                    formatArray.Add(() => exprFunc().ToString("F" + roundLength));
+                else
+                    formatArray.Add(() => exprFunc().ToString());
+
+                format = format.Substring(match.Length);
+            }
+
+            if(format.Length > 0)
+                formatArray.Add(() => format);
+
+            var sb = new StringBuilder();
+
+            var formatFunc = new Func<string>( () =>
+            {
+                sb.Clear();
+
+                foreach (var func in formatArray)
+                    sb.Append(func());
+
+                return sb.ToString();
+            });
+
+            return new RegisterFormat<T>()
+            {
+                FormatFunction = formatFunc,
+                RequestVariables = mayRequestVariables,
+                RawFormatContent = rawFormatContent
+            };
+        }
+
+        public string Format(string format)
+        {
+            if (!registeredFormats.TryGetValue(format,out var registerFormat))
+            {
+                /*
+                func = Parse(format);
+                logger.LogInformation($"parsed format");
+                cachedFormatFunctions[format] = func;
+                */
+
+                return "<FORMAT NOT REGISTER>";
+            }
+
+            try
+            {
+                return registerFormat.FormatFunction();
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Can't format content: {e.Message}");
+                return "<FORMAT ERROR>";
+            }
+        }
+
+        #region (Un)Register formats methods implement
+
+        public IEnumerable<string> GetRegisteredFormat<TContainer>() where TContainer : IFormatContainer
+        {
+            var type = typeof(TContainer);
+            return registeredFormats.Where(x => type == x.Value.ContainerType).Select(x => x.Key).ToList();
+        }
+
+        public bool IsRegistered<TContainer>(string format) where TContainer : IFormatContainer
+        {
+            return registeredFormats.ContainsKey(format);
+        }
+
+        public void Register<TContainer>(ILifetimeScope scope, string format) where TContainer : IFormatContainer
+        {
+            var registerFormat = Build<TContainer>(format);
+            registeredFormats[format] = registerFormat;
+            logger.LogDebug("register new format " + registerFormat.Id);
+        }
+
+        public void Unregister<TContainer>(string format) where TContainer : IFormatContainer
+        {
+            if (registeredFormats.TryGetValue(format, out var registerFormat))
+            {
+                registeredFormats.Remove(format);
+                logger.LogDebug("unregister new format " + registerFormat.Id);
+            }
+        }
+
+        public void UnregisterAll<TContainer>() where TContainer : IFormatContainer
+        {
+            registeredFormats.Clear();
+            logger.LogDebug("unregister all formats");
+        }
+
+        #endregion
+    }
+}
