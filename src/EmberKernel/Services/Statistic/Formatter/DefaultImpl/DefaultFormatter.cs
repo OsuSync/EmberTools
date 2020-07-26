@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using EmberKernel.Services.Statistic.DataSource.Variables;
 using EmberKernel.Services.Statistic.Format;
 using EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression;
 using Microsoft.Extensions.Logging;
@@ -13,7 +14,6 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
     public class DefaultFormatter : IFormatter
     {
         private readonly ILogger<DefaultFormatter> logger;
-        private readonly IDataSource dataSource;
         protected static readonly ExpressionContext converter = new ExpressionContext();
         protected static readonly ExpressionParser parser = new ExpressionParser();
         private static readonly Regex calcRegex = new Regex(@"\$\{(((?:\w|\s|_|\.|,|\(|\)|\""|\^|\+|\-|\*|\/|\%|\<|\>|\=|\!|\||\&)*)(?:@(\d+))?)\}");
@@ -23,15 +23,15 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         public DefaultFormatter(ILogger<DefaultFormatter> logger, IDataSource dataSource)
         {
             this.logger = logger;
-            this.dataSource = dataSource;
             dataSource.OnMultiDataChanged += OnDataUpdate;
         }
 
-        private void OnDataUpdate(IEnumerable<string> changedPropertyNames)
+        private void OnDataUpdate(IEnumerable<Variable> changedVariables)
         {
-            var notifyFormats = registeredFormats.Where(x => x.Value.Format.RequestVariables.Intersect(changedPropertyNames).Any());
+            var changedVariableNames = changedVariables.Select((variable) => variable.Name);
+            var notifyFormats = registeredFormats.Where(x => x.Value.Format.RequestVariables.Intersect(changedVariableNames).Any());
 
-            foreach (var variable in dataSource.GetVariables(changedPropertyNames))
+            foreach (var variable in changedVariables)
             {
                 //update variable for context.
                 converter.Variables[variable.Name] = variable.Value switch {
@@ -41,10 +41,16 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 };
             }
 
-            foreach (var format in notifyFormats)
+            foreach (var (_, registerdFormat) in notifyFormats)
             {
-                logger.LogDebug($"notify variables updated for format (#{format.Value.Format.Id})");
-                //todo 通知更新
+                logger.LogDebug($"notify variables updated for format (#{registerdFormat.Format.Id})");
+                var info = registerdFormat.FormatInfo;
+                if (!(info.Scope.ResolveOptional(info.ContainerType) is IFormatContainer notifier))
+                {
+                    logger.LogWarning($"Can't resolve container '{info.ContainerType.Name}' of '{info.Format}'");
+                    continue;
+                }
+                notifier.FormatUpdated(registerdFormat.FormatInfo.Format, registerdFormat.Format.FormatFunction());
             }
         }
 

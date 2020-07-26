@@ -1,5 +1,4 @@
-﻿using EmberKernel.Services.Statistic.Format;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
@@ -13,7 +12,5 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         public int Id { get; }
         public HashSet<string> RequestVariables { get; set; }
         public Func<string> FormatFunction { get; set; }
-        public Type ContainerType { get; set; }
-        public FormatInfo FormatInfo { get; set; }
     }
 }

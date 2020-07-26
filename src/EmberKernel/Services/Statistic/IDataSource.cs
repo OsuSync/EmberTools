@@ -8,7 +8,7 @@ namespace EmberKernel.Services.Statistic
 {
     public interface IDataSource : INotifyCollectionChanged
     {
-        event Action<IEnumerable<string>> OnMultiDataChanged;
+        event Action<IEnumerable<Variable>> OnMultiDataChanged;
         IEnumerable<Variable> Variables { get; }
         bool TryGetVariable(string Id, out Variable variable);
         IEnumerable<Variable> GetVariables(IEnumerable<string> variableIds);

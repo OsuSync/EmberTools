@@ -13,7 +13,7 @@ namespace EmberKernel.Services.Statistic.DataSource
         private readonly Dictionary<string, IValue> VariableFallback = new Dictionary<string, IValue>();
         public IEnumerable<Variable> Variables => VariableMap.Values;
 
-        public event Action<IEnumerable<string>> OnMultiDataChanged;
+        public event Action<IEnumerable<Variable>> OnMultiDataChanged;
 
         public bool TryGetVariable(string name, out Variable variable)
         {
@@ -38,14 +38,14 @@ namespace EmberKernel.Services.Statistic.DataSource
                 if (!Equals(variable.Value, value))
                 {
                     variable.Value = value;
-                    OnMultiDataChanged?.Invoke(Enumerable.Repeat(name, 1));
+                    OnMultiDataChanged?.Invoke(Enumerable.Repeat(variable, 1));
                 }
             }
         }
 
         public void Publish(IEnumerable<Variable> variables)
         {
-            IEnumerable<string> UpdatedVariables()
+            IEnumerable<Variable> UpdatedVariables()
             {
                 foreach (var incomingVariable in variables)
                 {
@@ -53,7 +53,7 @@ namespace EmberKernel.Services.Statistic.DataSource
                     if (!Equals(currentVariable.Value, incomingVariable.Value))
                     {
                         currentVariable.Value = incomingVariable.Value;
-                        yield return currentVariable.Id;
+                        yield return currentVariable;
                     }
                 }
             }
