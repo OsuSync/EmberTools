@@ -18,18 +18,18 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         protected static readonly ExpressionParser parser = new ExpressionParser();
         private static readonly Regex calcRegex = new Regex(@"\$\{(((?:\w|\s|_|\.|,|\(|\)|\""|\^|\+|\-|\*|\/|\%|\<|\>|\=|\!|\||\&)*)(?:@(\d+))?)\}");
 
-        private Dictionary<string, RegisterFormat> registeredFormats = new Dictionary<string, RegisterFormat>();
+        private readonly Dictionary<string, RegisteredFormat> registeredFormats = new Dictionary<string, RegisteredFormat>();
 
         public DefaultFormatter(ILogger<DefaultFormatter> logger, IDataSource dataSource)
         {
             this.logger = logger;
             this.dataSource = dataSource;
-            dataSource.OnMultiDataChanged += onDataUpdate;
+            dataSource.OnMultiDataChanged += OnDataUpdate;
         }
 
-        private void onDataUpdate(IEnumerable<string> changedPropertyNames)
+        private void OnDataUpdate(IEnumerable<string> changedPropertyNames)
         {
-            var notifyFormats = registeredFormats.Where(x => x.Value.RequestVariables.Intersect(changedPropertyNames).Any());
+            var notifyFormats = registeredFormats.Where(x => x.Value.Format.RequestVariables.Intersect(changedPropertyNames).Any());
 
             foreach (var variable in dataSource.GetVariables(changedPropertyNames))
             {
@@ -43,14 +43,12 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
 
             foreach (var format in notifyFormats)
             {
-                logger.LogDebug($"notify variables updated for format({format.Value.Id})");
+                logger.LogDebug($"notify variables updated for format (#{format.Value.Format.Id})");
                 //todo 通知更新
             }
         }
 
-        public RegisterFormat Build<T>(string format) where T : IFormatContainer => Build(format,typeof(T));
-
-        public RegisterFormat Build(string format,Type FormatContainerType)
+        public DefaultFormat Build(string format)
         {
             var formatArray = new List<Func<string>>();
             var mayRequestVariables = new HashSet<string>();
@@ -106,12 +104,10 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 return sb.ToString();
             });
 
-            return new RegisterFormat()
+            return new DefaultFormat()
             {
                 FormatFunction = formatFunc,
                 RequestVariables = mayRequestVariables,
-                RawFormatContent = rawFormatContent,
-                ContainerType = FormatContainerType
             };
         }
 
@@ -128,7 +124,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 return "<FORMAT NOT REGISTER>";
             }
 
-            return registerFormat.FormatFunction();
+            return registerFormat.Format.FormatFunction();
             /*
             try
             {
@@ -146,7 +142,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         public IEnumerable<string> GetRegisteredFormat<TContainer>() where TContainer : IFormatContainer
         {
             var type = typeof(TContainer);
-            return registeredFormats.Where(x => type == x.Value.ContainerType).Select(x => x.Key).ToList();
+            return registeredFormats.Where(x => type == x.Value.FormatInfo.ContainerType).Select(x => x.Key).ToList();
         }
 
         public bool IsRegistered<TContainer>(string format) where TContainer : IFormatContainer
@@ -156,9 +152,12 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
 
         public void Register<TContainer>(ILifetimeScope scope, string format) where TContainer : IFormatContainer
         {
-            var registerFormat = Build<TContainer>(format);
-            registeredFormats[format] = registerFormat;
-            logger.LogDebug("register new format " + registerFormat.Id);
+            registeredFormats[format] = new RegisteredFormat()
+            {
+                Format = Build(format),
+                FormatInfo = new FormatInfo(format, scope, typeof(TContainer))
+            };
+            logger.LogDebug("register new format " + registeredFormats[format].Format.Id);
         }
 
         public void Unregister<TContainer>(string format) where TContainer : IFormatContainer
@@ -166,7 +165,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
             if (registeredFormats.TryGetValue(format, out var registerFormat))
             {
                 registeredFormats.Remove(format);
-                logger.LogDebug("unregister new format " + registerFormat.Id);
+                logger.LogDebug("unregister new format " + registerFormat.Format.Id);
             }
         }
 
