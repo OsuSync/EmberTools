@@ -15,7 +15,7 @@ namespace EmberKernel.Services.Statistic
         void UnregisterAll<TContainer>()
             where TContainer : IFormatContainer;
 
-        void IsRegistered<TContainer>(string format)
+        bool IsRegistered<TContainer>(string format)
             where TContainer : IFormatContainer;
 
         IEnumerable<string> GetRegisteredFormat<TContainer>()
