@@ -10,7 +10,7 @@ namespace EmberKernel.Services.Statistic.DataSource
 {
     public class EventWrapperHandler<T> : IEventHandler<T>
     {
-        public event Action<IEnumerable<string>> PropertyChanged;
+        public event Action<T, IEnumerable<Variable>> PropertyChanged;
 
         private static readonly List<PropertyInfo> PropertyInfos
             = new List<PropertyInfo>();
@@ -33,36 +33,39 @@ namespace EmberKernel.Services.Statistic.DataSource
             }
         }
 
-        public static IEnumerable<string> CompareAllProperties(T newValue, T oldValue)
+        public static IEnumerable<Variable> CompareAllProperties(T newValue, T oldValue)
         {
             // has value
             foreach (var property in PropertyInfos)
             {
+                var newPropertyValue = property.GetValue(newValue);
                 if (!Equals(property.GetValue(oldValue), property.GetValue(newValue)))
                 {
-                    yield return property.Name;
+                    var variable = Variable.CreateFrom(property);
+                    variable.Value = Variable.ConvertValue(newPropertyValue);
+                    yield return variable;
                 }
             }
         }
 
-        private IEnumerable<string> EnumerableAllProperties()
+        private static IEnumerable<Variable> EnumerableAllProperties()
         {
             foreach (var property in PropertyInfos)
             {
-                yield return property.Name;
+                yield return Variable.CreateFrom(property);
             }
             yield break;
         }
 
-        private IEnumerable<string> CompareProperties(T @event)
+        private static IEnumerable<Variable> CompareProperties(T @event)
         {
             var oldValue = Value;
             Value = @event;
-            // if current value is default
+            // if current value is 'default'
             if (Equals(Value, DefaultValue))
             {
                 // and if incoming event is default, do nothing
-                if (Equals(@event, DefaultValue)) return Enumerable.Empty<string>();
+                if (Equals(@event, DefaultValue)) return Enumerable.Empty<Variable>();
                 // else we return all properties
                 else return EnumerableAllProperties();
             }
@@ -72,7 +75,7 @@ namespace EmberKernel.Services.Statistic.DataSource
 
         public ValueTask Handle(T @event)
         {
-            PropertyChanged?.Invoke(CompareProperties(@event));
+            PropertyChanged?.Invoke(@event, CompareProperties(@event));
             return default;
         }
     }

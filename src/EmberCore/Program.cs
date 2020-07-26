@@ -72,7 +72,10 @@ namespace EmberCore
                 .UseMvvmInterface((mvvm) => mvvm
                     .UseConfigurationModel())
                 .UseEFSqlite()
-                .UseStatisticDataSource()
+                .UseStatistic(statistic => statistic
+                    .ConfigureEventSourceManager()
+                    .ConfigureDefaultDataSource()
+                    .ConfigureDefaultFormatter())
                 .Build()
                 .Run();
         }
