@@ -11,6 +11,8 @@
             Value = value;
         }
 
+        public static StringValue Default => new StringValue(string.Empty);
+
         public static implicit operator StringValue(string str)
         {
             return new StringValue(str);

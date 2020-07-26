@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using EmberKernel.Services.Statistic.DataSource;
 using EmberKernel.Services.Statistic.DataSource.SourceManager;
-using EmberKernel.Services.Statistic.Formatter;
+using EmberKernel.Services.Statistic.Formatter.DefaultImpl;
 
 namespace EmberKernel.Services.Statistic
 {
@@ -49,7 +49,7 @@ namespace EmberKernel.Services.Statistic
 
         public StatisticBuilder ConfigureDefaultFormatter()
         {
-            return ConfigureFormatter<EmberFormatter>();
+            return ConfigureFormatter<DefaultFormatter>();
         }
     }
 }

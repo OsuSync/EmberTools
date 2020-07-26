@@ -9,6 +9,8 @@
             Value = value;
         }
 
+        public static NumberValue Default => new NumberValue(0);
+
         public static implicit operator NumberValue(double value)
         {
             return new NumberValue(value);

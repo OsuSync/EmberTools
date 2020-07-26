@@ -31,16 +31,24 @@ namespace EmberKernel.Services.Statistic.DataSource.Variables
                     return false;
             }
         }
+        public static IValue ConvertValue(object any)
+        {
+            if (IsNumbericType(any.GetType()))
+            {
+                return new NumberValue(Convert.ToDouble(any));
+            }
+            return new StringValue(any.ToString());
+        }
         public static Variable CreateFrom(Type type)
         {
             if (IsNumbericType(type))
             {
                 return new Variable()
                 {
-                    Value = new NumberValue()
+                    Value = NumberValue.Default,
                 };
             }
-            return new Variable() { Value = new StringValue() };
+            return new Variable() { Value = StringValue.Default };
         }
 
         public static Variable CreateFrom(PropertyInfo property)
