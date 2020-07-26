@@ -4,12 +4,13 @@ using BeatmapDownloader.Abstract.Models.Events;
 using BeatmapDownloader.Abstract.Services.DownloadProvider;
 using BeatmapDownloader.Database.Database;
 using BeatmapDownloader.Extension;
-using BeatmapDownloader.Models;
 using BeatmapDownloader.Services;
 using EmberKernel;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
+using EmberMemoryReader.Abstract.Data;
+using EmberMemoryReader.Abstract.Events;
 using OsuSqliteDatabase.Database;
 using System.Threading.Tasks;
 

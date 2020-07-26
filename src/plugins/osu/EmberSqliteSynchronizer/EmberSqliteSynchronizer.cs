@@ -3,10 +3,9 @@ using EmberKernel;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
+using EmberMemoryReader.Abstract.Events;
 using EmberSqliteSynchronizer.Component;
-using EmberSqliteSynchronizer.Models;
 using OsuSqliteDatabase.Database;
-using System;
 using System.Threading.Tasks;
 
 namespace EmberSqliteSynchronizer

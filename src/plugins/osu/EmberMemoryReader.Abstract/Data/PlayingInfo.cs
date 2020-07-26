@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
-namespace EmberMemoryReader.Components.Osu.Data
+namespace EmberMemoryReader.Abstract.Data
 {
     public class GameStatistic
     {

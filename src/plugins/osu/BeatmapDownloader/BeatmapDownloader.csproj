@@ -22,6 +22,7 @@
     </ProjectReference>
     <ProjectReference Include="..\BeatmapDownloader.Abstract\BeatmapDownloader.Abstract.csproj" />
     <ProjectReference Include="..\BeatmapDownloader.Database\BeatmapDownloader.Database.csproj" />
+    <ProjectReference Include="..\EmberMemoryReader.Abstract\EmberMemoryReader.Abstract.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

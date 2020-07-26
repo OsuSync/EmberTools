@@ -2,12 +2,10 @@
 using EmberMemory.Components.Collector;
 using EmberMemory.Readers;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace EmberMemoryReader.Components.Osu.Data
+namespace EmberMemoryReader.Abstract.Data
 {
-    class MultiplayerBeatmapId : IComparableCollector<MultiplayerBeatmapIdInfo>
+    public class MultiplayerBeatmapId : IComparableCollector<MultiplayerBeatmapIdInfo>
     {
         public int ReadInterval { get; set; } = 1500;
         public int RetryLimit { get; set; } = int.MaxValue;

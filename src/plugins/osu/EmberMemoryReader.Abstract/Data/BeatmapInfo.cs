@@ -1,10 +1,8 @@
 ﻿using EmberKernel.Services.EventBus;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
-namespace EmberMemoryReader.Components.Osu.Data
+namespace EmberMemoryReader.Abstract.Data
 {
     [EventNamespace("MemoryReader")]
     public class BeatmapInfo : Event<BeatmapInfo>, IComparable<BeatmapInfo>, IEquatable<BeatmapInfo>
