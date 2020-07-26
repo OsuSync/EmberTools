@@ -13,6 +13,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
     public class DefaultFormatter : IFormatter
     {
         private readonly ILogger<DefaultFormatter> logger;
+        private readonly IDataSource dataSource;
         protected static readonly ExpressionContext converter = new ExpressionContext();
         protected static readonly ExpressionParser parser = new ExpressionParser();
         private static readonly Regex calcRegex = new Regex(@"\$\{(((?:\w|\s|_|\.|,|\(|\)|\""|\^|\+|\-|\*|\/|\%|\<|\>|\=|\!|\||\&)*)(?:@(\d+))?)\}");
@@ -22,12 +23,23 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         public DefaultFormatter(ILogger<DefaultFormatter> logger, IDataSource dataSource)
         {
             this.logger = logger;
+            this.dataSource = dataSource;
             dataSource.OnMultiDataChanged += onDataUpdate;
         }
 
         private void onDataUpdate(IEnumerable<string> changedPropertyNames)
         {
             var notifyFormats = registeredFormats.Where(x => x.Value.RequestVariables.Intersect(changedPropertyNames).Any());
+
+            foreach (var variable in dataSource.GetVariables(changedPropertyNames))
+            {
+                //update variable for context.
+                converter.Variables[variable.Name] = variable.Value switch {
+                    DataSource.Variables.Value.NumberValue number => ValueBase.Create(number.Value),
+                    DataSource.Variables.Value.StringValue str => ValueBase.Create(str.Value),
+                    _ => ValueBase.Create($"<UNK VAR:{variable.Name} TYPE:{variable.Value.GetType().Name}>")
+                };
+            }
 
             foreach (var format in notifyFormats)
             {
@@ -116,6 +128,8 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 return "<FORMAT NOT REGISTER>";
             }
 
+            return registerFormat.FormatFunction();
+            /*
             try
             {
                 return registerFormat.FormatFunction();
@@ -124,7 +138,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
             {
                 logger.LogError($"Can't format content: {e.Message}");
                 return "<FORMAT ERROR>";
-            }
+            }*/
         }
 
         #region (Un)Register formats methods implement
