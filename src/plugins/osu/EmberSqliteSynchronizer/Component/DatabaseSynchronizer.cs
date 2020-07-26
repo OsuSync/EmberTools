@@ -1,6 +1,6 @@
 ﻿using EmberKernel.Plugins.Components;
 using EmberKernel.Services.EventBus.Handlers;
-using EmberSqliteSynchronizer.Models;
+using EmberMemoryReader.Abstract.Events;
 using EmberSqliteSynchronizer.Utils;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

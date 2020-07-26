@@ -1,8 +1,6 @@
 ﻿using EmberMemory.Listener;
-using System;
-using System.Collections.Generic;
+using EmberMemoryReader.Abstract.Events;
 using System.Diagnostics;
-using System.Text;
 
 namespace EmberMemoryReader.Components.Osu.Listener
 {

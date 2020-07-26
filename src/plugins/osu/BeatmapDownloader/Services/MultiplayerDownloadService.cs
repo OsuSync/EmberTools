@@ -1,10 +1,10 @@
 ﻿using BeatmapDownloader.Abstract.Models;
 using BeatmapDownloader.Abstract.Models.Events;
-using BeatmapDownloader.Models;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Configuration;
 using EmberKernel.Services.EventBus;
 using EmberKernel.Services.EventBus.Handlers;
+using EmberMemoryReader.Abstract.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OsuSqliteDatabase.Database;

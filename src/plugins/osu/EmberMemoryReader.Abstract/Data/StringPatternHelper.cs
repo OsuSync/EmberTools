@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace EmberMemoryReader.Components.Osu.Data
+namespace EmberMemoryReader.Abstract.Data
 {
     public static class StringPatternHelper
     {

@@ -1,21 +1,15 @@
 ﻿using Autofac;
-using EmberKernel.Services.Command;
-using EmberKernel.Services.Command.Attributes;
-using EmberKernel.Services.Command.Components;
 using EmberKernel;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
-using ExamplePlugin.Commands;
+using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
+using EmberMemoryReader.Abstract.Data;
 using ExamplePlugin.Components;
 using ExamplePlugin.EventHandlers;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using ExamplePlugin.Models.EventSubscription;
 using ExamplePlugin.Models;
-using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration.Extension;
+using ExamplePlugin.Models.EventSubscription;
+using System.Threading.Tasks;
 
 namespace ExamplePlugin
 {
@@ -31,6 +25,8 @@ namespace ExamplePlugin
             scope.Subscription<BeatmapInfo, MemoryReaderHandler>();
             scope.Subscription<PlayingInfo, MemoryReaderHandler>();
             scope.Subscription<MultiplayerBeatmapIdInfo, MemoryReaderHandler>();
+            scope.Subscription<GameModeInfo, MemoryReaderHandler>();
+            scope.Subscription<GlobalGameModeratorInfo, MemoryReaderHandler>();
             scope.RegisterUIModel<MyPlugin, MyPluginConfiguration>();
             return default;
         }
@@ -43,6 +39,8 @@ namespace ExamplePlugin
             scope.Unsubscription<BeatmapInfo, MemoryReaderHandler>();
             scope.Unsubscription<PlayingInfo, MemoryReaderHandler>();
             scope.Unsubscription<MultiplayerBeatmapIdInfo, MemoryReaderHandler>();
+            scope.Unsubscription<GameModeInfo, MemoryReaderHandler>();
+            scope.Unsubscription<GlobalGameModeratorInfo, MemoryReaderHandler>();
             scope.UnregisterUIModel<MyPlugin, MyPluginConfiguration>();
             return default;
         }
