@@ -43,10 +43,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{28043FE1-44A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{24C7B291-5017-4842-A939-964E6612F79D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberCore.Test", "test\EmberCore.Test\EmberCore.Test.csproj", "{A6177054-20D6-409B-A332-2941E0CE3720}"
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PpCalculator", "src\plugins\osu\PpCalculator\PpCalculator.csproj", "{1C20F8C2-30D7-4F7C-9DD2-4DF0C88970ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberCore.Test", "test\EmberCore.Test\EmberCore.Test.csproj", "{A6177054-20D6-409B-A332-2941E0CE3720}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberMemoryReader.Abstract", "src\plugins\osu\EmberMemoryReader.Abstract\EmberMemoryReader.Abstract.csproj", "{91E9252C-FFBB-498A-83E3-BAB9D0C8D485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberMemoryReader.Abstract", "src\plugins\osu\EmberMemoryReader.Abstract\EmberMemoryReader.Abstract.csproj", "{91E9252C-FFBB-498A-83E3-BAB9D0C8D485}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,10 +113,6 @@ Global
 		{A6177054-20D6-409B-A332-2941E0CE3720}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6177054-20D6-409B-A332-2941E0CE3720}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6177054-20D6-409B-A332-2941E0CE3720}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C20F8C2-30D7-4F7C-9DD2-4DF0C88970ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C20F8C2-30D7-4F7C-9DD2-4DF0C88970ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C20F8C2-30D7-4F7C-9DD2-4DF0C88970ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C20F8C2-30D7-4F7C-9DD2-4DF0C88970ED}.Release|Any CPU.Build.0 = Release|Any CPU
 		{91E9252C-FFBB-498A-83E3-BAB9D0C8D485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{91E9252C-FFBB-498A-83E3-BAB9D0C8D485}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91E9252C-FFBB-498A-83E3-BAB9D0C8D485}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -146,7 +141,6 @@ Global
 		{9AECDFA1-D8A9-4189-A390-625ADB7D06E8} = {B93D5B77-B8CA-4B7A-B5BE-ABD27EB57D27}
 		{9D36F2F2-FD54-4E5F-9C56-C478ADB3F288} = {239B3BE6-770D-4BAD-AA11-FD91A2D62D02}
 		{A6177054-20D6-409B-A332-2941E0CE3720} = {24C7B291-5017-4842-A939-964E6612F79D}
-		{1C20F8C2-30D7-4F7C-9DD2-4DF0C88970ED} = {9AECDFA1-D8A9-4189-A390-625ADB7D06E8}
 		{91E9252C-FFBB-498A-83E3-BAB9D0C8D485} = {9AECDFA1-D8A9-4189-A390-625ADB7D06E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
