@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace EmberKernel.Services.Statistic
 {
-    public interface IFormatter
+    public interface IFormatter : IKernelService
     {
         void Register<TContainer>(ILifetimeScope scope, string format)
             where TContainer : IFormatContainer;

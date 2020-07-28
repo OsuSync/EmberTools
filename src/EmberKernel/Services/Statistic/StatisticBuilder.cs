@@ -1,5 +1,4 @@
-﻿using Autofac;
-using EmberKernel.Services.Statistic.DataSource;
+﻿using EmberKernel.Services.Statistic.DataSource;
 using EmberKernel.Services.Statistic.DataSource.SourceManager;
 using EmberKernel.Services.Statistic.Formatter.DefaultImpl;
 
@@ -15,30 +14,21 @@ namespace EmberKernel.Services.Statistic
 
         public StatisticBuilder ConfigureEventSourceManager()
         {
-            Builder.Configure((context, container) =>
-            {
-                container.RegisterType<EventSourceManager>().SingleInstance();
-            });
+            Builder.UseKernelService<EventSourceManager, IEventSourceManager>();
             return this;
         }
 
         public StatisticBuilder ConfigureFormatter<TFormatter>()
             where TFormatter : IFormatter
         {
-            Builder.Configure((context, container) =>
-            {
-                container.RegisterType<TFormatter>().As<IFormatter>().SingleInstance();
-            });
+            Builder.UseKernelService<DefaultFormatter, IFormatter>();
             return this;
         }
 
         public StatisticBuilder ConfigureDataSource<TDataSource>()
             where TDataSource : IDataSource
         {
-            Builder.Configure((context, container) =>
-            {
-                container.RegisterType<TDataSource>().As<IDataSource>().SingleInstance();
-            });
+            Builder.UseKernelService<EmberDataSource, IDataSource>();
             return this;
         }
 

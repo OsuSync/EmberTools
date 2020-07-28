@@ -28,16 +28,16 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
 
         private void OnDataUpdate(IEnumerable<Variable> changedVariables)
         {
-            var changedVariableNames = changedVariables.Select((variable) => variable.Name);
+            var changedVariableNames = changedVariables.Select((variable) => variable.Id);
             var notifyFormats = registeredFormats.Where(x => x.Value.Format.RequestVariables.Intersect(changedVariableNames).Any());
 
             foreach (var variable in changedVariables)
             {
                 //update variable for context.
-                converter.Variables[variable.Name] = variable.Value switch {
+                converter.Variables[variable.Id] = variable.Value switch {
                     DataSource.Variables.Value.NumberValue number => ValueBase.Create(number.Value),
                     DataSource.Variables.Value.StringValue str => ValueBase.Create(str.Value),
-                    _ => ValueBase.Create($"<UNK VAR:{variable.Name} TYPE:{variable.Value.GetType().Name}>")
+                    _ => ValueBase.Create($"<UNK VAR:{variable.Id} TYPE:{variable.Value.GetType().Name}>")
                 };
             }
 

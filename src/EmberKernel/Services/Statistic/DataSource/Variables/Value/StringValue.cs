@@ -27,5 +27,10 @@
         {
             return obj.Value.GetHashCode();
         }
+
+        public string GetString()
+        {
+            return Value;
+        }
     }
 }

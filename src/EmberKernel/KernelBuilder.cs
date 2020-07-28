@@ -56,9 +56,13 @@ namespace EmberKernel
         }
 
 
-        public KernelBuilder UseKernelService<TKernelService, TIKernelService>() where TKernelService : IKernelService, TIKernelService
+        public KernelBuilder UseKernelService<TKernelService, TIKernelService>(bool autoActive = false) where TKernelService : IKernelService, TIKernelService
         {
-            buildActions.Add(() => _containerBuilder.RegisterType<TKernelService>().AsSelf().As<TIKernelService>().SingleInstance());
+            buildActions.Add(() =>
+            {
+                var registertion = _containerBuilder.RegisterType<TKernelService>().AsSelf().As<TIKernelService>().SingleInstance();
+                if (autoActive) registertion.AutoActivate();
+            });
             return this;
         }
 

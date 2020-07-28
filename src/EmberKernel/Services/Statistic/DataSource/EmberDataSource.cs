@@ -45,19 +45,19 @@ namespace EmberKernel.Services.Statistic.DataSource
 
         public void Publish(IEnumerable<Variable> variables)
         {
-            IEnumerable<Variable> UpdatedVariables()
+            IEnumerable<Variable> UpdatedVariables(IEnumerable<Variable> _variables)
             {
-                foreach (var incomingVariable in variables)
+                foreach (var incomingVariable in _variables)
                 {
                     var currentVariable = VariableMap[incomingVariable.Id];
                     if (!Equals(currentVariable.Value, incomingVariable.Value))
                     {
-                        currentVariable.Value = incomingVariable.Value;
-                        yield return currentVariable;
+                        VariableMap[incomingVariable.Id] = incomingVariable;
+                        yield return incomingVariable;
                     }
                 }
             }
-            OnMultiDataChanged?.Invoke(UpdatedVariables());
+            OnMultiDataChanged?.Invoke(UpdatedVariables(variables).ToList());
         }
 
         public void Register(Variable variable, IValue fallback)

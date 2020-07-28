@@ -5,6 +5,7 @@ namespace EmberKernel.Services.Statistic.DataSource.Variables.Value
     public interface IValue
     {
         ValueType Type { get; }
+        string GetString();
     }
 
     public interface IValue<T> : IValue, IEqualityComparer<IValue<T>>

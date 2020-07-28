@@ -54,7 +54,8 @@ namespace EmberKernel.Services.Statistic.DataSource.Variables
         public static Variable CreateFrom(PropertyInfo property)
         {
             var rawVariable = CreateFrom(property.PropertyType);
-            rawVariable.Id = $"{property.DeclaringType.Namespace}{property.Name}";
+            var idPerfix = $"{property.DeclaringType.Namespace.Replace('.', '_')}_{property.DeclaringType.Name}";
+            rawVariable.Id = $"{idPerfix}_{property.Name}";
             if (property.GetCustomAttribute<DataSourceVariableAttribute>() is DataSourceVariableAttribute attr)
             {
                 rawVariable.Name = attr.Name;
@@ -66,7 +67,7 @@ namespace EmberKernel.Services.Statistic.DataSource.Variables
             }
             else
             {
-                rawVariable.Name = rawVariable.Id;
+                rawVariable.Name = property.Name;
                 rawVariable.Description = string.Empty;
             }
 

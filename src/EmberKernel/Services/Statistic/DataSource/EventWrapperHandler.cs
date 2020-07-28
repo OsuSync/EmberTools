@@ -48,11 +48,14 @@ namespace EmberKernel.Services.Statistic.DataSource
             }
         }
 
-        private static IEnumerable<Variable> EnumerableAllProperties()
+        private static IEnumerable<Variable> EnumerableAllProperties(T newValue)
         {
             foreach (var property in PropertyInfos)
             {
-                yield return Variable.CreateFrom(property);
+                var newPropertyValue = property.GetValue(newValue);
+                var variable = Variable.CreateFrom(property);
+                variable.Value = Variable.ConvertValue(newPropertyValue);
+                yield return variable;
             }
             yield break;
         }
@@ -62,12 +65,12 @@ namespace EmberKernel.Services.Statistic.DataSource
             var oldValue = Value;
             Value = @event;
             // if current value is 'default'
-            if (Equals(Value, DefaultValue))
+            if (Equals(oldValue, DefaultValue))
             {
                 // and if incoming event is default, do nothing
                 if (Equals(@event, DefaultValue)) return Enumerable.Empty<Variable>();
                 // else we return all properties
-                else return EnumerableAllProperties();
+                else return EnumerableAllProperties(@event);
             }
             // otherwise compare all properties
             return CompareAllProperties(@event, oldValue);
