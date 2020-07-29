@@ -110,37 +110,12 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 return sb.ToString();
             });
 
-            return new DefaultFormat()
-            {
-                FormatFunction = formatFunc,
-                RequestVariables = mayRequestVariables,
-            };
+            return new DefaultFormat(mayRequestVariables, formatFunc);
         }
 
         public string Format(string format)
         {
-            if (!registeredFormats.TryGetValue(format,out var registerFormat))
-            {
-                /*
-                func = Parse(format);
-                logger.LogInformation($"parsed format");
-                cachedFormatFunctions[format] = func;
-                */
-
-                return "<FORMAT NOT REGISTER>";
-            }
-
-            return registerFormat.Format.FormatFunction();
-            /*
-            try
-            {
-                return registerFormat.FormatFunction();
-            }
-            catch (Exception e)
-            {
-                logger.LogError($"Can't format content: {e.Message}");
-                return "<FORMAT ERROR>";
-            }*/
+            return Build(format).FormatFunction();
         }
 
         #region (Un)Register formats methods implement
