@@ -1,6 +1,7 @@
 ﻿using EmberKernel.Services.Statistic.DataSource;
 using EmberKernel.Services.Statistic.DataSource.SourceManager;
 using EmberKernel.Services.Statistic.Formatter.DefaultImpl;
+using EmberKernel.Services.Statistic.Hub;
 
 namespace EmberKernel.Services.Statistic
 {
@@ -21,14 +22,21 @@ namespace EmberKernel.Services.Statistic
         public StatisticBuilder ConfigureFormatter<TFormatter>()
             where TFormatter : IFormatter
         {
-            Builder.UseKernelService<DefaultFormatter, IFormatter>();
+            Builder.UseKernelService<TFormatter, IFormatter>();
+            return this;
+        }
+
+        public StatisticBuilder ConfigureHub<TStatisticHub>()
+            where TStatisticHub : IStatisticHub
+        {
+            Builder.UseKernelService<TStatisticHub, IStatisticHub>(autoActive: true);
             return this;
         }
 
         public StatisticBuilder ConfigureDataSource<TDataSource>()
             where TDataSource : IDataSource
         {
-            Builder.UseKernelService<EmberDataSource, IDataSource>();
+            Builder.UseKernelService<TDataSource, IDataSource>();
             return this;
         }
 
@@ -40,6 +48,11 @@ namespace EmberKernel.Services.Statistic
         public StatisticBuilder ConfigureDefaultFormatter()
         {
             return ConfigureFormatter<DefaultFormatter>();
+        }
+
+        public StatisticBuilder ConfigureDefaultHub()
+        {
+            return ConfigureHub<EmberStatisticHub>();
         }
     }
 }
