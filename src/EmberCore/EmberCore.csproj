@@ -38,6 +38,7 @@
       <Private>true</Private>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
     </ProjectReference>
+    <ProjectReference Include="..\share\EmberStatisticManager\EmberStatisticDatabase.csproj" />
     <ProjectReference Include="..\share\osu\OsuSqliteDatabase\OsuSqliteDatabase.csproj" />
   </ItemGroup>
 
