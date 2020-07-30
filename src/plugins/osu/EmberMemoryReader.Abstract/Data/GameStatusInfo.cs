@@ -1,4 +1,5 @@
 ﻿using EmberKernel.Services.EventBus;
+using EmberKernel.Services.Statistic.DataSource.Variables;
 using System;
 using System.Diagnostics.CodeAnalysis;
 
@@ -36,7 +37,9 @@ namespace EmberMemoryReader.Abstract.Data
     public class GameStatusInfo : Event<GameStatusInfo>, IComparable<GameStatusInfo>, IEquatable<GameStatusInfo>
     {
         public bool HasValue { get; set; }
+        [DataSourceVariable]
         public OsuInternalStatus Status { get; set; }
+        [DataSourceVariable(Name = "GameStatus")]
         public string StringStatus { get; set; }
 
         public int CompareTo([AllowNull] GameStatusInfo other)

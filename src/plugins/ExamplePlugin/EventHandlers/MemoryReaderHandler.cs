@@ -55,7 +55,7 @@ namespace ExamplePlugin.EventHandlers
         {
             if (@event.HasValue)
             {
-                _logger.LogInformation($"[Event] Current playing status: time={@event.PlayingTime}, Acc={@event.GameStatistic.Accuracy}, 300={@event.GameStatistic.Combo}");
+                _logger.LogInformation($"[Event] Current playing status: time={@event.PlayingTime}, Acc={@event.Accuracy}, 300={@event.Combo}");
             }
             else
             {

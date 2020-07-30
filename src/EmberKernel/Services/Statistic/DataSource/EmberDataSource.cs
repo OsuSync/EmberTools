@@ -15,9 +15,9 @@ namespace EmberKernel.Services.Statistic.DataSource
 
         public event Action<IEnumerable<Variable>> OnMultiDataChanged;
 
-        public bool TryGetVariable(string name, out Variable variable)
+        public bool TryGetVariable(string id, out Variable variable)
         {
-            return VariableMap.TryGetValue(name, out variable);
+            return VariableMap.TryGetValue(id, out variable);
         }
 
         public IEnumerable<Variable> GetVariables(IEnumerable<string> variableIds)
@@ -30,14 +30,14 @@ namespace EmberKernel.Services.Statistic.DataSource
             Publish(variable.Id, variable.Value);
         }
 
-        public void Publish(string name, IValue value)
+        public void Publish(string id, IValue value)
         {
-            if (VariableMap.ContainsKey(name))
+            if (VariableMap.ContainsKey(id))
             {
-                var variable = VariableMap[name];
+                var variable = VariableMap[id];
                 if (!Equals(variable.Value, value))
                 {
-                    variable.Value = value;
+                    variable.Value = value ?? VariableFallback[id];
                     variable.OnPropertyChanged();
                     OnMultiDataChanged?.Invoke(Enumerable.Repeat(variable, 1));
                 }
@@ -53,7 +53,7 @@ namespace EmberKernel.Services.Statistic.DataSource
                     var currentVariable = VariableMap[incomingVariable.Id];
                     if (!Equals(currentVariable.Value, incomingVariable.Value))
                     {
-                        currentVariable.Value = incomingVariable.Value;
+                        currentVariable.Value = incomingVariable.Value ?? VariableFallback[incomingVariable.Id];
                         currentVariable.OnPropertyChanged();
                         yield return currentVariable;
                     }
