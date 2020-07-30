@@ -1,7 +1,5 @@
-﻿using EmberKernel.Services.Configuration;
-using EmberKernel.Services.EventBus.Handlers;
+﻿using EmberKernel.Services.EventBus.Handlers;
 using EmberMemoryReader.Abstract.Data;
-using ExamplePlugin.Models;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
@@ -16,11 +14,11 @@ namespace ExamplePlugin.EventHandlers
         IEventHandler<GlobalGameModeratorInfo>
     {
         private readonly ILogger<MemoryReaderHandler> _logger;
-        private readonly IPluginOptions<MyPlugin, MyPluginConfiguration> _pluginOptions;
-        public MemoryReaderHandler(ILogger<MemoryReaderHandler> logger, IPluginOptions<MyPlugin, MyPluginConfiguration> pluginOptions)
+        //private readonly IPluginOptions<MyPlugin, MyPluginConfiguration> _pluginOptions;
+        public MemoryReaderHandler(ILogger<MemoryReaderHandler> logger) //, IPluginOptions<MyPlugin, MyPluginConfiguration> pluginOptions)
         {
             _logger = logger;
-            _pluginOptions = pluginOptions;
+            //_pluginOptions = pluginOptions;
         }
 
         public ValueTask Handle(GameStatusInfo @event)
@@ -36,31 +34,32 @@ namespace ExamplePlugin.EventHandlers
             return default;
         }
 
-        public async ValueTask Handle(BeatmapInfo @event)
+        public ValueTask Handle(BeatmapInfo @event)
         {
-            if (@event.HasValue)
-            {
-                _logger.LogInformation($"[Event] Current beatmap: SetId={@event.SetId}, BeatmapId={@event.BeatmapId}, File={@event.BeatmapFile}");
-                var current = _pluginOptions.Create();
-                current.LatestBeatmapFile = @event.BeatmapFile;
-                await _pluginOptions.SaveAsync(current);
-            }
-            else
-            {
-                _logger.LogInformation("No beatmap found");
-            }
+            //if (@event.HasValue)
+            //{
+            //    _logger.LogInformation($"[Event] Current beatmap: SetId={@event.SetId}, BeatmapId={@event.BeatmapId}, File={@event.BeatmapFile}");
+            //    var current = _pluginOptions.Create();
+            //    current.LatestBeatmapFile = @event.BeatmapFile;
+            //    await _pluginOptions.SaveAsync(current);
+            //}
+            //else
+            //{
+            //    _logger.LogInformation("No beatmap found");
+            //}
+            return default;
         }
 
         public ValueTask Handle(PlayingInfo @event)
         {
-            if (@event.HasValue)
-            {
-                _logger.LogInformation($"[Event] Current playing status: time={@event.PlayingTime}, Acc={@event.Accuracy}, 300={@event.Combo}");
-            }
-            else
-            {
-                _logger.LogInformation("No beatmap found");
-            }
+            //if (@event.HasValue)
+            //{
+            //    _logger.LogInformation($"[Event] Current playing status: time={@event.PlayingTime}, Acc={@event.Accuracy}, 300={@event.Combo}");
+            //}
+            //else
+            //{
+            //    _logger.LogInformation("No beatmap found");
+            //}
             return default;
         }
 
