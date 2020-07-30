@@ -17,12 +17,12 @@
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <Label Grid.Row="0">Available Variables:</Label>
-            <ListView Grid.Row="1" ItemsSource="{Binding Variables}">
+            <ListView Grid.Row="1" ItemsSource="{Binding Variables, Mode=OneWay}">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Name" Width="100px" DisplayMemberBinding="{Binding Name}"></GridViewColumn>
-                        <GridViewColumn Header="Value" Width="120px" DisplayMemberBinding="{Binding Value.Value}"></GridViewColumn>
-                        <GridViewColumn Header="Description" Width="Auto" DisplayMemberBinding="{Binding Description}"></GridViewColumn>
+                        <GridViewColumn Header="Name" Width="100px" DisplayMemberBinding="{Binding Name, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Value" Width="120px" DisplayMemberBinding="{Binding Value.Value, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Description" Width="Auto" DisplayMemberBinding="{Binding Description, Mode=OneWay}"></GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>
