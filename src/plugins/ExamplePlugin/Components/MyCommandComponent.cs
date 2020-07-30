@@ -66,7 +66,7 @@ namespace ExamplePlugin.Components
         {
             foreach (var item in DataSource.Variables)
             {
-                Logger.LogInformation($"[{item.Id}]Name={item.Name},Value={item.Value.GetString()}");
+                Logger.LogInformation($"[{item.Id}]Name={item.Name},Value={item.Value}");
             }
         }
 

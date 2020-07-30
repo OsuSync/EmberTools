@@ -47,10 +47,15 @@ namespace EmberKernel.Services.Statistic.Hub
             }
         }
 
-        public void Remove(string name)
+        public void Unregister(string name)
         {
             if (!RegisteredFormats.ContainsKey(name)) { return; }
+            if (Formatter.IsRegistered<IStatisticHub>(RegisteredFormats[name].Format))
+            {
+                Formatter.Unregister<IStatisticHub>(RegisteredFormats[name].Format);
+            }
             Remove(RegisteredFormats[name]);
+            RegisteredFormats.Remove(name);
         }
 
         public ValueTask FormatUpdated(string format, string value)

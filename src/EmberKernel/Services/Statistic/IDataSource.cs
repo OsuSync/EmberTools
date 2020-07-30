@@ -6,7 +6,7 @@ using System.Collections.Specialized;
 
 namespace EmberKernel.Services.Statistic
 {
-    public interface IDataSource : INotifyCollectionChanged, IKernelService
+    public interface IDataSource : IList<Variable>, INotifyCollectionChanged, IKernelService
     {
         event Action<IEnumerable<Variable>> OnMultiDataChanged;
         IEnumerable<Variable> Variables { get; }

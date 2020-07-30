@@ -38,6 +38,7 @@ namespace EmberKernel.Services.Statistic.DataSource
                 if (!Equals(variable.Value, value))
                 {
                     variable.Value = value;
+                    variable.OnPropertyChanged();
                     OnMultiDataChanged?.Invoke(Enumerable.Repeat(variable, 1));
                 }
             }
@@ -52,8 +53,9 @@ namespace EmberKernel.Services.Statistic.DataSource
                     var currentVariable = VariableMap[incomingVariable.Id];
                     if (!Equals(currentVariable.Value, incomingVariable.Value))
                     {
-                        VariableMap[incomingVariable.Id] = incomingVariable;
-                        yield return incomingVariable;
+                        currentVariable.Value = incomingVariable.Value;
+                        currentVariable.OnPropertyChanged();
+                        yield return currentVariable;
                     }
                 }
             }
@@ -65,12 +67,14 @@ namespace EmberKernel.Services.Statistic.DataSource
 
             VariableMap.Add(variable.Id, variable);
             VariableFallback.Add(variable.Id, fallback);
+            Add(variable);
         }
 
         public void Unregister(Variable variable)
         {
             VariableMap.Remove(variable.Id);
             VariableFallback.Remove(variable.Id);
+            Remove(variable);
         }
 
         public bool IsRegistered(Variable variable)

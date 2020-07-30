@@ -1,15 +1,23 @@
 ﻿using EmberKernel.Services.Statistic.DataSource.Variables.Value;
 using System;
+using System.ComponentModel;
 using System.Reflection;
 
 namespace EmberKernel.Services.Statistic.DataSource.Variables
 {
-    public struct Variable
+    public class Variable : INotifyPropertyChanged
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public IValue Value { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged()
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Value)));
+        }
 
         public static bool IsNumbericType(Type type)
         {
