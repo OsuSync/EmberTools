@@ -6,16 +6,18 @@ namespace EmberKernel.Services.Statistic
 {
     public interface IFormatter : IKernelService
     {
-        void Register<TContainer>(ILifetimeScope scope, string format)
+        void Register<TContainer>(ILifetimeScope scope, string id, string format)
             where TContainer : IFormatContainer;
 
-        void Unregister<TContainer>(string format)
+        void Update<TContainer>(string id, string format);
+
+        void Unregister<TContainer>(string id)
             where TContainer : IFormatContainer;
 
         void UnregisterAll<TContainer>()
             where TContainer : IFormatContainer;
 
-        bool IsRegistered<TContainer>(string format)
+        bool IsRegistered<TContainer>(string id)
             where TContainer : IFormatContainer;
 
         IEnumerable<string> GetRegisteredFormat<TContainer>()

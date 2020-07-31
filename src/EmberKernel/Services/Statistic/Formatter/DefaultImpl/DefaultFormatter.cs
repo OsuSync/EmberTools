@@ -54,7 +54,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
             }
         }
 
-        public DefaultFormat Build(string format)
+        public DefaultFormat Build(string id, string format)
         {
             var formatArray = new List<Func<string>>();
             var mayRequestVariables = new HashSet<string>();
@@ -110,12 +110,12 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 return sb.ToString();
             });
 
-            return new DefaultFormat(mayRequestVariables, formatFunc);
+            return new DefaultFormat(id, mayRequestVariables, formatFunc);
         }
 
         public string Format(string format)
         {
-            return Build(format).FormatFunction();
+            return Build(string.Empty, format).FormatFunction();
         }
 
         #region (Un)Register formats methods implement
@@ -126,26 +126,26 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
             return registeredFormats.Where(x => type == x.Value.FormatInfo.ContainerType).Select(x => x.Key).ToList();
         }
 
-        public bool IsRegistered<TContainer>(string format) where TContainer : IFormatContainer
+        public bool IsRegistered<TContainer>(string id) where TContainer : IFormatContainer
         {
-            return registeredFormats.ContainsKey(format);
+            return registeredFormats.ContainsKey(id);
         }
 
-        public void Register<TContainer>(ILifetimeScope scope, string format) where TContainer : IFormatContainer
+        public void Register<TContainer>(ILifetimeScope scope, string id, string format) where TContainer : IFormatContainer
         {
-            registeredFormats[format] = new RegisteredFormat()
+            registeredFormats[id] = new RegisteredFormat()
             {
-                Format = Build(format),
+                Format = Build(id, format),
                 FormatInfo = new FormatInfo(format, scope, typeof(TContainer))
             };
             logger.LogDebug("register new format " + registeredFormats[format].Format.Id);
         }
 
-        public void Unregister<TContainer>(string format) where TContainer : IFormatContainer
+        public void Unregister<TContainer>(string id) where TContainer : IFormatContainer
         {
-            if (registeredFormats.TryGetValue(format, out var registerFormat))
+            if (registeredFormats.TryGetValue(id, out var registerFormat))
             {
-                registeredFormats.Remove(format);
+                registeredFormats.Remove(id);
                 logger.LogDebug("unregister new format " + registerFormat.Format.Id);
             }
         }
@@ -154,6 +154,13 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         {
             registeredFormats.Clear();
             logger.LogDebug("unregister all formats");
+        }
+
+        public void Update<TContainer>(string id, string format)
+        {
+            if (!registeredFormats.ContainsKey(id)) return;
+            registeredFormats[id].Format = Build(id, format);
+            registeredFormats[id].FormatInfo.Format = format;
         }
 
         #endregion

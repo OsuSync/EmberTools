@@ -5,16 +5,15 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
 {
     public struct DefaultFormat
     {
-        private static int GENID = 0;
 
-        public DefaultFormat(HashSet<string> requestVariables, Func<string> formatFunction)
+        public DefaultFormat(string id, HashSet<string> requestVariables, Func<string> formatFunction)
         {
-            Id = GENID++;
+            Id = id;
             RequestVariables = requestVariables;
             FormatFunction = formatFunction;
         }
 
-        public int Id { get; }
+        public string Id { get; }
         public HashSet<string> RequestVariables { get; set; }
         public Func<string> FormatFunction { get; set; }
     }

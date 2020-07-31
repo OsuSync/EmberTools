@@ -43,16 +43,16 @@ namespace EmberKernel.Services.Statistic.Hub
             RegisteredFormats.Add(name, hubFormat);
             if (Formatter.IsRegistered<IStatisticHub>(format))
             {
-                Formatter.Register<IStatisticHub>(Scope, format);
+                Formatter.Register<IStatisticHub>(Scope, name, format);
             }
         }
 
         public void Unregister(string name)
         {
             if (!RegisteredFormats.ContainsKey(name)) { return; }
-            if (Formatter.IsRegistered<IStatisticHub>(RegisteredFormats[name].Format))
+            if (Formatter.IsRegistered<IStatisticHub>(name))
             {
-                Formatter.Unregister<IStatisticHub>(RegisteredFormats[name].Format);
+                Formatter.Unregister<IStatisticHub>(name);
             }
             Remove(RegisteredFormats[name]);
             RegisteredFormats.Remove(name);
@@ -63,6 +63,7 @@ namespace EmberKernel.Services.Statistic.Hub
             foreach (var item in RegisteredFormats.Where((_format) => _format.Value.Format == format))
             {
                 item.Value.Value = value;
+                item.Value.OnValueChanged();
             }
             OnFormatUpdated?.Invoke(format, value);
             return default;
@@ -71,6 +72,15 @@ namespace EmberKernel.Services.Statistic.Hub
         public string Format(string format)
         {
             return Formatter.Format(format);
+        }
+
+        public void Update(string name, string format)
+        {
+            if (!RegisteredFormats.ContainsKey(name)) { return; }
+            if (Formatter.IsRegistered<IStatisticHub>(name))
+            {
+                Formatter.Update<IStatisticHub>(name, format);
+            }
         }
     }
 }

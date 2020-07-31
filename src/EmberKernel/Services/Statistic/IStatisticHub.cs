@@ -13,6 +13,7 @@ namespace EmberKernel.Services.Statistic
         event Action<string, string> OnFormatUpdated;
         void Register(string name, string format);
         void Unregister(string name);
+        void Update(string name, string format);
         string GetValue(string name);
         string Format(string format);
         IEnumerable<Variable> Variables { get; }
