@@ -1,5 +1,4 @@
-﻿using Autofac;
-using EmberKernel.Plugins;
+﻿using EmberKernel.Plugins;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Command.Attributes;
 using EmberKernel.Services.Command.Components;
@@ -22,17 +21,14 @@ namespace ExamplePlugin.Components
         private IPluginOptions<MyPlugin, MyPluginConfiguration> Config { get; }
         private IFormatter Formatter { get; }
         private IDataSource DataSource { get; }
-        private ILifetimeScope Scope { get; }
 
         public MyCommandComponent(
-            ILifetimeScope scope,
             ILogger<MyCommandComponent> logger,
             IPluginsManager pluginsManager,
             IPluginOptions<MyPlugin, MyPluginConfiguration> config,
             IFormatter formatter,
             IDataSource dataSource)
         {
-            Scope = scope;
             Logger = logger;
             PluginsManager = pluginsManager;
             Config = config;
@@ -74,8 +70,7 @@ namespace ExamplePlugin.Components
         [CommandAlias("format")]
         public void Format(string format)
         {
-            Formatter.Register<MyCommandComponent>(Scope, format);
-            Logger.LogInformation($"Format Registered:{format}");
+            Logger.LogInformation($"Result:{Formatter.Format(format)}");
         }
 
         public void Dispose()

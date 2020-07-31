@@ -9,9 +9,10 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="10px"></ColumnDefinition>
             <ColumnDefinition Width="1*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <Grid>
+        <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -26,6 +27,47 @@
                     </GridView>
                 </ListView.View>
             </ListView>
+        </Grid>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0">Formats:</Label>
+            <ListView Grid.Row="1" ItemsSource="{Binding Hub, Mode=OneWay}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="100px" DisplayMemberBinding="{Binding Name, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Format" Width="100px" DisplayMemberBinding="{Binding Format, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Value" Width="200px" DisplayMemberBinding="{Binding Value, Mode=OneWay}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="32px"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Vertical">
+                        <Label>Format:</Label>
+                        <TextBox MaxLines="3"></TextBox>
+                        <Label>Preview:</Label>
+                    </StackPanel>
+                    <TextBlock Grid.Row="1"></TextBlock>
+                </Grid>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                    <Button Width="75px" Margin="0,0,10,0">New</Button>
+                    <Button Width="75px" Margin="0,0,10,0">Update</Button>
+                    <Button Width="75px" Margin="0,0,10,0">Save</Button>
+                    <Button Width="75px">Delete</Button>
+                </StackPanel>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>
