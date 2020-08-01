@@ -40,9 +40,11 @@ namespace Statistic.WpfUI.UI.Command
             }
             else
             {
-                var newName = ViewModel.EditingHubFormat.Original.Name == ViewModel.EditingHubFormat.Name ? null : ViewModel.EditingHubFormat.Name;
-                var originalName = ViewModel.EditingHubFormat.Original.Name;
-                ViewModel.Formats.Update(ViewModel.EditingHubFormat.Original.Name, ViewModel.EditingHubFormat.Format, newName);
+                var newName = ViewModel.EditingHubFormat.Original != null && ViewModel.EditingHubFormat.Original?.Name != ViewModel.EditingHubFormat.Name
+                    ? ViewModel.EditingHubFormat.Name
+                    : null;
+                var originalName = ViewModel.EditingHubFormat.Original?.Name ?? ViewModel.EditingHubFormat.Name;
+                ViewModel.Formats.Update(originalName, ViewModel.EditingHubFormat.Format, newName);
                 EventBus.Publish(new FormatUpdatedEvent()
                 {
                     Format = ViewModel.EditingHubFormat.Format,

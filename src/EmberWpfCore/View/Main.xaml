@@ -63,7 +63,7 @@
                     BorderThickness="0"
                     Content="×"
                     FontSize="28"
-                    WindowChrome.IsHitTestVisibleInChrome="True" />
+                    WindowChrome.IsHitTestVisibleInChrome="True" Click="Button_Click" />
                 <StackPanel
                     Margin="0,0,3,-17"
                     HorizontalAlignment="Right"

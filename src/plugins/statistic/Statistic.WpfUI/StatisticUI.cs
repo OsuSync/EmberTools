@@ -25,7 +25,7 @@ namespace Statistic.WpfUI
 
         public override async ValueTask Uninitialize(ILifetimeScope scope)
         {
-            await scope.InitializeUIComponent<StatisticEditorTab>();
+            await scope.UninitializeUIComponent<StatisticEditorTab>();
         }
     }
 }

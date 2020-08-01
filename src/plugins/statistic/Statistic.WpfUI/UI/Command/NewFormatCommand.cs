@@ -31,7 +31,7 @@ namespace Statistic.WpfUI.UI.Command
             ViewModel.EditingHubFormat = new InEditHubFormat(ViewModel.Formats)
             {
                 Name = randomName,
-                IsCreated = false,
+                IsCreated = true,
                 Original = null,
             };
             ViewModel.Mode = EditorMode.Creating;
