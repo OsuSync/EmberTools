@@ -1,13 +1,8 @@
 ﻿using Autofac;
-using EmberKernel.Plugins.Components;
 using EmberKernel.Plugins.Models;
 using EmberKernel.Services.EventBus;
-using EmberKernel.Services.EventBus.Handlers;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -67,6 +62,7 @@ namespace EmberMemory.Listener
 
         public async ValueTask EnsureProcessLifetime(Process process, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested) return;
             using var lifetimeScope = CurrentScope.BeginLifetimeScope((builder) => builder.RegisterType<TLifeTrakcer>());
             var tracker = lifetimeScope.Resolve<TLifeTrakcer>();
             while (!token.IsCancellationRequested && !selfToken.IsCancellationRequested)

@@ -10,7 +10,7 @@ namespace EmberKernel.Services.Statistic
 {
     public interface IStatisticHub: IFormatContainer, INotifyCollectionChanged, INotifyPropertyChanged, IKernelService, IList<HubFormat>
     {
-        event Action<string, string> OnFormatUpdated;
+        event Action<string, string, string> OnFormatUpdated;
         bool IsRegistered(string name);
         void Register(string name, string format);
         void Unregister(string name);

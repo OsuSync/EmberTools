@@ -27,7 +27,7 @@ namespace EmberKernel.Services.Statistic.Hub
             Scope = scope;
         }
 
-        public event Action<string, string> OnFormatUpdated;
+        public event Action<string, string, string> OnFormatUpdated;
 
         public string GetValue(string name)
         {
@@ -67,8 +67,8 @@ namespace EmberKernel.Services.Statistic.Hub
             {
                 item.Value.Value = value;
                 item.Value.OnValueChanged();
+                OnFormatUpdated?.Invoke(item.Value.Name, format, value);
             }
-            OnFormatUpdated?.Invoke(format, value);
             return default;
         }
 

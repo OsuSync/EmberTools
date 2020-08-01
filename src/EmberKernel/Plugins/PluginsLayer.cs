@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using EmberKernel.Plugins.Models;
 using EmberKernel.Services.EventBus;
 using EmberKernel.Services.UI.Mvvm.ViewModel.Plugins;
+using System.Threading.Tasks;
 
 namespace EmberKernel.Plugins
 {
@@ -21,20 +18,35 @@ namespace EmberKernel.Plugins
             }
         }
 
+        private ILifetimeScope PluginsScope { get; set; }
         public async ValueTask Run(ILifetimeScope scope)
         {
             var pluginLoader = scope.Resolve<IPluginsLoader>();
-            using var pluginsScope = scope.BeginLifetimeScope(builder =>
+            PluginsScope = scope.BeginLifetimeScope(builder =>
             {
                 pluginLoader.BuildScope(builder);
             });
 
-            await pluginLoader.Run(pluginsScope);
+            await pluginLoader.Run(PluginsScope);
             await pluginLoader.RunEntryComponents();
 
             if (scope.TryResolve<IEventBus>(out var eventBus)) {
                 eventBus.Publish(EmberInitializedEvent.Empty);
             }
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            if (PluginsScope == null) return;
+            var pluginsManager = PluginsScope.ResolveOptional<IPluginsManager>();
+            if (pluginsManager != null) await pluginsManager.DisposeAsync();
+            await PluginsScope.DisposeAsync();
+            PluginsScope = null;
+        }
+
+        public void Dispose()
+        {
+            DisposeAsync().AsTask().Wait();
         }
     }
 }
