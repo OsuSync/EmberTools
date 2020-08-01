@@ -24,12 +24,16 @@ namespace Statistic.Exporter
             await scope.MigrateDbContext<StatisticContext>();
             await scope.Resolve<StatisticManager>().InitializeRegisteredFormat();
             scope.Subscription<FormatCreatedEvent, StatisticManager>();
+            scope.Subscription<FormatUpdatedEvent, StatisticManager>();
+            scope.Subscription<FormatDeletedEvent, StatisticManager>();
         }
 
         public override async ValueTask Uninitialize(ILifetimeScope scope)
         {
             await scope.Resolve<StatisticManager>().UninitializeRegisteredFormat();
             scope.Unsubscription<FormatCreatedEvent, StatisticManager>();
+            scope.Unsubscription<FormatUpdatedEvent, StatisticManager>();
+            scope.Unsubscription<FormatDeletedEvent, StatisticManager>();
         }
     }
 }

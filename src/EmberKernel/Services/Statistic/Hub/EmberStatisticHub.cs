@@ -87,8 +87,8 @@ namespace EmberKernel.Services.Statistic.Hub
                 {
                     throw new DuplicateNameException();
                 }
-                RegisteredFormats.Remove(name);
                 RegisteredFormats.Add(newName, RegisteredFormats[name]);
+                RegisteredFormats.Remove(name);
                 if (Formatter.IsRegistered<IStatisticHub>(name))
                 {
                     Formatter.Unregister<IStatisticHub>(name);

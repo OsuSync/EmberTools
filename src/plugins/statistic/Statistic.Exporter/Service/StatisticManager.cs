@@ -54,6 +54,8 @@ namespace Statistic.Exporter.Service
                     if (newName != null)
                     {
                         existFormat.Name = newName;
+                        DatabaseFormats.Add(newName, DatabaseFormats[name]);
+                        DatabaseFormats.Remove(name);
                     }
                     existFormat.Format = format;
                     existFormat.UpdatedAt = DateTime.Now;
@@ -91,6 +93,7 @@ namespace Statistic.Exporter.Service
                 var format = await Db.RegisteredFormats.SingleOrDefaultAsync(f => f.Name == name);
                 Db.RegisteredFormats.Remove(format);
                 await Db.SaveChangesAsync();
+                await trx.CommitAsync();
             }
             catch
             {

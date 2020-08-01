@@ -29,7 +29,7 @@ namespace Statistic.WpfUI.UI.Command
         public void Execute(object parameter)
         {
             ViewModel.Mode = EditorMode.Idle;
-            if (ViewModel.EditingHubFormat.IsCreated)
+            if (!ViewModel.EditingHubFormat.IsCreated)
             {
                 ViewModel.Formats.Unregister(ViewModel.EditingHubFormat.Name);
                 EventBus.Publish(new FormatDeletedEvent()

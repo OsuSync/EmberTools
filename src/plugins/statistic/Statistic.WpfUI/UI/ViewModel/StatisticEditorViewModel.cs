@@ -23,6 +23,7 @@ namespace Statistic.WpfUI.UI.ViewModel
         public ICommand CreateFormat { get; private set; }
         public ICommand SaveFormat { get; private set; }
         public ICommand CancelFormat { get; private set; }
+        public ICommand DeleteFormat { get; private set; }
         private readonly ILifetimeScope _viewModeScope;
             
         public StatisticEditorViewModel(ILifetimeScope scope)
@@ -34,10 +35,12 @@ namespace Statistic.WpfUI.UI.ViewModel
                 builder.RegisterType<NewFormatCommand>().As<IEditorContextCommand>().Named<IEditorContextCommand>("Create");
                 builder.RegisterType<SaveFormatCommand>().As<IEditorContextCommand>().Named<IEditorContextCommand>("Save");
                 builder.RegisterType<CancelCommand>().As<IEditorContextCommand>().Named<IEditorContextCommand>("Cancel");
+                builder.RegisterType<DeleteCommand>().As<IEditorContextCommand>().Named<IEditorContextCommand>("Delete");
             });
             CreateFormat = _viewModeScope.ResolveNamed<IEditorContextCommand>("Create");
             SaveFormat = _viewModeScope.ResolveNamed<IEditorContextCommand>("Save");
             CancelFormat = _viewModeScope.ResolveNamed<IEditorContextCommand>("Cancel");
+            DeleteFormat = _viewModeScope.ResolveNamed<IEditorContextCommand>("Delete");
         }
 
 

@@ -72,7 +72,7 @@
                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Stretch">
                     <Button Width="75px" Margin="0,0,10,0" Visibility="{Binding CreateVisibility, Mode=OneWay}" Command="{Binding CreateFormat, Mode=OneTime}">New</Button>
                     <Button Width="75px" Margin="0,0,10,0" Visibility="{Binding SaveVisibility, Mode=OneWay}" Command="{Binding SaveFormat, Mode=OneTime}">Save</Button>
-                    <Button Width="75px" Margin="0,0,10,0" Visibility="{Binding DeleteVisibility, Mode=OneWay}">Delete</Button>
+                    <Button Width="75px" Margin="0,0,10,0" Visibility="{Binding DeleteVisibility, Mode=OneWay}" Command="{Binding DeleteFormat, Mode=OneTime}">Delete</Button>
                     <Button Width="75px" Visibility="{Binding CancelVisibility, Mode=OneWay}" Command="{Binding CancelFormat, Mode=OneTime}">Cancel</Button>
                 </StackPanel>
             </Grid>
