@@ -30,7 +30,8 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         {
             var changedVariableNames = changedVariables.Select((variable) => variable.Id);
             var notifyFormats = registeredFormats.Where(x => x.Value.Format.RequestVariables.Intersect(changedVariableNames).Any());
-
+            // a difference sequsence include the variable first initialized
+            var firstInitializeVariables = changedVariableNames.Except(converter.Variables.Keys).ToList();
             foreach (var variable in changedVariables)
             {
                 //update variable for context.
@@ -39,6 +40,17 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                     DataSource.Variables.Value.StringValue str => ValueBase.Create(str.Value),
                     _ => ValueBase.Create($"<UNK VAR:{variable.Id} TYPE:{variable.Value.GetType().Name}>")
                 };
+            }
+            // check all format and rebuild format which require uninitialized variable
+            foreach (var variableId in firstInitializeVariables)
+            {
+                foreach (var (_, registeredFormat) in notifyFormats)
+                {
+                    if (registeredFormat.Format.RequestVariables.Contains(variableId))
+                    {
+                        registeredFormat.Format = Build(registeredFormat.Format.Id, registeredFormat.FormatInfo.Format);
+                    }
+                }
             }
 
             foreach (var (_, registerdFormat) in notifyFormats)
