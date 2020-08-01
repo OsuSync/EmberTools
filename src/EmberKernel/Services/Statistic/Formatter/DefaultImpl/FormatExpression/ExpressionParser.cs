@@ -1,10 +1,5 @@
 ﻿///use recursive descent
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
 {
@@ -46,7 +41,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
     /// </summary>
     public class ExpressionParser
     {
-        private List<Token> _tokens = new List<Token>();
+        private readonly List<Token> _tokens = new List<Token>();
         private int _pos;
 
         public ExpressionParser()
@@ -86,6 +81,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
 
         public IAstNode Parse(string expr)
         {
+            _tokens.Clear();
             _pos = 0;
 
             char[] exprChars = expr.Trim().ToCharArray();
@@ -282,8 +278,10 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
             Token token = GetToken();
             if (token.Type == TokenType.Op && token.Data == "!")
             {
-                AstOpNode expr = new AstOpNode(token.Data);
-                expr.LNode = E_1();
+                AstOpNode expr = new AstOpNode(token.Data)
+                {
+                    LNode = E_1()
+                };
                 return expr;
             }
             _pos = oldPos;
@@ -354,8 +352,10 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl.FormatExpression
                 IAstNode node = E0();
                 if (node != null)
                 {
-                    List<IAstNode> args = new List<IAstNode>();
-                    args.Add(node);
+                    List<IAstNode> args = new List<IAstNode>
+                    {
+                        node
+                    };
                     while (LookToken().Type == TokenType.Op && LookToken().Data == ",")
                     {
                         GetToken();

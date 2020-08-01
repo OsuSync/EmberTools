@@ -18,5 +18,9 @@ namespace EmberKernel.Services.Statistic.Hub
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Format)));
         }
+        public void OnNameChanged()
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Name)));
+        }
     }
 }

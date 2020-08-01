@@ -115,7 +115,14 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
 
         public string Format(string format)
         {
-            return Build(string.Empty, format).FormatFunction();
+            try
+            {
+                return Build(string.Empty, format).FormatFunction();
+            }
+            catch
+            {
+                return "<Invalid Format!>";
+            }
         }
 
         #region (Un)Register formats methods implement
@@ -138,7 +145,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 Format = Build(id, format),
                 FormatInfo = new FormatInfo(format, scope, typeof(TContainer))
             };
-            logger.LogDebug("register new format " + registeredFormats[format].Format.Id);
+            logger.LogDebug("register new format " + registeredFormats[id].Format.Id);
         }
 
         public void Unregister<TContainer>(string id) where TContainer : IFormatContainer

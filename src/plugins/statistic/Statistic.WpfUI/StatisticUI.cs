@@ -14,7 +14,7 @@ namespace Statistic.WpfUI
     {
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.ConfigureComponent<StatisticEditorViewModel>().SingleInstance().PropertiesAutowired();
+            builder.ConfigureComponent<StatisticEditorViewModel>().AsSelf().As<IEditorContextViewModel>().SingleInstance().PropertiesAutowired();
             builder.ConfigureUIComponent<StatisticEditorTab>();
         }
 
