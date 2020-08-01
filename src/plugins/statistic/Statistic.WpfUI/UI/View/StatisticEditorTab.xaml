@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="Statistic.WpfUI.UI.View.StatisticEditorTab"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Statistic.WpfUI.UI.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+            <ColumnDefinition Width="10px"></ColumnDefinition>
+            <ColumnDefinition Width="1*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0">Available Variables:</Label>
+            <ListView Grid.Row="1" ItemsSource="{Binding Variables, Mode=OneWay}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="100px" DisplayMemberBinding="{Binding Name, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Value" Width="120px" DisplayMemberBinding="{Binding Value.Value, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Description" Width="Auto" DisplayMemberBinding="{Binding Description, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Id" Width="Auto" DisplayMemberBinding="{Binding Id, Mode=OneWay}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Grid>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="2*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Label Grid.Row="0">Formats:</Label>
+            <ListView Grid.Row="1" ItemsSource="{Binding Formats, Mode=OneWay}" SelectedItem="{Binding SelectedHubFormat}">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="OnFormatDoubleClick"/>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Name" Width="100px" DisplayMemberBinding="{Binding Name, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Format" Width="100px" DisplayMemberBinding="{Binding Format, Mode=OneWay}"></GridViewColumn>
+                        <GridViewColumn Header="Value" Width="200px" DisplayMemberBinding="{Binding Value, Mode=OneWay}"></GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition></RowDefinition>
+                    <RowDefinition Height="32px"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0" Visibility="{Binding EditorVisibility}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Vertical">
+                        <Label>Name:</Label>
+                        <TextBox MaxLines="1" Text="{Binding EditingHubFormat.Name, Mode=TwoWay}"></TextBox>
+                        <Label>Format:</Label>
+                        <TextBox AcceptsReturn="True" MaxLines="3" Text="{Binding EditingHubFormat.Format, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"></TextBox>
+                        <Label>Preview:</Label>
+                    </StackPanel>
+                    <TextBlock Grid.Row="1" Text="{Binding EditingHubFormat.Value, Mode=OneWay}" TextWrapping="Wrap"></TextBlock>
+                </Grid>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Stretch">
+                    <Button Width="75px" Margin="0,0,10,0" Visibility="{Binding CreateVisibility, Mode=OneWay}" Command="{Binding CreateFormat, Mode=OneTime}">New</Button>
+                    <Button Width="75px" Margin="0,0,10,0" Visibility="{Binding SaveVisibility, Mode=OneWay}" Command="{Binding SaveFormat, Mode=OneTime}">Save</Button>
+                    <Button Width="75px" Margin="0,0,10,0" Visibility="{Binding DeleteVisibility, Mode=OneWay}" Command="{Binding DeleteFormat, Mode=OneTime}">Delete</Button>
+                    <Button Width="75px" Visibility="{Binding CancelVisibility, Mode=OneWay}" Command="{Binding CancelFormat, Mode=OneTime}">Cancel</Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

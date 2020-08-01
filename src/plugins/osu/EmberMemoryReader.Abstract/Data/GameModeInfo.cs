@@ -1,4 +1,5 @@
 ﻿using EmberKernel.Services.EventBus;
+using EmberKernel.Services.Statistic.DataSource.Variables;
 using System;
 
 namespace EmberMemoryReader.Abstract.Data
@@ -16,6 +17,7 @@ namespace EmberMemoryReader.Abstract.Data
     public class GameModeInfo : Event<GameModeInfo>, IComparable<GameModeInfo>, IEquatable<GameModeInfo>
     {
         public bool HasValue { get; set; }
+        [DataSourceVariable]
         public OsuMode Mode { get; set; }
         public int CompareTo(GameModeInfo other)
         {

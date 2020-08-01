@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using EmberKernel.Plugins;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace EmberKernel
@@ -15,12 +14,22 @@ namespace EmberKernel
         public Kernel(ContainerBuilder builder)
         {
             Builder = builder;
+            Builder.RegisterInstance(this).AsSelf().SingleInstance();
             Container = Builder.Build();
         }
 
         public void Run()
         {
             RunAsync().AsTask().Wait();
+        }
+
+        public async ValueTask Exit()
+        {
+            if (Container.IsRegistered<IPluginsLayer>())
+            {
+                await Container.Resolve<IPluginsLayer>().DisposeAsync();
+            }
+            await Container.DisposeAsync();
         }
 
         public async ValueTask RunAsync()

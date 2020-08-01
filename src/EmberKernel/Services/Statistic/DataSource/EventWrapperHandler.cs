@@ -12,37 +12,47 @@ namespace EmberKernel.Services.Statistic.DataSource
     {
         public event Action<T, IEnumerable<Variable>> PropertyChanged;
 
-        private static readonly List<PropertyInfo> PropertyInfos
-            = new List<PropertyInfo>();
+        private static readonly Dictionary<string, PropertyInfo> PropertyInfos
+            = new Dictionary<string, PropertyInfo>();
         private static T Value { get; set; } = default;
         private static readonly T DefaultValue = default;
 
         public static IEnumerable<Variable> GenrateVariables()
         {
-            foreach (var property in PropertyInfos)
+            foreach (var (_, property) in PropertyInfos)
             {
                 yield return Variable.CreateFrom(property);
             }
+        }
+
+        static bool IsPropertyShouldCompare(PropertyInfo property)
+        {
+            return PropertyInfos.ContainsKey(property.Name);
         }
 
         static EventWrapperHandler()
         {
             foreach (var propertyInfo in typeof(T).GetProperties())
             {
-                PropertyInfos.Add(propertyInfo);
+                if (propertyInfo.GetCustomAttribute<DataSourceVariableAttribute>() is DataSourceVariableAttribute)
+                {
+                    PropertyInfos.Add(propertyInfo.Name, propertyInfo);
+                }
             }
         }
 
         public static IEnumerable<Variable> CompareAllProperties(T newValue, T oldValue)
         {
             // has value
-            foreach (var property in PropertyInfos)
+            foreach (var (_, property) in PropertyInfos)
             {
+                if (!IsPropertyShouldCompare(property)) continue;
                 var newPropertyValue = property.GetValue(newValue);
                 if (!Equals(property.GetValue(oldValue), property.GetValue(newValue)))
                 {
                     var variable = Variable.CreateFrom(property);
-                    variable.Value = Variable.ConvertValue(newPropertyValue);
+                    if (Equals(newPropertyValue, default)) variable.Value = default;
+                    else variable.Value = Variable.ConvertValue(newPropertyValue);
                     yield return variable;
                 }
             }
@@ -50,11 +60,13 @@ namespace EmberKernel.Services.Statistic.DataSource
 
         private static IEnumerable<Variable> EnumerableAllProperties(T newValue)
         {
-            foreach (var property in PropertyInfos)
+            foreach (var (_, property) in PropertyInfos)
             {
+                if (!IsPropertyShouldCompare(property)) continue;
                 var newPropertyValue = property.GetValue(newValue);
                 var variable = Variable.CreateFrom(property);
-                variable.Value = Variable.ConvertValue(newPropertyValue);
+                if (Equals(newPropertyValue, default)) variable.Value = default;
+                else variable.Value = Variable.ConvertValue(newPropertyValue);
                 yield return variable;
             }
             yield break;

@@ -1,23 +1,10 @@
 ﻿using Autofac;
-using EmberCore.KernelServices.UI.View;
-using EmberKernel.Plugins.Components;
-using EmberKernel.Services.UI.Mvvm.Dependency;
+using EmberKernel;
 using EmberKernel.Services.UI.Mvvm.ViewComponent.Window;
-using EmberKernel.Services.UI.Mvvm.ViewModel.Configuration;
 using EmberWpfCore.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Windows.Threading;
 
 namespace EmberWpfCore.View
 {
@@ -31,9 +18,11 @@ namespace EmberWpfCore.View
             InitializeComponent();
         }
 
+        private Kernel Kernel { get; set; }
         public ValueTask Initialize(ILifetimeScope scope)
         {
             var tabs = scope.Resolve<RegisteredTabs>();
+            Kernel = scope.Resolve<Kernel>();
             (FindName("Tabs") as TabControl).ItemsSource = tabs;
             Show();
             return default;
@@ -44,6 +33,11 @@ namespace EmberWpfCore.View
             Hide();
             Close();
             return default;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            _ = Kernel.Exit();
         }
     }
 }

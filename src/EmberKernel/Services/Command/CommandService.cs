@@ -147,7 +147,6 @@ namespace EmberKernel.Services.Command
         public async ValueTask DisposeAsync()
         {
             notDisposed = false;
-            Keeper.Abort();
             CommandNamespaces.Clear();
             CommandContainerAlias.Clear();
             CommandScope.Clear();

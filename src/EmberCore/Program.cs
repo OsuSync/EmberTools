@@ -75,7 +75,8 @@ namespace EmberCore
                 .UseStatistic(statistic => statistic
                     .ConfigureEventSourceManager()
                     .ConfigureDefaultDataSource()
-                    .ConfigureDefaultFormatter())
+                    .ConfigureDefaultFormatter()
+                    .ConfigureDefaultHub())
                 .Build()
                 .Run();
         }

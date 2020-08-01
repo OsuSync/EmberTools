@@ -28,7 +28,7 @@
             return obj.Value.GetHashCode();
         }
 
-        public string GetString()
+        public override string ToString()
         {
             return Value;
         }

@@ -63,7 +63,7 @@ namespace EmberMemoryReader.Abstract.Data
             if (!Reader.TryReadIntPtr(ruleSetAddress + 0x38, out var scoreAddress)) return false;
             if (!Reader.TryReadIntPtr(scoreAddress + 0x1c, out var modAddress)) return false;
 
-            var info = new PlayingInfo() { HasValue = true, GameStatistic = new GameStatistic() };
+            var info = new PlayingInfo() { HasValue = true };
             result = info;
             if (Reader.TryReadInt(TimeAddress, out int playingTime))
             {
@@ -84,46 +84,46 @@ namespace EmberMemoryReader.Abstract.Data
             //}
             if (Reader.TryReadShort(scoreAddress + 0x90, out var katu))
             {
-                info.GameStatistic.Katu = katu;
+                info.Katu = katu;
             }
             if (Reader.TryReadShort(scoreAddress + 0x8e, out var geki))
             {
-                info.GameStatistic.Geki = geki;
+                info.Geki = geki;
             }
             if (Reader.TryReadShort(scoreAddress + 0x8c, out var bad))
             {
-                info.GameStatistic.Bad = bad;
+                info.Bad = bad;
             }
             if (Reader.TryReadShort(scoreAddress + 0x88, out var good))
             {
-                info.GameStatistic.Good = good;
+                info.Good = good;
             }
             if (Reader.TryReadShort(scoreAddress + 0x8a, out var best))
             {
-                info.GameStatistic.Best = best;
+                info.Best = best;
             }
             if (Reader.TryReadShort(scoreAddress + 0x92, out var missing))
             {
-                info.GameStatistic.Missing = missing;
+                info.Missing = missing;
             }
             if (Reader.TryReadShort(scoreAddress + 0x94, out var combo))
             {
-                info.GameStatistic.Combo = combo;
+                info.Combo = combo;
             }
             if (Reader.TryReadIntPtr(AccuracyAddress, out var currentScoreAddress)
                 && Reader.TryReadIntPtr(currentScoreAddress + 0x44, out currentScoreAddress)
                 && Reader.TryReadInt(currentScoreAddress + 0xF8, out var currentScore))
             {
-                info.GameStatistic.Score = currentScore;
+                info.Score = currentScore;
             }
             if (Reader.TryReadIntPtr(ruleSetAddress + 0x40, out var hpAddress)
                 && Reader.TryReadDouble(hpAddress + 0x1c, out var hp)) {
-                info.GameStatistic.HP = hp;
+                info.HP = hp;
             }
             if (Reader.TryReadIntPtr(ruleSetAddress + 0x48, out var currentAccAddress)
                 && Reader.TryReadDouble(currentAccAddress + 0x14, out double accuracy))
             {
-                info.GameStatistic.Accuracy = accuracy;
+                info.Accuracy = accuracy;
             }
             return true;
 

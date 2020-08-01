@@ -30,7 +30,8 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         {
             var changedVariableNames = changedVariables.Select((variable) => variable.Id);
             var notifyFormats = registeredFormats.Where(x => x.Value.Format.RequestVariables.Intersect(changedVariableNames).Any());
-
+            // a difference sequsence include the variable first initialized
+            var firstInitializeVariables = changedVariableNames.Except(converter.Variables.Keys).ToList();
             foreach (var variable in changedVariables)
             {
                 //update variable for context.
@@ -39,6 +40,17 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                     DataSource.Variables.Value.StringValue str => ValueBase.Create(str.Value),
                     _ => ValueBase.Create($"<UNK VAR:{variable.Id} TYPE:{variable.Value.GetType().Name}>")
                 };
+            }
+            // check all format and rebuild format which require uninitialized variable
+            foreach (var variableId in firstInitializeVariables)
+            {
+                foreach (var (_, registeredFormat) in notifyFormats)
+                {
+                    if (registeredFormat.Format.RequestVariables.Contains(variableId))
+                    {
+                        registeredFormat.Format = Build(registeredFormat.Format.Id, registeredFormat.FormatInfo.Format);
+                    }
+                }
             }
 
             foreach (var (_, registerdFormat) in notifyFormats)
@@ -54,7 +66,7 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
             }
         }
 
-        public DefaultFormat Build(string format)
+        public DefaultFormat Build(string id, string format)
         {
             var formatArray = new List<Func<string>>();
             var mayRequestVariables = new HashSet<string>();
@@ -110,12 +122,19 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
                 return sb.ToString();
             });
 
-            return new DefaultFormat(mayRequestVariables, formatFunc);
+            return new DefaultFormat(id, mayRequestVariables, formatFunc);
         }
 
         public string Format(string format)
         {
-            return Build(format).FormatFunction();
+            try
+            {
+                return Build(string.Empty, format).FormatFunction();
+            }
+            catch
+            {
+                return "<Invalid Format!>";
+            }
         }
 
         #region (Un)Register formats methods implement
@@ -126,26 +145,26 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
             return registeredFormats.Where(x => type == x.Value.FormatInfo.ContainerType).Select(x => x.Key).ToList();
         }
 
-        public bool IsRegistered<TContainer>(string format) where TContainer : IFormatContainer
+        public bool IsRegistered<TContainer>(string id) where TContainer : IFormatContainer
         {
-            return registeredFormats.ContainsKey(format);
+            return registeredFormats.ContainsKey(id);
         }
 
-        public void Register<TContainer>(ILifetimeScope scope, string format) where TContainer : IFormatContainer
+        public void Register<TContainer>(ILifetimeScope scope, string id, string format) where TContainer : IFormatContainer
         {
-            registeredFormats[format] = new RegisteredFormat()
+            registeredFormats[id] = new RegisteredFormat()
             {
-                Format = Build(format),
+                Format = Build(id, format),
                 FormatInfo = new FormatInfo(format, scope, typeof(TContainer))
             };
-            logger.LogDebug("register new format " + registeredFormats[format].Format.Id);
+            logger.LogDebug("register new format " + registeredFormats[id].Format.Id);
         }
 
-        public void Unregister<TContainer>(string format) where TContainer : IFormatContainer
+        public void Unregister<TContainer>(string id) where TContainer : IFormatContainer
         {
-            if (registeredFormats.TryGetValue(format, out var registerFormat))
+            if (registeredFormats.TryGetValue(id, out var registerFormat))
             {
-                registeredFormats.Remove(format);
+                registeredFormats.Remove(id);
                 logger.LogDebug("unregister new format " + registerFormat.Format.Id);
             }
         }
@@ -154,6 +173,13 @@ namespace EmberKernel.Services.Statistic.Formatter.DefaultImpl
         {
             registeredFormats.Clear();
             logger.LogDebug("unregister all formats");
+        }
+
+        public void Update<TContainer>(string id, string format)
+        {
+            if (!registeredFormats.ContainsKey(id)) return;
+            registeredFormats[id].Format = Build(id, format);
+            registeredFormats[id].FormatInfo.Format = format;
         }
 
         #endregion

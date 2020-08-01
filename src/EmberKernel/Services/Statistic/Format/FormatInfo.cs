@@ -5,7 +5,7 @@ namespace EmberKernel.Services.Statistic.Format
 {
     public class FormatInfo
     {
-        public string Format { get; }
+        public string Format { get; set; }
         internal ILifetimeScope Scope { get; }
         public Type ContainerType { get; }
 
