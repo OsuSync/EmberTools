@@ -18,7 +18,8 @@ namespace Statistic.Outputs.Web
             builder.ConfigureComponent<WebServer>().SingleInstance();
             builder.ConfigureComponent<VariableRouter>().SingleInstance().PropertiesAutowired();
             builder.ConfigureComponent<FormatRouter>().SingleInstance().PropertiesAutowired();
-            builder.ConfigureComponent<WebSockeRouter>().SingleInstance().PropertiesAutowired();
+            builder.ConfigureComponent<FormatWebSocketRouter>().SingleInstance().PropertiesAutowired();
+            builder.ConfigureComponent<VariableWebSocketRouter>().SingleInstance().PropertiesAutowired();
         }
 
         public override ValueTask Initialize(ILifetimeScope scope)
@@ -26,11 +27,14 @@ namespace Statistic.Outputs.Web
             var host = scope.Resolve<WebServer>();
             var variableRouter = scope.Resolve<VariableRouter>();
             var formatRouter = scope.Resolve<FormatRouter>();
-            var websocketRouter = scope.Resolve<WebSockeRouter>();
+            var formatWebsocketRouter = scope.Resolve<FormatWebSocketRouter>();
+            var variableWebsocketRouter = scope.Resolve<VariableWebSocketRouter>();
             host.AddHandlers(handle => handle
-            .Use(RouterMiddleware.Route("/api/format", (route) => route.Use(variableRouter.Route)))
-            .Use(RouterMiddleware.Route("/api/variable", (route) => route.Use(formatRouter.Route)))
-            .Use(RouterMiddleware.Route("/ws", (route) => route.Use(websocketRouter.Route))));
+                .Use(RouterMiddleware.Route("/api/format", (route) => route.Use(formatRouter.Route)))
+                .Use(RouterMiddleware.Route("/api/variable", (route) => route.Use(variableRouter.Route)))
+                .Use(RouterMiddleware.Route("/ws/format", (route) => route.Use(formatWebsocketRouter.Route)))
+                .Use(RouterMiddleware.Route("/ws/variable", (route) => route.Use(variableWebsocketRouter.Route)))
+            );
             host.Run();
             return default;
         }

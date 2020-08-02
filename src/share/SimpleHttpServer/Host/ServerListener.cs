@@ -19,7 +19,11 @@ namespace SimpleHttpServer.Host
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                ProcessRequest?.Invoke(await Listener.GetContextAsync(), cancellationToken);
+                try
+                {
+                    ProcessRequest?.Invoke(await Listener.GetContextAsync(), cancellationToken);
+                }
+                catch { }
             }
         }
 
