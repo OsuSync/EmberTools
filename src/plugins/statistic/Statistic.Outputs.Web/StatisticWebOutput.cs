@@ -3,6 +3,7 @@ using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Statistic;
+using Microsoft.Extensions.Logging;
 using SimpleHttpServer.Host;
 using SimpleHttpServer.Pipeline;
 using SimpleHttpServer.Pipeline.Middlewares;
@@ -15,6 +16,11 @@ namespace Statistic.Outputs.Web
     [EmberPlugin(Author = "ZeroAsh", Name = "Statistic Exporter - Web", Version = "1.0")]
     public class StatisticWebOutput : Plugin
     {
+        private ILogger<StatisticWebOutput> Logger { get; }
+        public StatisticWebOutput(ILogger<StatisticWebOutput> logger)
+        {
+            Logger = logger;
+        }
         public override void BuildComponents(IComponentBuilder builder)
         {
             builder.Container.RegisterInstance(
@@ -62,6 +68,7 @@ namespace Statistic.Outputs.Web
                 }))
             ));
             _ = host.Run();
+            Logger.LogInformation($"HTTP server listen on {string.Join(",", host.Server.Listener.Prefixes)}");
             return default;
         }
 
