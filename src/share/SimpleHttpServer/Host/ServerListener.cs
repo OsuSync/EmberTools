@@ -7,7 +7,7 @@ namespace SimpleHttpServer.Host
 {
     public class ServerListener : IDisposable
     {
-        public HttpListener Listener { get; set; }
+        private HttpListener Listener { get; set; }
         public ServerListener(HttpListener httpListener)
         {
             Listener = httpListener;
