@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpleHttpServer.Host
 {
-    public class SimpleHost : IDisposable
+    public class SimpleHost
     {
         private RequestPipeline Pipeline { get; }
         private Middleware<RequestContext> Handler { get; set; }
@@ -34,11 +34,6 @@ namespace SimpleHttpServer.Host
         public async ValueTask Run(CancellationToken cancellationToken = default)
         {
             await Server.HandleRequest(cancellationToken);
-        }
-
-        public void Dispose()
-        {
-            Server.Dispose();
         }
     }
 }

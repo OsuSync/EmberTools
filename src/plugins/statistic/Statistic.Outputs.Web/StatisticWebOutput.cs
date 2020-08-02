@@ -2,10 +2,13 @@
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
+using EmberKernel.Services.Statistic;
+using Microsoft.Extensions.Logging;
+using SimpleHttpServer.Host;
 using SimpleHttpServer.Pipeline;
 using SimpleHttpServer.Pipeline.Middlewares;
-using Statistic.Outputs.Web.Components;
-using Statistic.Outputs.Web.Components.Routers;
+using SimpleHttpServer.Response;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Statistic.Outputs.Web
@@ -13,25 +16,59 @@ namespace Statistic.Outputs.Web
     [EmberPlugin(Author = "ZeroAsh", Name = "Statistic Exporter - Web", Version = "1.0")]
     public class StatisticWebOutput : Plugin
     {
+        private ILogger<StatisticWebOutput> Logger { get; }
+        public StatisticWebOutput(ILogger<StatisticWebOutput> logger)
+        {
+            Logger = logger;
+        }
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.ConfigureComponent<WebServer>().SingleInstance();
-            builder.ConfigureComponent<VariableRouter>().SingleInstance().PropertiesAutowired();
-            builder.ConfigureComponent<FormatRouter>().SingleInstance().PropertiesAutowired();
-            builder.ConfigureComponent<WebSockeRouter>().SingleInstance().PropertiesAutowired();
+            builder.Container.RegisterInstance(
+                new SimpleHostBuilder()
+                .ConfigureServer((server) => server.ListenLocalPort(11111))
+                .Build())
+            .AsSelf()
+            .SingleInstance();
         }
 
         public override ValueTask Initialize(ILifetimeScope scope)
         {
-            var host = scope.Resolve<WebServer>();
-            var variableRouter = scope.Resolve<VariableRouter>();
-            var formatRouter = scope.Resolve<FormatRouter>();
-            var websocketRouter = scope.Resolve<WebSockeRouter>();
+            var host = scope.Resolve<SimpleHost>();
             host.AddHandlers(handle => handle
-            .Use(RouterMiddleware.Route("/api/format", (route) => route.Use(variableRouter.Route)))
-            .Use(RouterMiddleware.Route("/api/variable", (route) => route.Use(formatRouter.Route)))
-            .Use(RouterMiddleware.Route("/ws", (route) => route.Use(websocketRouter.Route))));
-            host.Run();
+            .Use(RouterMiddleware.Route("/api/format", formatRoute => formatRoute
+                .Use((ctx, next) =>
+                {
+                    var hub = scope.Resolve<IStatisticHub>();
+                    if (ctx.Http.Request.Url.LocalPath == "/api/format")
+                    {
+                        return ctx.Http.Response.Ok(hub);
+                    }
+                    var formatName = Path.GetFileName(ctx.Http.Request.Url.LocalPath);
+                    if (hub.IsRegistered(formatName))
+                    {
+                        return ctx.Http.Response.Ok(hub.GetValue(formatName));
+                    }
+                    return next();
+                })
+            ))
+            .Use(RouterMiddleware.Route("/api/variable", varRoute => varRoute
+                .Use((ctx, next) =>
+                {
+                    var dataSource = scope.Resolve<IDataSource>();
+                    if (ctx.Http.Request.Url.LocalPath == "/api/variable")
+                    {
+                        return ctx.Http.Response.Ok(dataSource);
+                    }
+                    var varName = Path.GetFileName(ctx.Http.Request.Url.LocalPath);
+                    if (dataSource.TryGetVariable(varName, out var variable))
+                    {
+                        return ctx.Http.Response.Ok(variable);
+                    }
+                    return next();
+                }))
+            ));
+            _ = host.Run();
+            Logger.LogInformation($"HTTP server listen on {string.Join(",", host.Server.Listener.Prefixes)}");
             return default;
         }
 
