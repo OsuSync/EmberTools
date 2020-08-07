@@ -41,6 +41,8 @@ namespace Statistic.Outputs.Web
 
         public override ValueTask Uninitialize(ILifetimeScope scope)
         {
+            var host = scope.Resolve<WebServer>();
+            host.Stop();
             return default;
         }
     }

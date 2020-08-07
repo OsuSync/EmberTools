@@ -27,9 +27,14 @@ namespace SimpleHttpServer.Host
             }
         }
 
-        public void Dispose()
+        public void Stop()
         {
             Listener.Stop();
+        }
+
+        public void Dispose()
+        {
+            Stop();
         }
     }
 }

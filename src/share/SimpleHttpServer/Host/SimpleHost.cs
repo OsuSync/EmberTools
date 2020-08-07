@@ -36,8 +36,14 @@ namespace SimpleHttpServer.Host
             await Server.HandleRequest(cancellationToken);
         }
 
+        public void Stop()
+        {
+            Server.Stop();
+        }
+
         public void Dispose()
         {
+            Stop();
             Server.Dispose();
         }
     }
