@@ -28,7 +28,11 @@ namespace EmberCore.KernelServices.PluginResolver
         private void CreateCache(string srcPath, string targetPath)
         {
             if (!Directory.Exists(targetPath))
+            {
+                Logger.LogInformation($"created cache folder : {targetPath}");
                 Directory.CreateDirectory(targetPath);
+            }
+
             var dirsToProcess = new Queue<(string sourcePath, string destinationPath)>();
             dirsToProcess.Enqueue((sourcePath: srcPath, destinationPath: targetPath));
             while (dirsToProcess.Any())
@@ -53,6 +57,13 @@ namespace EmberCore.KernelServices.PluginResolver
         {
             var pluginBaseFolder = Path.Combine(ContentRoot.ContentDirectory, CoreAppSetting.Value.PluginsFolder);
             var cacheFolder = Path.Combine(ContentRoot.ContentDirectory, CoreAppSetting.Value.PluginsCacheFolder);
+
+            if (!Directory.Exists(pluginBaseFolder))
+            {
+                Directory.CreateDirectory(pluginBaseFolder);
+                Logger.LogInformation($"created plugins folder : {pluginBaseFolder}");
+            }
+
             var sourcePluginFolders = Directory.EnumerateDirectories(pluginBaseFolder);
             try
             {
