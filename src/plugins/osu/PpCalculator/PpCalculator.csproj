@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SimpleOsuPerformanceCalculator" Version="0.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EmberKernel\EmberKernel.csproj">
+      <Private>false</Private>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\EmberMemoryReader.Abstract\EmberMemoryReader.Abstract.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="move $(OutDir)\$(TargetFileName) $(OutDir)\$(TargetName).dll&#xD;&#xA;mkdir $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)&#xD;&#xA;copy $(OutDir)\*  $(SolutionDir)build\$(ConfigurationName)\plugins\$(ProjectName)" />
+  </Target>
+</Project>

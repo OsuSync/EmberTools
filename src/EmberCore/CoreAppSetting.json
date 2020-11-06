@@ -1,0 +1,17 @@
+{
+  "CheckUpdate": true,
+  "CheckComponentUpdate": true,
+  "Locale": "System",
+  "PluginsFolder": "plugins",
+  "PluginsCacheFolder": "cache",
+  "CommandSourceOperationTimeLimit": 5,
+  "Logging": {
+    "LogFolder": "logs",
+    "LogFilePattern": "logs_.txt",
+    "ConsoleLogFormat": "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext}] {Message:lj}{NewLine}{Exception}",
+    "FileLogFormat": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+  },
+  "Sqlite": {
+    "DbFileName": "ember.sqlite"
+  }
+}

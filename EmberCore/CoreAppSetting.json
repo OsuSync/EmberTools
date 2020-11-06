@@ -1,8 +1,0 @@
-{
-  "CheckUpdate": true,
-  "CheckComponentUpdate": true,
-  "Locale": "System",
-  "PluginsFolder": "plugins",
-  "PluginsCacheFolder": "cache",
-  "CommandSourceOperationTimeLimit": 5
-}
