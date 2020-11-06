@@ -13,11 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberWeb", "EmberWeb\EmberW
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberAuthorTools", "EmberAuthorTools\EmberAuthorTools.csproj", "{FDB3DA3D-E808-4B82-8B9A-AAB1A18F599F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberMemoryReader", "EmberMemoryReader\EmberMemoryReader.csproj", "{0B879415-AAAB-4830-858F-14626C394E96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EmberMemoryReader", "EmberMemoryReader\EmberMemoryReader.csproj", "{0B879415-AAAB-4830-858F-14626C394E96}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "share", "share", "{239B3BE6-770D-4BAD-AA11-FD91A2D62D02}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OsuUtils", "share\OsuUtils\OsuUtils.csproj", "{867D93CA-FA42-43F3-B193-82EA2925B367}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OsuUtils", "share\OsuUtils\OsuUtils.csproj", "{867D93CA-FA42-43F3-B193-82EA2925B367}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{FCF6526B-615B-4F10-BBDF-E6A3424394A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmberLyricDisplayerPlugin", "EmberLyricDisplayerPlugin\EmberLyricDisplayerPlugin.csproj", "{499F49BA-6D17-424C-A3E8-7F870E92642C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,12 +57,17 @@ Global
 		{867D93CA-FA42-43F3-B193-82EA2925B367}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{867D93CA-FA42-43F3-B193-82EA2925B367}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{867D93CA-FA42-43F3-B193-82EA2925B367}.Release|Any CPU.Build.0 = Release|Any CPU
+		{499F49BA-6D17-424C-A3E8-7F870E92642C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{499F49BA-6D17-424C-A3E8-7F870E92642C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{499F49BA-6D17-424C-A3E8-7F870E92642C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{499F49BA-6D17-424C-A3E8-7F870E92642C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{867D93CA-FA42-43F3-B193-82EA2925B367} = {239B3BE6-770D-4BAD-AA11-FD91A2D62D02}
+		{499F49BA-6D17-424C-A3E8-7F870E92642C} = {FCF6526B-615B-4F10-BBDF-E6A3424394A4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57B800AC-CFE3-4081-8EC4-9BD1C74869B0}
