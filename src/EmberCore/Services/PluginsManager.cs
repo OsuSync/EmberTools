@@ -81,6 +81,7 @@ namespace EmberCore.Services
             {
                 LoadedTypeDescriptors.Add(type, type.GetCustomAttribute<EmberPluginAttribute>().ToString());
             }
+            
             if (WpfUIService != null)
             {
                 Logger.LogInformation($"Preparing UI service...");
@@ -95,7 +96,7 @@ namespace EmberCore.Services
                 await WpfUIService.StartWpfUIService();
                 Logger.LogInformation($"Wpf UI Application started.");
             }
-
+            
             foreach (var (type, pluginDesciptor) in LoadedTypeDescriptors)
             {
                 Logger.LogInformation($"Preparing plugin {pluginDesciptor}...");

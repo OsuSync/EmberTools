@@ -38,6 +38,7 @@ namespace EmberCore
         public static void Main()
         {
             new KernelBuilder()
+                .UseDeafaultUtils()
                 .UseConfiguration((config) =>
                 {
                     config
