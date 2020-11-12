@@ -19,11 +19,7 @@ namespace EmberLyricDisplayerPlugin
         public override void BuildComponents(IComponentBuilder builder)
         {
             builder.ConfigureComponent<Kernel.LyricsFinder>();
-            builder.ConfigureComponent<LyricsController>().SingleInstance();
-
-            builder.ConfigureEventHandler<BeatmapInfo,LyricsController>();
-            builder.ConfigureEventHandler<GameStatusInfo, LyricsController>();
-            builder.ConfigureEventHandler<PlayingInfo, LyricsController>();
+            builder.ConfigureComponent<LyricsController>();
 
             builder.UsePluginOptionsModel<EmberLyricDisplayerPlugin, PluginOptions>();
             builder.UseConfigurationModel<PluginOptions>("EmberLyricDisplayerPlugin");
@@ -31,6 +27,10 @@ namespace EmberLyricDisplayerPlugin
 
         public override ValueTask Initialize(ILifetimeScope scope)
         {
+            scope.Subscription<BeatmapInfo, LyricsController>();
+            scope.Subscription<GameStatusInfo, LyricsController>();
+            scope.Subscription<PlayingInfo, LyricsController>();
+
             // init or update config
             var optFactory = scope.Resolve<IPluginOptions<EmberLyricDisplayerPlugin,PluginOptions>>();
             var opt = optFactory.Create();
@@ -51,6 +51,10 @@ namespace EmberLyricDisplayerPlugin
 
         public override ValueTask Uninitialize(ILifetimeScope scope)
         {
+            scope.Unsubscription<BeatmapInfo, LyricsController>();
+            scope.Unsubscription<GameStatusInfo, LyricsController>();
+            scope.Unsubscription<PlayingInfo, LyricsController>();
+
             return default;
         }
     }
