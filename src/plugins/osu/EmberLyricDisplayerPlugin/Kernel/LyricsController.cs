@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using ATL;
 using LyricsFinder;
 using EmberKernel.Services.Configuration;
+using EmberKernel.Utils.CommonOutputter;
 
 namespace EmberLyricDisplayerPlugin.Kernel
 {
@@ -21,32 +22,46 @@ namespace EmberLyricDisplayerPlugin.Kernel
         private readonly LyricsFinder lyricsFinder;
         private readonly ILogger<LyricsController> logger;
         private readonly OsuDatabaseContext osuDb;
-        private readonly LyricsOutputter outputter;
         private readonly PluginOptions option;
         private OsuInternalStatus prevStatus = OsuInternalStatus.Unknown;
         private int? currentBeatmapId = null;
 
-        private Lyrics currentLyrics;
+        private Lyrics currentLyrics = default;
         private int prevSentenceIndex = -1;
         private int prevTime = -1;
+        private IOutputter outputter;
 
         public LyricsController(
             LyricsFinder lyricsFinder,
             ILogger<LyricsController> logger,
             OsuDatabaseContext osuDb,
-            LyricsOutputter outputter,
+            ICommonOutputterFactory outputterFactory,
             IReadOnlyPluginOptions<PluginOptions> optionFactory)
         {
             this.lyricsFinder = lyricsFinder;
             this.logger = logger;
             this.osuDb = osuDb;
-            this.outputter = outputter;
             option = optionFactory.Create();
+
+            var outputPath = option.LyricsSentenceOutputPath;
+
+            try
+            {
+                //init outputer
+                outputter = outputterFactory.CreateOutputterByDefinition(outputPath);
+                outputter.CleanAsync();
+                logger.LogInformation($"create {outputter.GetType().Name} to output target : {outputter.Name}");
+            }
+            catch (Exception e)
+            {
+                logger.LogError($"Can't create any outputter for output target : {outputPath} , err msg : {e.Message}");
+            }
         }
 
         public ValueTask Handle(BeatmapInfo evt)
         {
             currentBeatmapId = evt?.BeatmapId;
+            logger.LogDebug($"currentBeatmapId : {currentBeatmapId?.ToString()}");
             return default;
         }
 
@@ -61,11 +76,20 @@ namespace EmberLyricDisplayerPlugin.Kernel
                     await SetupLyricsDisplay();
                     break;
                 default:
-
+                    CleanLyricsDisplay();
                     break;
             }
 
+            logger.LogDebug($"status {prevStatus} -> {evt.Status}");
             prevStatus = evt.Status;
+        }
+
+        private void CleanLyricsDisplay()
+        {
+            currentBeatmapId = null;
+            currentLyrics = null;
+            prevSentenceIndex = -1;
+            prevTime = -1;
         }
 
         private async ValueTask SetupLyricsDisplay()
@@ -85,6 +109,7 @@ namespace EmberLyricDisplayerPlugin.Kernel
             logger.LogDebug($"osuFilePath : {osuFilePath}");
 
             var duration = await GetDuration(osuFilePath);
+            logger.LogInformation($"osuFilePath : {duration}");
 
             if (duration <= 0)
                 return;
@@ -119,7 +144,7 @@ namespace EmberLyricDisplayerPlugin.Kernel
             return track.Duration * 1000;//convert to ms
         }
 
-        private async Task<string> GetAudioFilePath(string osuFilePath)
+        private async ValueTask<string> GetAudioFilePath(string osuFilePath)
         {
             var lines = await File.ReadAllLinesAsync(osuFilePath);
 
@@ -137,14 +162,14 @@ namespace EmberLyricDisplayerPlugin.Kernel
 
         public void Dispose()
         {
-
+            outputter?.Dispose();
         }
 
-        public ValueTask Handle(PlayingInfo evt)
+        public async ValueTask Handle(PlayingInfo evt)
         {
             var time = evt.PlayingTime;
             if (currentLyrics is null || time == prevTime)
-                return default;
+                return;
 
             time += option.GobalTimeOffset;
 
@@ -161,15 +186,11 @@ namespace EmberLyricDisplayerPlugin.Kernel
                     sentence = Sentence.Empty;
             }
 
-            OutputLyricSentence(sentence);
+            await OutputLyricSentence(sentence);
 
             prevTime = time;
-            return default;
         }
 
-        private void OutputLyricSentence(Sentence sentence)
-        {
-            throw new NotImplementedException();
-        }
+        private ValueTask OutputLyricSentence(Sentence sentence) => outputter?.WriteAsync(sentence.Content) ?? default;
     }
 }

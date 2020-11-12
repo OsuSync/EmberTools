@@ -1,9 +1,11 @@
 ﻿using Autofac;
+using EmberKernel;
 using EmberKernel.Plugins;
 using EmberKernel.Plugins.Attributes;
 using EmberKernel.Plugins.Components;
 using EmberKernel.Services.Configuration;
 using EmberLyricDisplayerPlugin.Kernel;
+using EmberLyricDisplayerPlugin.Models;
 using LyricsFinder;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,7 +18,12 @@ namespace EmberLyricDisplayerPlugin
     {
         public override void BuildComponents(IComponentBuilder builder)
         {
-            builder.ConfigureComponent<Kernel.LyricsFinder>().SingleInstance();
+            builder.ConfigureComponent<Kernel.LyricsFinder>();
+            builder.ConfigureComponent<LyricsController>().SingleInstance();
+
+            builder.ConfigureEventHandler<BeatmapInfo,LyricsController>();
+            builder.ConfigureEventHandler<GameStatusInfo, LyricsController>();
+            builder.ConfigureEventHandler<PlayingInfo, LyricsController>();
 
             builder.UsePluginOptionsModel<EmberLyricDisplayerPlugin, PluginOptions>();
             builder.UseConfigurationModel<PluginOptions>("EmberLyricDisplayerPlugin");
