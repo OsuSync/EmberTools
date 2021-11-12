@@ -22,7 +22,7 @@ namespace Statistic.Outputs
             return default;
         }
 
-        private readonly ConcurrentDictionary<string, MemoryMappedFile> OutputCache = new ConcurrentDictionary<string, MemoryMappedFile>();
+        private readonly ConcurrentDictionary<string, MemoryMappedFile> OutputCache = new();
         private void Hub_OnFormatUpdated(string name, string format, string value)
         {
             var inst = MemoryMappedFile.CreateOrOpen(name, 2048);
