@@ -11,6 +11,6 @@ namespace EmberKernel.Services.Command.Sources
     {
         ValueTask Initialize(CancellationToken cancellationToken);
         ValueTask Stop(CancellationToken cancellationToken);
-        ValueTask<CommandArgument> Read(CancellationToken cancellationToken);
+        IAsyncEnumerable<CommandArgument> Read(CancellationToken cancellationToken);
     }
 }

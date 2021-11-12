@@ -190,7 +190,10 @@ namespace EmberKernel.Services.Command
             await commandSource.Initialize(initCancellationSource.Token);
 
             // Looping
-            while (!token.IsCancellationRequested) DispatchCommand(await commandSource.Read(default));
+            await foreach (var arguments in commandSource.Read(token))
+            {
+                DispatchCommand(arguments);
+            }
 
             // Do stop action
             using var stopCancellationSource = CreateOperationTimeLimitSource();

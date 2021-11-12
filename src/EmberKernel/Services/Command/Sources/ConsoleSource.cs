@@ -1,5 +1,7 @@
 ﻿using EmberKernel.Services.Command.Models;
 using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,22 +20,25 @@ namespace EmberKernel.Services.Command.Sources
         }
 
         private readonly CommandArgument EmptyCommand = new CommandArgument() { Namespace = string.Empty, Argument = string.Empty, Command = string.Empty };
-        public async ValueTask<CommandArgument> Read(CancellationToken cancellationToken)
+        public async IAsyncEnumerable<CommandArgument> Read([EnumeratorCancellation]CancellationToken cancellationToken)
         {
-            return await Task.Run(async () =>
+            while (!cancellationToken.IsCancellationRequested)
             {
-                await Task.Yield();
-                Console.Write("\n>");
-                var result = (Console.ReadLine() ?? "").Split(' ', 3);
-                if (result.Length == 0) return EmptyCommand;
-                else
+                yield return await Task.Run(async () =>
                 {
-                    var command = new CommandArgument() { Namespace = result[0] };
-                    if (result.Length > 1) command.Command = result[1];
-                    if (result.Length == 3) command.Argument = result[2];
-                    return command;
-                }
-            }, cancellationToken);
+                    await Task.Yield();
+                    Console.Write("\n>");
+                    var result = (Console.ReadLine() ?? "").Split(' ', 3);
+                    if (result.Length == 0) return EmptyCommand;
+                    else
+                    {
+                        var command = new CommandArgument() { Namespace = result[0] };
+                        if (result.Length > 1) command.Command = result[1];
+                        if (result.Length == 3) command.Argument = result[2];
+                        return command;
+                    }
+                }, cancellationToken);
+            }
         }
 
         public async ValueTask Stop(CancellationToken cancellationToken)
