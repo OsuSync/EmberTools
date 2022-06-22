@@ -41,6 +41,14 @@ namespace EmberMemoryReader.Abstract.Data
                 BeatmapFolderAddressOffset -= 4;
                 BeatmapFileNameAddressOffset -= 4;
             }
+            else if (@event.LatestVersion.ToComparableVersion() < "20190816".ToComparableVersion())
+            {
+                BeatmapAddressOffset += 4;
+            }
+            else if (@event.LatestVersion.ToComparableVersion() < "20190816".ToComparableVersion())
+            {
+                BeatmapFolderAddressOffset += 4;
+            }
         }
 
         public int ReadInterval { get; set; } = 500;
