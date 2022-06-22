@@ -13,15 +13,15 @@ namespace EmberMemoryReader.Abstract.Data
         private static readonly string BeatmapPatternMask = "xxxx????xxxx";
 
         private static readonly int LatestBeatmapOffset = 0xc4;
-        private static readonly int LatestBeatmapSetOffset= 0xc8;
+        private static readonly int LatestBeatmapSetOffset = 0xc8;
 
         private static readonly int LatestBeatmapFolderOffset = 0x74;
         private static readonly int LatestBeatmapFilenameOffset = 0x8c;
 
-        private int BeatmapAddressOffset { get; }
-        private int BeatmapSetAddressOffset { get; }
-        private int BeatmapFolderAddressOffset { get; }
-        private int BeatmapFileNameAddressOffset { get; }
+        private int BeatmapAddressOffset { get; set; }
+        private int BeatmapSetAddressOffset { get; set; }
+        private int BeatmapFolderAddressOffset { get; set; }
+        private int BeatmapFileNameAddressOffset { get; set; }
 
         private IntPtr BeatmapIdAddress;
         private IntPtr BeatmapAddress;
@@ -34,19 +34,23 @@ namespace EmberMemoryReader.Abstract.Data
             BeatmapFolderAddressOffset = LatestBeatmapFolderOffset;
             BeatmapFileNameAddressOffset = LatestBeatmapFilenameOffset;
 
-            if (@event.LatestVersion.ToComparableVersion() < "20190816".ToComparableVersion())
+            var currentVersion = @event.LatestVersion.ToComparableVersion();
+            if (currentVersion < "20190816".ToComparableVersion())
             {
                 BeatmapAddressOffset -= 4;
                 BeatmapSetAddressOffset -= 4;
                 BeatmapFolderAddressOffset -= 4;
                 BeatmapFileNameAddressOffset -= 4;
             }
-            else if (@event.LatestVersion.ToComparableVersion() < "20190816".ToComparableVersion())
+            else if (currentVersion < "20211014".ToComparableVersion())
             {
                 BeatmapAddressOffset += 4;
             }
-            else if (@event.LatestVersion.ToComparableVersion() < "20190816".ToComparableVersion())
+            else
             {
+                BeatmapAddressOffset += 8;
+                BeatmapSetAddressOffset += 8;
+                BeatmapFileNameAddressOffset += 8;
                 BeatmapFolderAddressOffset += 4;
             }
         }
