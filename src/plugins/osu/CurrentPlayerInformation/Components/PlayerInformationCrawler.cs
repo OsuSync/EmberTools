@@ -50,11 +50,11 @@ namespace CurrentPlayerInformation.Components
             using var res = await _requestor.GetAsync($"https://osu.ppy.sh/users/{playerName}");
             if (!res.IsSuccessStatusCode) { return (false, null); }
             var rawHtml = await res.Content.ReadAsStringAsync();
-            var userJsonStartPos = rawHtml.IndexOf(">", rawHtml.LastIndexOf("json-user")) + 1;
-            var userJsonEndPos = rawHtml.IndexOf("</script>", userJsonStartPos);
-            var userJson = rawHtml[userJsonStartPos..userJsonEndPos];
-            
-            var info = JsonSerializer.Deserialize<PlayerInformation>(userJson, SerializerOptions);
+            var userJsonStartPos = rawHtml.LastIndexOf("data-initial-data") + 19;
+            var userJsonEndPos = rawHtml.IndexOf("\"", userJsonStartPos);
+            var userJson = System.Web.HttpUtility.HtmlDecode(rawHtml[userJsonStartPos..userJsonEndPos]);
+
+            var info = JsonSerializer.Deserialize<UserInfomation>(userJson, SerializerOptions).User;
             _informationCache[playerName] = (info, DateTime.Now);
             return (true, info);
         }
