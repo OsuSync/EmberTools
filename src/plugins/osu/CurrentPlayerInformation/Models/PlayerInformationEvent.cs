@@ -8,50 +8,79 @@ namespace CurrentPlayerInformation.Models
     {
         [DataSourceVariable]
         public string AvatarUrl { get; set; }
+
         [DataSourceVariable]
         public string CoverUrl { get; set; }
+
         [DataSourceVariable]
         public string CountryCode { get; set; }
+
         [DataSourceVariable]
         public bool IsOnline { get; set; }
+
         [DataSourceVariable]
         public DateTimeOffset JoinDate { get; set; }
+
         [DataSourceVariable]
         public string Username { get; set; }
+
         [DataSourceVariable]
         public int SS { get; set; }
+
         [DataSourceVariable]
         public int Ssh { get; set; }
+
         [DataSourceVariable]
         public int S { get; set; }
+
         [DataSourceVariable]
         public int Sh { get; set; }
+
         [DataSourceVariable]
         public int A { get; set; }
+
         [DataSourceVariable]
         public int CurrentLevel { get; set; }
+
         [DataSourceVariable]
         public int LevelProgress { get; set; }
+
         [DataSourceVariable]
         public double PP { get; set; }
+
         [DataSourceVariable]
         public int PPRank { get; set; }
+
+        [DataSourceVariable]
+        public int GlobalRank { get; set; }
+
+        [DataSourceVariable]
+        public int CountryRank { get; set; }
+
         [DataSourceVariable]
         public long RankedScore { get; set; }
+
         [DataSourceVariable]
         public double HitAccuracy { get; set; }
+
         [DataSourceVariable]
         public int PlayCount { get; set; }
+
         [DataSourceVariable]
         public int PlayTime { get; set; }
+
         [DataSourceVariable]
         public long TotalScore { get; set; }
+
         [DataSourceVariable]
         public int TotalHit { get; set; }
+
         [DataSourceVariable]
         public int MaximumCombo { get; set; }
+
         [DataSourceVariable]
         public int ReaplysWatchedByOthers { get; set; }
+
         [DataSourceVariable]
         public bool IsRanked { get; set; }
         public static PlayerInformationEvent FromPlayerInformation(PlayerInformation information)
@@ -69,7 +98,9 @@ namespace CurrentPlayerInformation.Models
                 CurrentLevel = information.Statistics.Level.Current,
                 LevelProgress = information.Statistics.Level.Progress,
                 PP = information.Statistics.PP,
-                PPRank = information.Statistics.PPRank,
+                PPRank = information.Statistics.GlobalRank,
+                GlobalRank = information.Statistics.GlobalRank,
+                CountryRank = information.Statistics.CountryRank,
                 RankedScore = information.Statistics.RankedScore,
                 HitAccuracy = information.Statistics.HitAccuracy,
                 PlayCount = information.Statistics.PlayCount,

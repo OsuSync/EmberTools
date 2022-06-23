@@ -4,7 +4,8 @@
     {
         public PlayerLevel Level { get; set; }
         public double PP { get; set; }
-        public int PPRank{ get; set; }
+        public int GlobalRank { get; set; }
+        public int CountryRank { get; set; }
         public long RankedScore { get; set; }
         public double HitAccuracy { get; set; }
         public int PlayCount { get; set; }
